@@ -1,0 +1,30 @@
+{
+  "applications": "*",
+  "changelogDate": "20230321105209",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "scientific_leadeship",
+  "fields": [],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "ScientificLeadeship",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "scientificWorkType",
+      "otherEntityRelationshipName": "scientificLeadeship",
+      "ownerSide": false,
+      "relationshipName": "scientificWorkType",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityName": "students",
+      "otherEntityRelationshipName": "scientificLeadeship",
+      "ownerSide": false,
+      "relationshipName": "students",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "service": "no"
+}

@@ -1,0 +1,32 @@
+{
+  "applications": "*",
+  "changelogDate": "20230321105206",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "subject",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Subject",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "lesson",
+      "otherEntityRelationshipName": "subject",
+      "ownerSide": true,
+      "relationshipName": "lesson",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "service": "no"
+}

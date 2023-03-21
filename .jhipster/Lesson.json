@@ -1,0 +1,50 @@
+{
+  "applications": "*",
+  "changelogDate": "20230321105205",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "lesson",
+  "fields": [
+    {
+      "fieldName": "course",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "group",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "subgroup",
+      "fieldType": "Integer"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Lesson",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "subject",
+      "otherEntityRelationshipName": "lesson",
+      "ownerSide": false,
+      "relationshipName": "subject",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityName": "eduSchedulePlace",
+      "otherEntityRelationshipName": "lesson",
+      "ownerSide": false,
+      "relationshipName": "eduSchedulePlace",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityName": "schedule",
+      "otherEntityRelationshipName": "lesson",
+      "ownerSide": false,
+      "relationshipName": "schedule",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "service": "no"
+}

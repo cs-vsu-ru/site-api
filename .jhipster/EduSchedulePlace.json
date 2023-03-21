@@ -1,0 +1,40 @@
+{
+  "applications": "*",
+  "changelogDate": "20230321105207",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "edu_schedule_place",
+  "fields": [
+    {
+      "fieldName": "isDenominator",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "startTime",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "endTime",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "dayOfWeak",
+      "fieldType": "Integer"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "EduSchedulePlace",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "lesson",
+      "otherEntityRelationshipName": "eduSchedulePlace",
+      "ownerSide": true,
+      "relationshipName": "lesson",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "service": "no"
+}
