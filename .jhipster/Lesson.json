@@ -44,6 +44,12 @@
       "ownerSide": false,
       "relationshipName": "schedule",
       "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "employee",
+      "relationshipName": "employee",
+      "relationshipType": "many-to-one"
     }
   ],
   "service": "no"

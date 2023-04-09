@@ -1,5 +1,6 @@
 package cs.vsu.is.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import javax.persistence.*;
 
@@ -20,6 +21,10 @@ public class Pages implements Serializable {
 
     @Column(name = "content")
     private String content;
+
+    @ManyToOne
+    @JsonIgnoreProperties(value = { "roles", "articles", "lessons", "events", "user", "subjects" }, allowSetters = true)
+    private Employee employee;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -47,6 +52,19 @@ public class Pages implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Employee getEmployee() {
+        return this.employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    public Pages employee(Employee employee) {
+        this.setEmployee(employee);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

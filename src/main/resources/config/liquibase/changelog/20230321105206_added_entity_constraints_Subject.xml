@@ -19,5 +19,17 @@
                                  constraintName="fk_rel_subject__lesson__lesson_id"
                                  referencedColumnNames="id"
                                  referencedTableName="lesson"/>
+
+        <addForeignKeyConstraint baseColumnNames="subject_id"
+                                 baseTableName="rel_subject__employees"
+                                 constraintName="fk_rel_subject__employees__subject_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="subject"/>
+
+        <addForeignKeyConstraint baseColumnNames="employees_id"
+                                 baseTableName="rel_subject__employees"
+                                 constraintName="fk_rel_subject__employees__employees_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="employee"/>
     </changeSet>
 </databaseChangeLog>

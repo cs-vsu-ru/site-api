@@ -37,7 +37,7 @@ public class Schedule implements Serializable {
         joinColumns = @JoinColumn(name = "schedule_id"),
         inverseJoinColumns = @JoinColumn(name = "lesson_id")
     )
-    @JsonIgnoreProperties(value = { "subjects", "eduSchedulePlaces", "schedules" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "subjects", "eduSchedulePlaces", "schedules", "employee" }, allowSetters = true)
     private Set<Lesson> lessons = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

@@ -12,10 +12,6 @@
     {
       "fieldName": "dateOfBirth",
       "fieldType": "Instant"
-    },
-    {
-      "fieldName": "userId",
-      "fieldType": "Long"
     }
   ],
   "fluentMethods": true,
@@ -30,6 +26,40 @@
       "otherEntityRelationshipName": "employee",
       "ownerSide": true,
       "relationshipName": "role",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityName": "articles",
+      "otherEntityRelationshipName": "employee",
+      "relationshipName": "articles",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "lesson",
+      "otherEntityRelationshipName": "employee",
+      "relationshipName": "lessons",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "events",
+      "otherEntityRelationshipName": "employee",
+      "relationshipName": "events",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "id": false,
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "employee",
+      "ownerSide": true,
+      "relationshipName": "user",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "subject",
+      "otherEntityRelationshipName": "employees",
+      "ownerSide": false,
+      "relationshipName": "subjects",
       "relationshipType": "many-to-many"
     }
   ],

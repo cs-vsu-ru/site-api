@@ -31,7 +31,7 @@ public class Lesson implements Serializable {
     private Integer subgroup;
 
     @ManyToMany(mappedBy = "lessons")
-    @JsonIgnoreProperties(value = { "lessons" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "lessons", "employees" }, allowSetters = true)
     private Set<Subject> subjects = new HashSet<>();
 
     @ManyToMany(mappedBy = "lessons")
@@ -41,6 +41,10 @@ public class Lesson implements Serializable {
     @ManyToMany(mappedBy = "lessons")
     @JsonIgnoreProperties(value = { "lessons" }, allowSetters = true)
     private Set<Schedule> schedules = new HashSet<>();
+
+    @ManyToOne
+    @JsonIgnoreProperties(value = { "roles", "articles", "lessons", "events", "user", "subjects" }, allowSetters = true)
+    private Employee employee;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -186,6 +190,19 @@ public class Lesson implements Serializable {
     public Lesson removeSchedule(Schedule schedule) {
         this.schedules.remove(schedule);
         schedule.getLessons().remove(this);
+        return this;
+    }
+
+    public Employee getEmployee() {
+        return this.employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    public Lesson employee(Employee employee) {
+        this.setEmployee(employee);
         return this;
     }
 

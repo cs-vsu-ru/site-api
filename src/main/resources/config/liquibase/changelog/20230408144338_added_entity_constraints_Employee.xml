@@ -19,5 +19,11 @@
                                  constraintName="fk_rel_employee__role__role_id"
                                  referencedColumnNames="id"
                                  referencedTableName="role"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="employee"
+                                 constraintName="fk_employee__user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
     </changeSet>
 </databaseChangeLog>

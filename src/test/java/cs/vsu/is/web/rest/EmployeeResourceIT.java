@@ -46,9 +46,6 @@ class EmployeeResourceIT {
     private static final Instant DEFAULT_DATE_OF_BIRTH = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_DATE_OF_BIRTH = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
-    private static final Long DEFAULT_USER_ID = 1L;
-    private static final Long UPDATED_USER_ID = 2L;
-
     private static final String ENTITY_API_URL = "/api/employees";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -76,7 +73,7 @@ class EmployeeResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Employee createEntity(EntityManager em) {
-        Employee employee = new Employee().patronymic(DEFAULT_PATRONYMIC).dateOfBirth(DEFAULT_DATE_OF_BIRTH).userId(DEFAULT_USER_ID);
+        Employee employee = new Employee().patronymic(DEFAULT_PATRONYMIC).dateOfBirth(DEFAULT_DATE_OF_BIRTH);
         return employee;
     }
 
@@ -87,7 +84,7 @@ class EmployeeResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Employee createUpdatedEntity(EntityManager em) {
-        Employee employee = new Employee().patronymic(UPDATED_PATRONYMIC).dateOfBirth(UPDATED_DATE_OF_BIRTH).userId(UPDATED_USER_ID);
+        Employee employee = new Employee().patronymic(UPDATED_PATRONYMIC).dateOfBirth(UPDATED_DATE_OF_BIRTH);
         return employee;
     }
 
@@ -111,7 +108,6 @@ class EmployeeResourceIT {
         Employee testEmployee = employeeList.get(employeeList.size() - 1);
         assertThat(testEmployee.getPatronymic()).isEqualTo(DEFAULT_PATRONYMIC);
         assertThat(testEmployee.getDateOfBirth()).isEqualTo(DEFAULT_DATE_OF_BIRTH);
-        assertThat(testEmployee.getUserId()).isEqualTo(DEFAULT_USER_ID);
     }
 
     @Test
@@ -145,8 +141,7 @@ class EmployeeResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(employee.getId().intValue())))
             .andExpect(jsonPath("$.[*].patronymic").value(hasItem(DEFAULT_PATRONYMIC)))
-            .andExpect(jsonPath("$.[*].dateOfBirth").value(hasItem(DEFAULT_DATE_OF_BIRTH.toString())))
-            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID.intValue())));
+            .andExpect(jsonPath("$.[*].dateOfBirth").value(hasItem(DEFAULT_DATE_OF_BIRTH.toString())));
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -179,8 +174,7 @@ class EmployeeResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(employee.getId().intValue()))
             .andExpect(jsonPath("$.patronymic").value(DEFAULT_PATRONYMIC))
-            .andExpect(jsonPath("$.dateOfBirth").value(DEFAULT_DATE_OF_BIRTH.toString()))
-            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID.intValue()));
+            .andExpect(jsonPath("$.dateOfBirth").value(DEFAULT_DATE_OF_BIRTH.toString()));
     }
 
     @Test
@@ -202,7 +196,7 @@ class EmployeeResourceIT {
         Employee updatedEmployee = employeeRepository.findById(employee.getId()).get();
         // Disconnect from session so that the updates on updatedEmployee are not directly saved in db
         em.detach(updatedEmployee);
-        updatedEmployee.patronymic(UPDATED_PATRONYMIC).dateOfBirth(UPDATED_DATE_OF_BIRTH).userId(UPDATED_USER_ID);
+        updatedEmployee.patronymic(UPDATED_PATRONYMIC).dateOfBirth(UPDATED_DATE_OF_BIRTH);
 
         restEmployeeMockMvc
             .perform(
@@ -218,7 +212,6 @@ class EmployeeResourceIT {
         Employee testEmployee = employeeList.get(employeeList.size() - 1);
         assertThat(testEmployee.getPatronymic()).isEqualTo(UPDATED_PATRONYMIC);
         assertThat(testEmployee.getDateOfBirth()).isEqualTo(UPDATED_DATE_OF_BIRTH);
-        assertThat(testEmployee.getUserId()).isEqualTo(UPDATED_USER_ID);
     }
 
     @Test
@@ -289,7 +282,7 @@ class EmployeeResourceIT {
         Employee partialUpdatedEmployee = new Employee();
         partialUpdatedEmployee.setId(employee.getId());
 
-        partialUpdatedEmployee.dateOfBirth(UPDATED_DATE_OF_BIRTH).userId(UPDATED_USER_ID);
+        partialUpdatedEmployee.dateOfBirth(UPDATED_DATE_OF_BIRTH);
 
         restEmployeeMockMvc
             .perform(
@@ -305,7 +298,6 @@ class EmployeeResourceIT {
         Employee testEmployee = employeeList.get(employeeList.size() - 1);
         assertThat(testEmployee.getPatronymic()).isEqualTo(DEFAULT_PATRONYMIC);
         assertThat(testEmployee.getDateOfBirth()).isEqualTo(UPDATED_DATE_OF_BIRTH);
-        assertThat(testEmployee.getUserId()).isEqualTo(UPDATED_USER_ID);
     }
 
     @Test
@@ -320,7 +312,7 @@ class EmployeeResourceIT {
         Employee partialUpdatedEmployee = new Employee();
         partialUpdatedEmployee.setId(employee.getId());
 
-        partialUpdatedEmployee.patronymic(UPDATED_PATRONYMIC).dateOfBirth(UPDATED_DATE_OF_BIRTH).userId(UPDATED_USER_ID);
+        partialUpdatedEmployee.patronymic(UPDATED_PATRONYMIC).dateOfBirth(UPDATED_DATE_OF_BIRTH);
 
         restEmployeeMockMvc
             .perform(
@@ -336,7 +328,6 @@ class EmployeeResourceIT {
         Employee testEmployee = employeeList.get(employeeList.size() - 1);
         assertThat(testEmployee.getPatronymic()).isEqualTo(UPDATED_PATRONYMIC);
         assertThat(testEmployee.getDateOfBirth()).isEqualTo(UPDATED_DATE_OF_BIRTH);
-        assertThat(testEmployee.getUserId()).isEqualTo(UPDATED_USER_ID);
     }
 
     @Test
