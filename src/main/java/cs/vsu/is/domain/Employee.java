@@ -38,7 +38,7 @@ public class Employee implements Serializable {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "employee")
-    @JsonIgnoreProperties(value = { "employee" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "employee", "accessModes" }, allowSetters = true)
     private Set<Articles> articles = new HashSet<>();
 
     @OneToMany(mappedBy = "employee")
@@ -46,16 +46,20 @@ public class Employee implements Serializable {
     private Set<Lesson> lessons = new HashSet<>();
 
     @OneToMany(mappedBy = "employee")
-    @JsonIgnoreProperties(value = { "employee" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "employee", "accessModes" }, allowSetters = true)
     private Set<Events> events = new HashSet<>();
 
     @OneToOne
     @JoinColumn(unique = true)
     private User user;
 
-    @ManyToMany(mappedBy = "employees")
-    @JsonIgnoreProperties(value = { "lessons", "employees" }, allowSetters = true)
-    private Set<Subject> subjects = new HashSet<>();
+    @OneToMany(mappedBy = "employee")
+    @JsonIgnoreProperties(value = { "student", "employee", "scientificWorkType" }, allowSetters = true)
+    private Set<ScientificLeaderships> scientificLeaderships = new HashSet<>();
+
+    @OneToMany(mappedBy = "employee")
+    @JsonIgnoreProperties(value = { "employee", "subject", "specialities" }, allowSetters = true)
+    private Set<Teaching> teachings = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -229,34 +233,65 @@ public class Employee implements Serializable {
         return this;
     }
 
-    public Set<Subject> getSubjects() {
-        return this.subjects;
+    public Set<ScientificLeaderships> getScientificLeaderships() {
+        return this.scientificLeaderships;
     }
 
-    public void setSubjects(Set<Subject> subjects) {
-        if (this.subjects != null) {
-            this.subjects.forEach(i -> i.removeEmployees(this));
+    public void setScientificLeaderships(Set<ScientificLeaderships> scientificLeaderships) {
+        if (this.scientificLeaderships != null) {
+            this.scientificLeaderships.forEach(i -> i.setEmployee(null));
         }
-        if (subjects != null) {
-            subjects.forEach(i -> i.addEmployees(this));
+        if (scientificLeaderships != null) {
+            scientificLeaderships.forEach(i -> i.setEmployee(this));
         }
-        this.subjects = subjects;
+        this.scientificLeaderships = scientificLeaderships;
     }
 
-    public Employee subjects(Set<Subject> subjects) {
-        this.setSubjects(subjects);
+    public Employee scientificLeaderships(Set<ScientificLeaderships> scientificLeaderships) {
+        this.setScientificLeaderships(scientificLeaderships);
         return this;
     }
 
-    public Employee addSubjects(Subject subject) {
-        this.subjects.add(subject);
-        subject.getEmployees().add(this);
+    public Employee addScientificLeaderships(ScientificLeaderships scientificLeaderships) {
+        this.scientificLeaderships.add(scientificLeaderships);
+        scientificLeaderships.setEmployee(this);
         return this;
     }
 
-    public Employee removeSubjects(Subject subject) {
-        this.subjects.remove(subject);
-        subject.getEmployees().remove(this);
+    public Employee removeScientificLeaderships(ScientificLeaderships scientificLeaderships) {
+        this.scientificLeaderships.remove(scientificLeaderships);
+        scientificLeaderships.setEmployee(null);
+        return this;
+    }
+
+    public Set<Teaching> getTeachings() {
+        return this.teachings;
+    }
+
+    public void setTeachings(Set<Teaching> teachings) {
+        if (this.teachings != null) {
+            this.teachings.forEach(i -> i.setEmployee(null));
+        }
+        if (teachings != null) {
+            teachings.forEach(i -> i.setEmployee(this));
+        }
+        this.teachings = teachings;
+    }
+
+    public Employee teachings(Set<Teaching> teachings) {
+        this.setTeachings(teachings);
+        return this;
+    }
+
+    public Employee addTeaching(Teaching teaching) {
+        this.teachings.add(teaching);
+        teaching.setEmployee(this);
+        return this;
+    }
+
+    public Employee removeTeaching(Teaching teaching) {
+        this.teachings.remove(teaching);
+        teaching.setEmployee(null);
         return this;
     }
 

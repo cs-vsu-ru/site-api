@@ -56,11 +56,16 @@
       "relationshipType": "one-to-one"
     },
     {
-      "otherEntityName": "subject",
-      "otherEntityRelationshipName": "employees",
-      "ownerSide": false,
-      "relationshipName": "subjects",
-      "relationshipType": "many-to-many"
+      "otherEntityName": "scientificLeaderships",
+      "otherEntityRelationshipName": "employee",
+      "relationshipName": "scientificLeaderships",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "teaching",
+      "otherEntityRelationshipName": "employee",
+      "relationshipName": "teaching",
+      "relationshipType": "one-to-many"
     }
   ],
   "service": "no"

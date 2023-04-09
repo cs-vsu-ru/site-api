@@ -36,15 +36,6 @@ public class Subject implements Serializable {
     @JsonIgnoreProperties(value = { "subjects", "eduSchedulePlaces", "schedules", "employee" }, allowSetters = true)
     private Set<Lesson> lessons = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-        name = "rel_subject__employees",
-        joinColumns = @JoinColumn(name = "subject_id"),
-        inverseJoinColumns = @JoinColumn(name = "employees_id")
-    )
-    @JsonIgnoreProperties(value = { "roles", "articles", "lessons", "events", "user", "subjects" }, allowSetters = true)
-    private Set<Employee> employees = new HashSet<>();
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -108,31 +99,6 @@ public class Subject implements Serializable {
     public Subject removeLesson(Lesson lesson) {
         this.lessons.remove(lesson);
         lesson.getSubjects().remove(this);
-        return this;
-    }
-
-    public Set<Employee> getEmployees() {
-        return this.employees;
-    }
-
-    public void setEmployees(Set<Employee> employees) {
-        this.employees = employees;
-    }
-
-    public Subject employees(Set<Employee> employees) {
-        this.setEmployees(employees);
-        return this;
-    }
-
-    public Subject addEmployees(Employee employee) {
-        this.employees.add(employee);
-        employee.getSubjects().add(this);
-        return this;
-    }
-
-    public Subject removeEmployees(Employee employee) {
-        this.employees.remove(employee);
-        employee.getSubjects().remove(this);
         return this;
     }
 

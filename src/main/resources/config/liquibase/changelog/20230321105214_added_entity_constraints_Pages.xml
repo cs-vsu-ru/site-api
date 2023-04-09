@@ -13,5 +13,11 @@
                                  constraintName="fk_pages__employee_id"
                                  referencedColumnNames="id"
                                  referencedTableName="employee"/>
+
+        <addForeignKeyConstraint baseColumnNames="access_modes_id"
+                                 baseTableName="pages"
+                                 constraintName="fk_pages__access_modes_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="access_modes"/>
     </changeSet>
 </databaseChangeLog>

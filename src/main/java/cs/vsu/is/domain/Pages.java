@@ -23,8 +23,15 @@ public class Pages implements Serializable {
     private String content;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "roles", "articles", "lessons", "events", "user", "subjects" }, allowSetters = true)
+    @JsonIgnoreProperties(
+        value = { "roles", "articles", "lessons", "events", "user", "scientificLeaderships", "teachings" },
+        allowSetters = true
+    )
     private Employee employee;
+
+    @ManyToOne
+    @JsonIgnoreProperties(value = { "articles", "pages", "events" }, allowSetters = true)
+    private AccessModes accessModes;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -64,6 +71,19 @@ public class Pages implements Serializable {
 
     public Pages employee(Employee employee) {
         this.setEmployee(employee);
+        return this;
+    }
+
+    public AccessModes getAccessModes() {
+        return this.accessModes;
+    }
+
+    public void setAccessModes(AccessModes accessModes) {
+        this.accessModes = accessModes;
+    }
+
+    public Pages accessModes(AccessModes accessModes) {
+        this.setAccessModes(accessModes);
         return this;
     }
 

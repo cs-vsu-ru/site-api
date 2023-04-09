@@ -25,7 +25,10 @@ public class Role implements Serializable {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
-    @JsonIgnoreProperties(value = { "roles", "articles", "lessons", "events", "user", "subjects" }, allowSetters = true)
+    @JsonIgnoreProperties(
+        value = { "roles", "articles", "lessons", "events", "user", "scientificLeaderships", "teachings" },
+        allowSetters = true
+    )
     private Set<Employee> employees = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

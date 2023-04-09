@@ -1,6 +1,5 @@
 package cs.vsu.is.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +29,6 @@ public class ScientificWorkType implements Serializable {
         joinColumns = @JoinColumn(name = "scientific_work_type_id"),
         inverseJoinColumns = @JoinColumn(name = "scientific_leadeship_id")
     )
-    @JsonIgnoreProperties(value = { "scientificWorkTypes", "students" }, allowSetters = true)
     private Set<ScientificLeadeship> scientificLeadeships = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -76,13 +74,11 @@ public class ScientificWorkType implements Serializable {
 
     public ScientificWorkType addScientificLeadeship(ScientificLeadeship scientificLeadeship) {
         this.scientificLeadeships.add(scientificLeadeship);
-        scientificLeadeship.getScientificWorkTypes().add(this);
         return this;
     }
 
     public ScientificWorkType removeScientificLeadeship(ScientificLeadeship scientificLeadeship) {
         this.scientificLeadeships.remove(scientificLeadeship);
-        scientificLeadeship.getScientificWorkTypes().remove(this);
         return this;
     }
 

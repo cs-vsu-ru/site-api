@@ -26,14 +26,6 @@
       "ownerSide": true,
       "relationshipName": "lesson",
       "relationshipType": "many-to-many"
-    },
-    {
-      "otherEntityField": "id",
-      "otherEntityName": "employee",
-      "otherEntityRelationshipName": "subjects",
-      "ownerSide": true,
-      "relationshipName": "employees",
-      "relationshipType": "many-to-many"
     }
   ],
   "service": "no"

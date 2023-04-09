@@ -36,17 +36,6 @@
         </createTable>
 
         <addPrimaryKey columnNames="subject_id, lesson_id" tableName="rel_subject__lesson"/>
-
-        <createTable tableName="rel_subject__employees">
-            <column name="employees_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="subject_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey columnNames="subject_id, employees_id" tableName="rel_subject__employees"/>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->

@@ -1,0 +1,35 @@
+{
+  "changelogDate": "20230409140654",
+  "dto": "no",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    }
+  ],
+  "jpaMetamodelFiltering": false,
+  "name": "AccessModes",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "articles",
+      "otherEntityRelationshipName": "accessModes",
+      "relationshipName": "articles",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "pages",
+      "otherEntityRelationshipName": "accessModes",
+      "relationshipName": "pages",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "events",
+      "otherEntityRelationshipName": "accessModes",
+      "relationshipName": "events",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "service": "serviceClass"
+}

@@ -36,8 +36,15 @@ public class Events implements Serializable {
     private Instant endTime;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "roles", "articles", "lessons", "events", "user", "subjects" }, allowSetters = true)
+    @JsonIgnoreProperties(
+        value = { "roles", "articles", "lessons", "events", "user", "scientificLeaderships", "teachings" },
+        allowSetters = true
+    )
     private Employee employee;
+
+    @ManyToOne
+    @JsonIgnoreProperties(value = { "articles", "pages", "events" }, allowSetters = true)
+    private AccessModes accessModes;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -129,6 +136,19 @@ public class Events implements Serializable {
 
     public Events employee(Employee employee) {
         this.setEmployee(employee);
+        return this;
+    }
+
+    public AccessModes getAccessModes() {
+        return this.accessModes;
+    }
+
+    public void setAccessModes(AccessModes accessModes) {
+        this.accessModes = accessModes;
+    }
+
+    public Events accessModes(AccessModes accessModes) {
+        this.setAccessModes(accessModes);
         return this;
     }
 

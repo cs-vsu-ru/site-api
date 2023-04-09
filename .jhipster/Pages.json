@@ -21,6 +21,12 @@
       "otherEntityName": "employee",
       "relationshipName": "employee",
       "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "accessModes",
+      "relationshipName": "accessModes",
+      "relationshipType": "many-to-one"
     }
   ],
   "service": "no"
