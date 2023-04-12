@@ -8,6 +8,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +48,7 @@ public class PagesResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/pages")
-    public ResponseEntity<Pages> createPages(@RequestBody Pages pages) throws URISyntaxException {
+    public ResponseEntity<Pages> createPages(@Valid @RequestBody Pages pages) throws URISyntaxException {
         log.debug("REST request to save Pages : {}", pages);
         if (pages.getId() != null) {
             throw new BadRequestAlertException("A new pages cannot already have an ID", ENTITY_NAME, "idexists");
@@ -69,7 +71,7 @@ public class PagesResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/pages/{id}")
-    public ResponseEntity<Pages> updatePages(@PathVariable(value = "id", required = false) final Long id, @RequestBody Pages pages)
+    public ResponseEntity<Pages> updatePages(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody Pages pages)
         throws URISyntaxException {
         log.debug("REST request to update Pages : {}, {}", id, pages);
         if (pages.getId() == null) {
@@ -102,8 +104,10 @@ public class PagesResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/pages/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Pages> partialUpdatePages(@PathVariable(value = "id", required = false) final Long id, @RequestBody Pages pages)
-        throws URISyntaxException {
+    public ResponseEntity<Pages> partialUpdatePages(
+        @PathVariable(value = "id", required = false) final Long id,
+        @NotNull @RequestBody Pages pages
+    ) throws URISyntaxException {
         log.debug("REST request to partial update Pages partially : {}, {}", id, pages);
         if (pages.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");

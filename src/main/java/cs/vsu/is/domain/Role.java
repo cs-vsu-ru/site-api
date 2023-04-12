@@ -26,7 +26,7 @@ public class Role implements Serializable {
 
     @ManyToMany(mappedBy = "roles")
     @JsonIgnoreProperties(
-        value = { "roles", "articles", "lessons", "events", "user", "scientificLeaderships", "teachings" },
+        value = { "roles", "articles", "lessons", "events", "scientificLeaderships", "teachings", "user", "pages" },
         allowSetters = true
     )
     private Set<Employee> employees = new HashSet<>();

@@ -1,11 +1,11 @@
-id;content
-1;красный
-2;Cambridgeshire Investment
-3;розовый
-4;Большой Большой
-5;Kroon Калужская Куртка
-6;Носки iterate
-7;кремовый Маленький Market
-8;bi-directional deposit Шарф
-9;systems Республика
-10;Bedfordshire
+id;content;employee_id;access_modes_id
+1;красный;1;1
+2;Cambridgeshire Investment;2;3
+3;розовый;2;2
+4;Большой Большой;2;2
+5;Kroon Калужская Куртка;1;1
+6;Носки iterate;2;2
+7;кремовый Маленький Market;2;1
+8;bi-directional deposit Шарф;2;1
+9;systems Республика;1;2
+10;Bedfordshire;2;1

@@ -21,19 +21,6 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="20230321105210-1-relations" author="jhipster">
-
-        <createTable tableName="rel_scientific_work_type__scientific_leadeship">
-            <column name="scientific_leadeship_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="scientific_work_type_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey columnNames="scientific_work_type_id, scientific_leadeship_id" tableName="rel_scientific_work_type__scientific_leadeship"/>
-    </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 

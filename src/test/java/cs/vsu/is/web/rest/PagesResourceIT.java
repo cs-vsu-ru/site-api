@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import cs.vsu.is.IntegrationTest;
+import cs.vsu.is.domain.Employee;
 import cs.vsu.is.domain.Pages;
 import cs.vsu.is.repository.PagesRepository;
 import java.util.List;
@@ -57,6 +58,16 @@ class PagesResourceIT {
      */
     public static Pages createEntity(EntityManager em) {
         Pages pages = new Pages().content(DEFAULT_CONTENT);
+        // Add required entity
+        Employee employee;
+        if (TestUtil.findAll(em, Employee.class).isEmpty()) {
+            employee = EmployeeResourceIT.createEntity(em);
+            em.persist(employee);
+            em.flush();
+        } else {
+            employee = TestUtil.findAll(em, Employee.class).get(0);
+        }
+        pages.setEmployee(employee);
         return pages;
     }
 
@@ -68,6 +79,16 @@ class PagesResourceIT {
      */
     public static Pages createUpdatedEntity(EntityManager em) {
         Pages pages = new Pages().content(UPDATED_CONTENT);
+        // Add required entity
+        Employee employee;
+        if (TestUtil.findAll(em, Employee.class).isEmpty()) {
+            employee = EmployeeResourceIT.createUpdatedEntity(em);
+            em.persist(employee);
+            em.flush();
+        } else {
+            employee = TestUtil.findAll(em, Employee.class).get(0);
+        }
+        pages.setEmployee(employee);
         return pages;
     }
 

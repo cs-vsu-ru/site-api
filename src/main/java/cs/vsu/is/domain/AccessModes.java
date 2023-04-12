@@ -29,7 +29,7 @@ public class AccessModes implements Serializable {
     private Set<Articles> articles = new HashSet<>();
 
     @OneToMany(mappedBy = "accessModes")
-    @JsonIgnoreProperties(value = { "employee", "accessModes" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "employee", "accessModes", "employee" }, allowSetters = true)
     private Set<Pages> pages = new HashSet<>();
 
     @OneToMany(mappedBy = "accessModes")

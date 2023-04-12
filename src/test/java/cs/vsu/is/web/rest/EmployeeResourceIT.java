@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import cs.vsu.is.IntegrationTest;
 import cs.vsu.is.domain.Employee;
+import cs.vsu.is.domain.User;
 import cs.vsu.is.repository.EmployeeRepository;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -74,6 +75,11 @@ class EmployeeResourceIT {
      */
     public static Employee createEntity(EntityManager em) {
         Employee employee = new Employee().patronymic(DEFAULT_PATRONYMIC).dateOfBirth(DEFAULT_DATE_OF_BIRTH);
+        // Add required entity
+        User user = UserResourceIT.createEntity(em);
+        em.persist(user);
+        em.flush();
+        employee.setUser(user);
         return employee;
     }
 
@@ -85,6 +91,11 @@ class EmployeeResourceIT {
      */
     public static Employee createUpdatedEntity(EntityManager em) {
         Employee employee = new Employee().patronymic(UPDATED_PATRONYMIC).dateOfBirth(UPDATED_DATE_OF_BIRTH);
+        // Add required entity
+        User user = UserResourceIT.createEntity(em);
+        em.persist(user);
+        em.flush();
+        employee.setUser(user);
         return employee;
     }
 

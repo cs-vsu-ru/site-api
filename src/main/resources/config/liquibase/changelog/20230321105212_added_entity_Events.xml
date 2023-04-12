@@ -65,6 +65,8 @@
             <column name="last_modified_date" type="date"/>
             <column name="start_time" type="date"/>
             <column name="end_time" type="date"/>
+            <column name="employee_id" type="numeric"/>
+            <column name="access_modes_id" type="numeric"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

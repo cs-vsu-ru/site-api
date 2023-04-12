@@ -44,7 +44,7 @@ public class Lesson implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties(
-        value = { "roles", "articles", "lessons", "events", "user", "scientificLeaderships", "teachings" },
+        value = { "roles", "articles", "lessons", "events", "scientificLeaderships", "teachings", "user", "pages" },
         allowSetters = true
     )
     private Employee employee;

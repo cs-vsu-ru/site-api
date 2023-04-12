@@ -25,27 +25,6 @@
   "readOnly": false,
   "relationships": [
     {
-      "otherEntityName": "subject",
-      "otherEntityRelationshipName": "lesson",
-      "ownerSide": false,
-      "relationshipName": "subject",
-      "relationshipType": "many-to-many"
-    },
-    {
-      "otherEntityName": "eduSchedulePlace",
-      "otherEntityRelationshipName": "lesson",
-      "ownerSide": false,
-      "relationshipName": "eduSchedulePlace",
-      "relationshipType": "many-to-many"
-    },
-    {
-      "otherEntityName": "schedule",
-      "otherEntityRelationshipName": "lesson",
-      "ownerSide": false,
-      "relationshipName": "schedule",
-      "relationshipType": "many-to-many"
-    },
-    {
       "otherEntityField": "id",
       "otherEntityName": "employee",
       "relationshipName": "employee",

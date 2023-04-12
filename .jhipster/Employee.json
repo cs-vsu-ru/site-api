@@ -47,15 +47,6 @@
       "relationshipType": "one-to-many"
     },
     {
-      "id": false,
-      "otherEntityField": "login",
-      "otherEntityName": "user",
-      "otherEntityRelationshipName": "employee",
-      "ownerSide": true,
-      "relationshipName": "user",
-      "relationshipType": "one-to-one"
-    },
-    {
       "otherEntityName": "scientificLeaderships",
       "otherEntityRelationshipName": "employee",
       "relationshipName": "scientificLeaderships",
@@ -65,6 +56,22 @@
       "otherEntityName": "teaching",
       "otherEntityRelationshipName": "employee",
       "relationshipName": "teaching",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "id": false,
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "employee",
+      "ownerSide": true,
+      "relationshipName": "user",
+      "relationshipType": "one-to-one",
+      "relationshipValidateRules": ["required"]
+    },
+    {
+      "otherEntityName": "pages",
+      "otherEntityRelationshipName": "employee",
+      "relationshipName": "pages",
       "relationshipType": "one-to-many"
     }
   ],
