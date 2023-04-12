@@ -32,20 +32,6 @@
         <dropDefaultValue tableName="edu_schedule_place" columnName="end_time" columnDataType="${datetimeType}"/>
     </changeSet>
 
-    <changeSet id="20230321105207-1-relations" author="jhipster">
-
-        <createTable tableName="rel_edu_schedule_place__lesson">
-            <column name="lesson_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="edu_schedule_place_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey columnNames="edu_schedule_place_id, lesson_id" tableName="rel_edu_schedule_place__lesson"/>
-    </changeSet>
-
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 
     <!--

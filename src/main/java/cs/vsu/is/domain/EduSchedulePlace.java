@@ -1,10 +1,7 @@
 package cs.vsu.is.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.*;
 
 /**
@@ -33,15 +30,6 @@ public class EduSchedulePlace implements Serializable {
 
     @Column(name = "day_of_weak")
     private Integer dayOfWeak;
-
-    @ManyToMany
-    @JoinTable(
-        name = "rel_edu_schedule_place__lesson",
-        joinColumns = @JoinColumn(name = "edu_schedule_place_id"),
-        inverseJoinColumns = @JoinColumn(name = "lesson_id")
-    )
-    @JsonIgnoreProperties(value = { "subjects", "eduSchedulePlaces", "schedules", "employee" }, allowSetters = true)
-    private Set<Lesson> lessons = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -108,31 +96,6 @@ public class EduSchedulePlace implements Serializable {
 
     public void setDayOfWeak(Integer dayOfWeak) {
         this.dayOfWeak = dayOfWeak;
-    }
-
-    public Set<Lesson> getLessons() {
-        return this.lessons;
-    }
-
-    public void setLessons(Set<Lesson> lessons) {
-        this.lessons = lessons;
-    }
-
-    public EduSchedulePlace lessons(Set<Lesson> lessons) {
-        this.setLessons(lessons);
-        return this;
-    }
-
-    public EduSchedulePlace addLesson(Lesson lesson) {
-        this.lessons.add(lesson);
-        lesson.getEduSchedulePlaces().add(this);
-        return this;
-    }
-
-    public EduSchedulePlace removeLesson(Lesson lesson) {
-        this.lessons.remove(lesson);
-        lesson.getEduSchedulePlaces().remove(this);
-        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

@@ -2,7 +2,6 @@ package cs.vsu.is.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -11,21 +10,14 @@ import cs.vsu.is.domain.EduSchedulePlace;
 import cs.vsu.is.repository.EduSchedulePlaceRepository;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link EduSchedulePlaceResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class EduSchedulePlaceResourceIT {
@@ -60,9 +51,6 @@ class EduSchedulePlaceResourceIT {
 
     @Autowired
     private EduSchedulePlaceRepository eduSchedulePlaceRepository;
-
-    @Mock
-    private EduSchedulePlaceRepository eduSchedulePlaceRepositoryMock;
 
     @Autowired
     private EntityManager em;
@@ -164,23 +152,6 @@ class EduSchedulePlaceResourceIT {
             .andExpect(jsonPath("$.[*].startTime").value(hasItem(DEFAULT_START_TIME.toString())))
             .andExpect(jsonPath("$.[*].endTime").value(hasItem(DEFAULT_END_TIME.toString())))
             .andExpect(jsonPath("$.[*].dayOfWeak").value(hasItem(DEFAULT_DAY_OF_WEAK)));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllEduSchedulePlacesWithEagerRelationshipsIsEnabled() throws Exception {
-        when(eduSchedulePlaceRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restEduSchedulePlaceMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(eduSchedulePlaceRepositoryMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllEduSchedulePlacesWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(eduSchedulePlaceRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restEduSchedulePlaceMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(eduSchedulePlaceRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test

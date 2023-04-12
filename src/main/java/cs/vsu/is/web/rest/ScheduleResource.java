@@ -146,17 +146,12 @@ public class ScheduleResource {
     /**
      * {@code GET  /schedules} : get all the schedules.
      *
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of schedules in body.
      */
     @GetMapping("/schedules")
-    public List<Schedule> getAllSchedules(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
+    public List<Schedule> getAllSchedules() {
         log.debug("REST request to get all Schedules");
-        if (eagerload) {
-            return scheduleRepository.findAllWithEagerRelationships();
-        } else {
-            return scheduleRepository.findAll();
-        }
+        return scheduleRepository.findAll();
     }
 
     /**
@@ -168,7 +163,7 @@ public class ScheduleResource {
     @GetMapping("/schedules/{id}")
     public ResponseEntity<Schedule> getSchedule(@PathVariable Long id) {
         log.debug("REST request to get Schedule : {}", id);
-        Optional<Schedule> schedule = scheduleRepository.findOneWithEagerRelationships(id);
+        Optional<Schedule> schedule = scheduleRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(schedule);
     }
 

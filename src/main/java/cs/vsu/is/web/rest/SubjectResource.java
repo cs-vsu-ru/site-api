@@ -141,17 +141,12 @@ public class SubjectResource {
     /**
      * {@code GET  /subjects} : get all the subjects.
      *
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of subjects in body.
      */
     @GetMapping("/subjects")
-    public List<Subject> getAllSubjects(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
+    public List<Subject> getAllSubjects() {
         log.debug("REST request to get all Subjects");
-        if (eagerload) {
-            return subjectRepository.findAllWithEagerRelationships();
-        } else {
-            return subjectRepository.findAll();
-        }
+        return subjectRepository.findAll();
     }
 
     /**
@@ -163,7 +158,7 @@ public class SubjectResource {
     @GetMapping("/subjects/{id}")
     public ResponseEntity<Subject> getSubject(@PathVariable Long id) {
         log.debug("REST request to get Subject : {}", id);
-        Optional<Subject> subject = subjectRepository.findOneWithEagerRelationships(id);
+        Optional<Subject> subject = subjectRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(subject);
     }
 

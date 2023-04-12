@@ -19,14 +19,6 @@
   "name": "Subject",
   "pagination": "no",
   "readOnly": false,
-  "relationships": [
-    {
-      "otherEntityName": "lesson",
-      "otherEntityRelationshipName": "subject",
-      "ownerSide": true,
-      "relationshipName": "lesson",
-      "relationshipType": "many-to-many"
-    }
-  ],
+  "relationships": [],
   "service": "no"
 }

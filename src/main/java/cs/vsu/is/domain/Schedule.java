@@ -1,10 +1,7 @@
 package cs.vsu.is.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.*;
 
 /**
@@ -30,15 +27,6 @@ public class Schedule implements Serializable {
 
     @Column(name = "is_actual")
     private Boolean isActual;
-
-    @ManyToMany
-    @JoinTable(
-        name = "rel_schedule__lesson",
-        joinColumns = @JoinColumn(name = "schedule_id"),
-        inverseJoinColumns = @JoinColumn(name = "lesson_id")
-    )
-    @JsonIgnoreProperties(value = { "subjects", "eduSchedulePlaces", "schedules", "employee" }, allowSetters = true)
-    private Set<Lesson> lessons = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -92,31 +80,6 @@ public class Schedule implements Serializable {
 
     public void setIsActual(Boolean isActual) {
         this.isActual = isActual;
-    }
-
-    public Set<Lesson> getLessons() {
-        return this.lessons;
-    }
-
-    public void setLessons(Set<Lesson> lessons) {
-        this.lessons = lessons;
-    }
-
-    public Schedule lessons(Set<Lesson> lessons) {
-        this.setLessons(lessons);
-        return this;
-    }
-
-    public Schedule addLesson(Lesson lesson) {
-        this.lessons.add(lesson);
-        lesson.getSchedules().add(this);
-        return this;
-    }
-
-    public Schedule removeLesson(Lesson lesson) {
-        this.lessons.remove(lesson);
-        lesson.getSchedules().remove(this);
-        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

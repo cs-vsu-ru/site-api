@@ -150,17 +150,12 @@ public class EduSchedulePlaceResource {
     /**
      * {@code GET  /edu-schedule-places} : get all the eduSchedulePlaces.
      *
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of eduSchedulePlaces in body.
      */
     @GetMapping("/edu-schedule-places")
-    public List<EduSchedulePlace> getAllEduSchedulePlaces(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
+    public List<EduSchedulePlace> getAllEduSchedulePlaces() {
         log.debug("REST request to get all EduSchedulePlaces");
-        if (eagerload) {
-            return eduSchedulePlaceRepository.findAllWithEagerRelationships();
-        } else {
-            return eduSchedulePlaceRepository.findAll();
-        }
+        return eduSchedulePlaceRepository.findAll();
     }
 
     /**
@@ -172,7 +167,7 @@ public class EduSchedulePlaceResource {
     @GetMapping("/edu-schedule-places/{id}")
     public ResponseEntity<EduSchedulePlace> getEduSchedulePlace(@PathVariable Long id) {
         log.debug("REST request to get EduSchedulePlace : {}", id);
-        Optional<EduSchedulePlace> eduSchedulePlace = eduSchedulePlaceRepository.findOneWithEagerRelationships(id);
+        Optional<EduSchedulePlace> eduSchedulePlace = eduSchedulePlaceRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(eduSchedulePlace);
     }
 

@@ -29,6 +29,24 @@
       "otherEntityName": "employee",
       "relationshipName": "employee",
       "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "subject",
+      "relationshipName": "subject",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "eduSchedulePlace",
+      "relationshipName": "eduSchedulePlace",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "schedule",
+      "relationshipName": "schedule",
+      "relationshipType": "many-to-one"
     }
   ],
   "service": "no"

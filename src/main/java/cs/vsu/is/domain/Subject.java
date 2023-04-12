@@ -1,9 +1,6 @@
 package cs.vsu.is.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.*;
 
 /**
@@ -26,15 +23,6 @@ public class Subject implements Serializable {
 
     @Column(name = "description")
     private String description;
-
-    @ManyToMany
-    @JoinTable(
-        name = "rel_subject__lesson",
-        joinColumns = @JoinColumn(name = "subject_id"),
-        inverseJoinColumns = @JoinColumn(name = "lesson_id")
-    )
-    @JsonIgnoreProperties(value = { "subjects", "eduSchedulePlaces", "schedules", "employee" }, allowSetters = true)
-    private Set<Lesson> lessons = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -75,31 +63,6 @@ public class Subject implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Set<Lesson> getLessons() {
-        return this.lessons;
-    }
-
-    public void setLessons(Set<Lesson> lessons) {
-        this.lessons = lessons;
-    }
-
-    public Subject lessons(Set<Lesson> lessons) {
-        this.setLessons(lessons);
-        return this;
-    }
-
-    public Subject addLesson(Lesson lesson) {
-        this.lessons.add(lesson);
-        lesson.getSubjects().add(this);
-        return this;
-    }
-
-    public Subject removeLesson(Lesson lesson) {
-        this.lessons.remove(lesson);
-        lesson.getSubjects().remove(this);
-        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
