@@ -32,7 +32,7 @@ public class Employee implements Serializable {
   private Set<Role> roles = new HashSet<>();
 
   @OneToMany(mappedBy = "employee")
-  @JsonIgnoreProperties(value = { "employee", "accessModes" }, allowSetters = true)
+  @JsonIgnoreProperties(value = { "employee" }, allowSetters = true)
   private Set<Articles> articles = new HashSet<>();
 
   @OneToMany(mappedBy = "employee")
@@ -40,15 +40,15 @@ public class Employee implements Serializable {
   private Set<Lesson> lessons = new HashSet<>();
 
   @OneToMany(mappedBy = "employee")
-  @JsonIgnoreProperties(value = { "employee", "accessModes" }, allowSetters = true)
+  @JsonIgnoreProperties(value = { "employee" }, allowSetters = true)
   private Set<Events> events = new HashSet<>();
 
   @OneToMany(mappedBy = "employee")
-  @JsonIgnoreProperties(value = { "student", "employee", "scientificWorkType" }, allowSetters = true)
+  @JsonIgnoreProperties(value = { "employee" }, allowSetters = true)
   private Set<ScientificLeaderships> scientificLeaderships = new HashSet<>();
 
   @OneToMany(mappedBy = "employee")
-  @JsonIgnoreProperties(value = { "employee", "subject", "specialities" }, allowSetters = true)
+  @JsonIgnoreProperties(value = { "employee" }, allowSetters = true)
   private Set<Teaching> teachings = new HashSet<>();
 
   @OneToOne(optional = false)
@@ -57,39 +57,10 @@ public class Employee implements Serializable {
   private User user;
 
   @OneToMany(mappedBy = "employee")
-  @JsonIgnoreProperties(value = { "employee", "accessModes", "employee" }, allowSetters = true)
+  @JsonIgnoreProperties(value = { "employee", "employee" }, allowSetters = true)
   private Set<Pages> pages = new HashSet<>();
 
-  @ManyToMany
-  @JsonIgnoreProperties(value = { "employee" }, allowSetters = true)
-  @JoinTable(name = "teaching", joinColumns = {
-      @JoinColumn(name = "employee_id") }, inverseJoinColumns = {
-          @JoinColumn(name = "subject_id") })
-  private Set<Subject> subjects;
-
-  @ManyToMany
-  @JsonIgnoreProperties(value = { "employee" }, allowSetters = true)
-  @JoinTable(name = "teaching", joinColumns = {
-      @JoinColumn(name = "employee_id") }, inverseJoinColumns = {
-          @JoinColumn(name = "specialities_id") })
-  private Set<Specialities> specialities;
   // jhipster-needle-entity-add-field - JHipster will add fields here
-
-  public Set<Specialities> getSpecialities() {
-    return specialities;
-  }
-
-  public void setSpecialities(Set<Specialities> specialities) {
-    this.specialities = specialities;
-  }
-
-  public Set<Subject> getSubjects() {
-    return subjects;
-  }
-
-  public void setSubjects(Set<Subject> subjects) {
-    this.subjects = subjects;
-  }
 
   public Long getId() {
     return this.id;

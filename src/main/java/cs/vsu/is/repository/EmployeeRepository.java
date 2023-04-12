@@ -38,9 +38,14 @@ public interface EmployeeRepository extends EmployeeRepositoryWithBagRelationshi
       + " left join fetch employee.pages"
       + " left join fetch employee.events"
       + " left join fetch employee.roles"
+      + " left join fetch employee.scientificLeaderships"
+      // + " left join fetch employee.students"
+      // + " left join fetch employee.scientific_work_types"
       + " left join fetch employee.lessons"
-      + " left join fetch employee.specialities"
-      + " left join fetch employee.subjects")
+      + " left join fetch employee.teachings"
+  // + " left join fetch employee.specialities"
+  // + " left join fetch employee.subjects"
+  )
   List<Employee> findAllWithToOneRelationships();
 
   @Query("select employee from Employee employee left join fetch employee.user where employee.id =:id")

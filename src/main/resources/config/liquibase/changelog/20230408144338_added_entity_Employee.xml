@@ -65,4 +65,16 @@
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>
+
+      <changeSet id="20230408144338-2-data" author="jhipster" context="faker">
+        <loadData
+                  file="config/liquibase/fake-data/rel_employee__role.csv"
+                  separator=";"
+                  tableName="rel_employee__role"
+                  usePreparedStatements="true">
+            <column name="role_id" type="numeric"/>
+            <column name="employee_id" type="numeric"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
+    </changeSet>
 </databaseChangeLog>

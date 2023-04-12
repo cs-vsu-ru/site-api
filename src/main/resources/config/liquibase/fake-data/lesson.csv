@@ -1,6 +1,6 @@
-id;course;jhi_group;subgroup;employee_id;subject_id;schedule_id
-1;77551;97301;32708;1;1;1
-2;28506;31018;12502;2;2;2
-3;69541;31886;85680;1;3;3
-4;59771;25577;17848;2;4;4
+id;course;jhi_group;subgroup;employee_id;subject_id;schedule_id;edu_schedule_place_id
+1;77551;97301;32708;1;1;1;1
+2;28506;31018;12502;2;2;2;2
+3;69541;31886;85680;1;3;3;1
+4;59771;25577;17848;2;4;4;3
 
