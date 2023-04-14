@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import cs.vsu.is.IntegrationTest;
 import cs.vsu.is.domain.Articles;
 import cs.vsu.is.repository.ArticlesRepository;
+import cs.vsu.is.service.dto.ArticlesDTO;
+import cs.vsu.is.service.mapper.ArticlesMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -45,6 +47,9 @@ class ArticlesResourceIT {
 
     @Autowired
     private ArticlesRepository articlesRepository;
+
+    @Autowired
+    private ArticlesMapper articlesMapper;
 
     @Autowired
     private EntityManager em;
@@ -86,8 +91,9 @@ class ArticlesResourceIT {
     void createArticles() throws Exception {
         int databaseSizeBeforeCreate = articlesRepository.findAll().size();
         // Create the Articles
+        ArticlesDTO articlesDTO = articlesMapper.toDto(articles);
         restArticlesMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(articles)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(articlesDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Articles in the database
@@ -103,12 +109,13 @@ class ArticlesResourceIT {
     void createArticlesWithExistingId() throws Exception {
         // Create the Articles with an existing ID
         articles.setId(1L);
+        ArticlesDTO articlesDTO = articlesMapper.toDto(articles);
 
         int databaseSizeBeforeCreate = articlesRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restArticlesMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(articles)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(articlesDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Articles in the database
@@ -168,12 +175,13 @@ class ArticlesResourceIT {
         // Disconnect from session so that the updates on updatedArticles are not directly saved in db
         em.detach(updatedArticles);
         updatedArticles.publicationDate(UPDATED_PUBLICATION_DATE).content(UPDATED_CONTENT);
+        ArticlesDTO articlesDTO = articlesMapper.toDto(updatedArticles);
 
         restArticlesMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedArticles.getId())
+                put(ENTITY_API_URL_ID, articlesDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedArticles))
+                    .content(TestUtil.convertObjectToJsonBytes(articlesDTO))
             )
             .andExpect(status().isOk());
 
@@ -191,12 +199,15 @@ class ArticlesResourceIT {
         int databaseSizeBeforeUpdate = articlesRepository.findAll().size();
         articles.setId(count.incrementAndGet());
 
+        // Create the Articles
+        ArticlesDTO articlesDTO = articlesMapper.toDto(articles);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restArticlesMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, articles.getId())
+                put(ENTITY_API_URL_ID, articlesDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(articles))
+                    .content(TestUtil.convertObjectToJsonBytes(articlesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -211,12 +222,15 @@ class ArticlesResourceIT {
         int databaseSizeBeforeUpdate = articlesRepository.findAll().size();
         articles.setId(count.incrementAndGet());
 
+        // Create the Articles
+        ArticlesDTO articlesDTO = articlesMapper.toDto(articles);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restArticlesMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(articles))
+                    .content(TestUtil.convertObjectToJsonBytes(articlesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -231,9 +245,12 @@ class ArticlesResourceIT {
         int databaseSizeBeforeUpdate = articlesRepository.findAll().size();
         articles.setId(count.incrementAndGet());
 
+        // Create the Articles
+        ArticlesDTO articlesDTO = articlesMapper.toDto(articles);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restArticlesMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(articles)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(articlesDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Articles in the database
@@ -305,12 +322,15 @@ class ArticlesResourceIT {
         int databaseSizeBeforeUpdate = articlesRepository.findAll().size();
         articles.setId(count.incrementAndGet());
 
+        // Create the Articles
+        ArticlesDTO articlesDTO = articlesMapper.toDto(articles);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restArticlesMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, articles.getId())
+                patch(ENTITY_API_URL_ID, articlesDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(articles))
+                    .content(TestUtil.convertObjectToJsonBytes(articlesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -325,12 +345,15 @@ class ArticlesResourceIT {
         int databaseSizeBeforeUpdate = articlesRepository.findAll().size();
         articles.setId(count.incrementAndGet());
 
+        // Create the Articles
+        ArticlesDTO articlesDTO = articlesMapper.toDto(articles);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restArticlesMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(articles))
+                    .content(TestUtil.convertObjectToJsonBytes(articlesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -345,9 +368,14 @@ class ArticlesResourceIT {
         int databaseSizeBeforeUpdate = articlesRepository.findAll().size();
         articles.setId(count.incrementAndGet());
 
+        // Create the Articles
+        ArticlesDTO articlesDTO = articlesMapper.toDto(articles);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restArticlesMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(articles)))
+            .perform(
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(articlesDTO))
+            )
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Articles in the database

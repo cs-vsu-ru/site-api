@@ -1,5 +1,6 @@
 {
   "generator-jhipster": {
+    "applicationIndex": 0,
     "applicationType": "monolith",
     "authenticationType": "jwt",
     "baseName": "siteApi",
@@ -37,6 +38,7 @@
       "AccessModes"
     ],
     "entitySuffix": "",
+    "gradleEnterpriseHost": "",
     "jhiPrefix": "jhi",
     "jhipsterVersion": "7.9.3",
     "jwtSecretKey": "OGUyZmQ1MDI2NWI3ZDhiMDBiYmRmZWI0Y2Q3ZWQwNzU1ZTRmYzA0Y2UwMDg2N2I0ZDUxNjAwMDdlMzUxNjFkNWIwMzkzODM5MjYxNzUzYTk3YTM0NTgwMDZlZDgxNzM1MjkzY2MzNmYzOWZiZjRkODcwOTNlNjdlNTJjM2E4NWE=",
@@ -47,6 +49,7 @@
     "microfrontends": [],
     "nativeLanguage": "ru",
     "otherModules": [],
+    "packageFolder": "cs/vsu/is",
     "packageName": "cs.vsu.is",
     "pages": [],
     "prodDatabaseType": "mysql",

@@ -1,7 +1,7 @@
 {
-  "applications": "*",
+  "applications": ["siteApi"],
   "changelogDate": "20230321105213",
-  "dto": "no",
+  "dto": "mapstruct",
   "embedded": false,
   "entityTableName": "articles",
   "fields": [
@@ -21,17 +21,17 @@
   "readOnly": false,
   "relationships": [
     {
-      "otherEntityField": "id",
       "otherEntityName": "employee",
+      "otherEntityRelationshipName": "articles",
       "relationshipName": "employee",
       "relationshipType": "many-to-one"
     },
     {
-      "otherEntityField": "id",
       "otherEntityName": "accessModes",
+      "otherEntityRelationshipName": "articles",
       "relationshipName": "accessModes",
       "relationshipType": "many-to-one"
     }
   ],
-  "service": "no"
+  "service": "serviceClass"
 }

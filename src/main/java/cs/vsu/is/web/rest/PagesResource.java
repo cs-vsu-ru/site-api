@@ -1,7 +1,8 @@
 package cs.vsu.is.web.rest;
 
-import cs.vsu.is.domain.Pages;
 import cs.vsu.is.repository.PagesRepository;
+import cs.vsu.is.service.PagesService;
+import cs.vsu.is.service.dto.PagesDTO;
 import cs.vsu.is.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -24,7 +24,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class PagesResource {
 
     private final Logger log = LoggerFactory.getLogger(PagesResource.class);
@@ -34,26 +33,29 @@ public class PagesResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final PagesService pagesService;
+
     private final PagesRepository pagesRepository;
 
-    public PagesResource(PagesRepository pagesRepository) {
+    public PagesResource(PagesService pagesService, PagesRepository pagesRepository) {
+        this.pagesService = pagesService;
         this.pagesRepository = pagesRepository;
     }
 
     /**
      * {@code POST  /pages} : Create a new pages.
      *
-     * @param pages the pages to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new pages, or with status {@code 400 (Bad Request)} if the pages has already an ID.
+     * @param pagesDTO the pagesDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new pagesDTO, or with status {@code 400 (Bad Request)} if the pages has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/pages")
-    public ResponseEntity<Pages> createPages(@Valid @RequestBody Pages pages) throws URISyntaxException {
-        log.debug("REST request to save Pages : {}", pages);
-        if (pages.getId() != null) {
+    public ResponseEntity<PagesDTO> createPages(@Valid @RequestBody PagesDTO pagesDTO) throws URISyntaxException {
+        log.debug("REST request to save Pages : {}", pagesDTO);
+        if (pagesDTO.getId() != null) {
             throw new BadRequestAlertException("A new pages cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Pages result = pagesRepository.save(pages);
+        PagesDTO result = pagesService.save(pagesDTO);
         return ResponseEntity
             .created(new URI("/api/pages/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -63,21 +65,23 @@ public class PagesResource {
     /**
      * {@code PUT  /pages/:id} : Updates an existing pages.
      *
-     * @param id the id of the pages to save.
-     * @param pages the pages to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated pages,
-     * or with status {@code 400 (Bad Request)} if the pages is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the pages couldn't be updated.
+     * @param id the id of the pagesDTO to save.
+     * @param pagesDTO the pagesDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated pagesDTO,
+     * or with status {@code 400 (Bad Request)} if the pagesDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the pagesDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/pages/{id}")
-    public ResponseEntity<Pages> updatePages(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody Pages pages)
-        throws URISyntaxException {
-        log.debug("REST request to update Pages : {}, {}", id, pages);
-        if (pages.getId() == null) {
+    public ResponseEntity<PagesDTO> updatePages(
+        @PathVariable(value = "id", required = false) final Long id,
+        @Valid @RequestBody PagesDTO pagesDTO
+    ) throws URISyntaxException {
+        log.debug("REST request to update Pages : {}, {}", id, pagesDTO);
+        if (pagesDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, pages.getId())) {
+        if (!Objects.equals(id, pagesDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -85,34 +89,34 @@ public class PagesResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Pages result = pagesRepository.save(pages);
+        PagesDTO result = pagesService.update(pagesDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, pages.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, pagesDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /pages/:id} : Partial updates given fields of an existing pages, field will ignore if it is null
      *
-     * @param id the id of the pages to save.
-     * @param pages the pages to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated pages,
-     * or with status {@code 400 (Bad Request)} if the pages is not valid,
-     * or with status {@code 404 (Not Found)} if the pages is not found,
-     * or with status {@code 500 (Internal Server Error)} if the pages couldn't be updated.
+     * @param id the id of the pagesDTO to save.
+     * @param pagesDTO the pagesDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated pagesDTO,
+     * or with status {@code 400 (Bad Request)} if the pagesDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the pagesDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the pagesDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/pages/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Pages> partialUpdatePages(
+    public ResponseEntity<PagesDTO> partialUpdatePages(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Pages pages
+        @NotNull @RequestBody PagesDTO pagesDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Pages partially : {}, {}", id, pages);
-        if (pages.getId() == null) {
+        log.debug("REST request to partial update Pages partially : {}, {}", id, pagesDTO);
+        if (pagesDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, pages.getId())) {
+        if (!Objects.equals(id, pagesDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -120,20 +124,11 @@ public class PagesResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Pages> result = pagesRepository
-            .findById(pages.getId())
-            .map(existingPages -> {
-                if (pages.getContent() != null) {
-                    existingPages.setContent(pages.getContent());
-                }
-
-                return existingPages;
-            })
-            .map(pagesRepository::save);
+        Optional<PagesDTO> result = pagesService.partialUpdate(pagesDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, pages.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, pagesDTO.getId().toString())
         );
     }
 
@@ -143,34 +138,34 @@ public class PagesResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of pages in body.
      */
     @GetMapping("/pages")
-    public List<Pages> getAllPages() {
+    public List<PagesDTO> getAllPages() {
         log.debug("REST request to get all Pages");
-        return pagesRepository.findAll();
+        return pagesService.findAll();
     }
 
     /**
      * {@code GET  /pages/:id} : get the "id" pages.
      *
-     * @param id the id of the pages to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the pages, or with status {@code 404 (Not Found)}.
+     * @param id the id of the pagesDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the pagesDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/pages/{id}")
-    public ResponseEntity<Pages> getPages(@PathVariable Long id) {
+    public ResponseEntity<PagesDTO> getPages(@PathVariable Long id) {
         log.debug("REST request to get Pages : {}", id);
-        Optional<Pages> pages = pagesRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(pages);
+        Optional<PagesDTO> pagesDTO = pagesService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(pagesDTO);
     }
 
     /**
      * {@code DELETE  /pages/:id} : delete the "id" pages.
      *
-     * @param id the id of the pages to delete.
+     * @param id the id of the pagesDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/pages/{id}")
     public ResponseEntity<Void> deletePages(@PathVariable Long id) {
         log.debug("REST request to delete Pages : {}", id);
-        pagesRepository.deleteById(id);
+        pagesService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

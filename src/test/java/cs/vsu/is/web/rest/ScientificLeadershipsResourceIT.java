@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import cs.vsu.is.IntegrationTest;
 import cs.vsu.is.domain.ScientificLeaderships;
 import cs.vsu.is.repository.ScientificLeadershipsRepository;
+import cs.vsu.is.service.dto.ScientificLeadershipsDTO;
+import cs.vsu.is.service.mapper.ScientificLeadershipsMapper;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -40,6 +42,9 @@ class ScientificLeadershipsResourceIT {
 
     @Autowired
     private ScientificLeadershipsRepository scientificLeadershipsRepository;
+
+    @Autowired
+    private ScientificLeadershipsMapper scientificLeadershipsMapper;
 
     @Autowired
     private EntityManager em;
@@ -81,11 +86,12 @@ class ScientificLeadershipsResourceIT {
     void createScientificLeaderships() throws Exception {
         int databaseSizeBeforeCreate = scientificLeadershipsRepository.findAll().size();
         // Create the ScientificLeaderships
+        ScientificLeadershipsDTO scientificLeadershipsDTO = scientificLeadershipsMapper.toDto(scientificLeaderships);
         restScientificLeadershipsMockMvc
             .perform(
                 post(ENTITY_API_URL)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(scientificLeaderships))
+                    .content(TestUtil.convertObjectToJsonBytes(scientificLeadershipsDTO))
             )
             .andExpect(status().isCreated());
 
@@ -101,6 +107,7 @@ class ScientificLeadershipsResourceIT {
     void createScientificLeadershipsWithExistingId() throws Exception {
         // Create the ScientificLeaderships with an existing ID
         scientificLeaderships.setId(1L);
+        ScientificLeadershipsDTO scientificLeadershipsDTO = scientificLeadershipsMapper.toDto(scientificLeaderships);
 
         int databaseSizeBeforeCreate = scientificLeadershipsRepository.findAll().size();
 
@@ -109,7 +116,7 @@ class ScientificLeadershipsResourceIT {
             .perform(
                 post(ENTITY_API_URL)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(scientificLeaderships))
+                    .content(TestUtil.convertObjectToJsonBytes(scientificLeadershipsDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -168,12 +175,13 @@ class ScientificLeadershipsResourceIT {
         // Disconnect from session so that the updates on updatedScientificLeaderships are not directly saved in db
         em.detach(updatedScientificLeaderships);
         updatedScientificLeaderships.year(UPDATED_YEAR);
+        ScientificLeadershipsDTO scientificLeadershipsDTO = scientificLeadershipsMapper.toDto(updatedScientificLeaderships);
 
         restScientificLeadershipsMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedScientificLeaderships.getId())
+                put(ENTITY_API_URL_ID, scientificLeadershipsDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedScientificLeaderships))
+                    .content(TestUtil.convertObjectToJsonBytes(scientificLeadershipsDTO))
             )
             .andExpect(status().isOk());
 
@@ -190,12 +198,15 @@ class ScientificLeadershipsResourceIT {
         int databaseSizeBeforeUpdate = scientificLeadershipsRepository.findAll().size();
         scientificLeaderships.setId(count.incrementAndGet());
 
+        // Create the ScientificLeaderships
+        ScientificLeadershipsDTO scientificLeadershipsDTO = scientificLeadershipsMapper.toDto(scientificLeaderships);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restScientificLeadershipsMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, scientificLeaderships.getId())
+                put(ENTITY_API_URL_ID, scientificLeadershipsDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(scientificLeaderships))
+                    .content(TestUtil.convertObjectToJsonBytes(scientificLeadershipsDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -210,12 +221,15 @@ class ScientificLeadershipsResourceIT {
         int databaseSizeBeforeUpdate = scientificLeadershipsRepository.findAll().size();
         scientificLeaderships.setId(count.incrementAndGet());
 
+        // Create the ScientificLeaderships
+        ScientificLeadershipsDTO scientificLeadershipsDTO = scientificLeadershipsMapper.toDto(scientificLeaderships);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restScientificLeadershipsMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(scientificLeaderships))
+                    .content(TestUtil.convertObjectToJsonBytes(scientificLeadershipsDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -230,12 +244,15 @@ class ScientificLeadershipsResourceIT {
         int databaseSizeBeforeUpdate = scientificLeadershipsRepository.findAll().size();
         scientificLeaderships.setId(count.incrementAndGet());
 
+        // Create the ScientificLeaderships
+        ScientificLeadershipsDTO scientificLeadershipsDTO = scientificLeadershipsMapper.toDto(scientificLeaderships);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restScientificLeadershipsMockMvc
             .perform(
                 put(ENTITY_API_URL)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(scientificLeaderships))
+                    .content(TestUtil.convertObjectToJsonBytes(scientificLeadershipsDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 
@@ -308,12 +325,15 @@ class ScientificLeadershipsResourceIT {
         int databaseSizeBeforeUpdate = scientificLeadershipsRepository.findAll().size();
         scientificLeaderships.setId(count.incrementAndGet());
 
+        // Create the ScientificLeaderships
+        ScientificLeadershipsDTO scientificLeadershipsDTO = scientificLeadershipsMapper.toDto(scientificLeaderships);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restScientificLeadershipsMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, scientificLeaderships.getId())
+                patch(ENTITY_API_URL_ID, scientificLeadershipsDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(scientificLeaderships))
+                    .content(TestUtil.convertObjectToJsonBytes(scientificLeadershipsDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -328,12 +348,15 @@ class ScientificLeadershipsResourceIT {
         int databaseSizeBeforeUpdate = scientificLeadershipsRepository.findAll().size();
         scientificLeaderships.setId(count.incrementAndGet());
 
+        // Create the ScientificLeaderships
+        ScientificLeadershipsDTO scientificLeadershipsDTO = scientificLeadershipsMapper.toDto(scientificLeaderships);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restScientificLeadershipsMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(scientificLeaderships))
+                    .content(TestUtil.convertObjectToJsonBytes(scientificLeadershipsDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -348,12 +371,15 @@ class ScientificLeadershipsResourceIT {
         int databaseSizeBeforeUpdate = scientificLeadershipsRepository.findAll().size();
         scientificLeaderships.setId(count.incrementAndGet());
 
+        // Create the ScientificLeaderships
+        ScientificLeadershipsDTO scientificLeadershipsDTO = scientificLeadershipsMapper.toDto(scientificLeaderships);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restScientificLeadershipsMockMvc
             .perform(
                 patch(ENTITY_API_URL)
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(scientificLeaderships))
+                    .content(TestUtil.convertObjectToJsonBytes(scientificLeadershipsDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 

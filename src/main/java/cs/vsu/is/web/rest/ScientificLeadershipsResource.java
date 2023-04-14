@@ -1,8 +1,8 @@
 package cs.vsu.is.web.rest;
 
-import cs.vsu.is.domain.ScientificLeaderships;
 import cs.vsu.is.repository.ScientificLeadershipsRepository;
 import cs.vsu.is.service.ScientificLeadershipsService;
+import cs.vsu.is.service.dto.ScientificLeadershipsDTO;
 import cs.vsu.is.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -46,18 +46,19 @@ public class ScientificLeadershipsResource {
     /**
      * {@code POST  /scientific-leaderships} : Create a new scientificLeaderships.
      *
-     * @param scientificLeaderships the scientificLeaderships to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new scientificLeaderships, or with status {@code 400 (Bad Request)} if the scientificLeaderships has already an ID.
+     * @param scientificLeadershipsDTO the scientificLeadershipsDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new scientificLeadershipsDTO, or with status {@code 400 (Bad Request)} if the scientificLeaderships has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/scientific-leaderships")
-    public ResponseEntity<ScientificLeaderships> createScientificLeaderships(@RequestBody ScientificLeaderships scientificLeaderships)
-        throws URISyntaxException {
-        log.debug("REST request to save ScientificLeaderships : {}", scientificLeaderships);
-        if (scientificLeaderships.getId() != null) {
+    public ResponseEntity<ScientificLeadershipsDTO> createScientificLeaderships(
+        @RequestBody ScientificLeadershipsDTO scientificLeadershipsDTO
+    ) throws URISyntaxException {
+        log.debug("REST request to save ScientificLeaderships : {}", scientificLeadershipsDTO);
+        if (scientificLeadershipsDTO.getId() != null) {
             throw new BadRequestAlertException("A new scientificLeaderships cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ScientificLeaderships result = scientificLeadershipsService.save(scientificLeaderships);
+        ScientificLeadershipsDTO result = scientificLeadershipsService.save(scientificLeadershipsDTO);
         return ResponseEntity
             .created(new URI("/api/scientific-leaderships/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -67,23 +68,23 @@ public class ScientificLeadershipsResource {
     /**
      * {@code PUT  /scientific-leaderships/:id} : Updates an existing scientificLeaderships.
      *
-     * @param id the id of the scientificLeaderships to save.
-     * @param scientificLeaderships the scientificLeaderships to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated scientificLeaderships,
-     * or with status {@code 400 (Bad Request)} if the scientificLeaderships is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the scientificLeaderships couldn't be updated.
+     * @param id the id of the scientificLeadershipsDTO to save.
+     * @param scientificLeadershipsDTO the scientificLeadershipsDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated scientificLeadershipsDTO,
+     * or with status {@code 400 (Bad Request)} if the scientificLeadershipsDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the scientificLeadershipsDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/scientific-leaderships/{id}")
-    public ResponseEntity<ScientificLeaderships> updateScientificLeaderships(
+    public ResponseEntity<ScientificLeadershipsDTO> updateScientificLeaderships(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody ScientificLeaderships scientificLeaderships
+        @RequestBody ScientificLeadershipsDTO scientificLeadershipsDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update ScientificLeaderships : {}, {}", id, scientificLeaderships);
-        if (scientificLeaderships.getId() == null) {
+        log.debug("REST request to update ScientificLeaderships : {}, {}", id, scientificLeadershipsDTO);
+        if (scientificLeadershipsDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, scientificLeaderships.getId())) {
+        if (!Objects.equals(id, scientificLeadershipsDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -91,34 +92,34 @@ public class ScientificLeadershipsResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        ScientificLeaderships result = scientificLeadershipsService.update(scientificLeaderships);
+        ScientificLeadershipsDTO result = scientificLeadershipsService.update(scientificLeadershipsDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, scientificLeaderships.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, scientificLeadershipsDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /scientific-leaderships/:id} : Partial updates given fields of an existing scientificLeaderships, field will ignore if it is null
      *
-     * @param id the id of the scientificLeaderships to save.
-     * @param scientificLeaderships the scientificLeaderships to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated scientificLeaderships,
-     * or with status {@code 400 (Bad Request)} if the scientificLeaderships is not valid,
-     * or with status {@code 404 (Not Found)} if the scientificLeaderships is not found,
-     * or with status {@code 500 (Internal Server Error)} if the scientificLeaderships couldn't be updated.
+     * @param id the id of the scientificLeadershipsDTO to save.
+     * @param scientificLeadershipsDTO the scientificLeadershipsDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated scientificLeadershipsDTO,
+     * or with status {@code 400 (Bad Request)} if the scientificLeadershipsDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the scientificLeadershipsDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the scientificLeadershipsDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/scientific-leaderships/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<ScientificLeaderships> partialUpdateScientificLeaderships(
+    public ResponseEntity<ScientificLeadershipsDTO> partialUpdateScientificLeaderships(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody ScientificLeaderships scientificLeaderships
+        @RequestBody ScientificLeadershipsDTO scientificLeadershipsDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update ScientificLeaderships partially : {}, {}", id, scientificLeaderships);
-        if (scientificLeaderships.getId() == null) {
+        log.debug("REST request to partial update ScientificLeaderships partially : {}, {}", id, scientificLeadershipsDTO);
+        if (scientificLeadershipsDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, scientificLeaderships.getId())) {
+        if (!Objects.equals(id, scientificLeadershipsDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -126,11 +127,11 @@ public class ScientificLeadershipsResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<ScientificLeaderships> result = scientificLeadershipsService.partialUpdate(scientificLeaderships);
+        Optional<ScientificLeadershipsDTO> result = scientificLeadershipsService.partialUpdate(scientificLeadershipsDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, scientificLeaderships.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, scientificLeadershipsDTO.getId().toString())
         );
     }
 
@@ -140,7 +141,7 @@ public class ScientificLeadershipsResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of scientificLeaderships in body.
      */
     @GetMapping("/scientific-leaderships")
-    public List<ScientificLeaderships> getAllScientificLeaderships() {
+    public List<ScientificLeadershipsDTO> getAllScientificLeaderships() {
         log.debug("REST request to get all ScientificLeaderships");
         return scientificLeadershipsService.findAll();
     }
@@ -148,20 +149,20 @@ public class ScientificLeadershipsResource {
     /**
      * {@code GET  /scientific-leaderships/:id} : get the "id" scientificLeaderships.
      *
-     * @param id the id of the scientificLeaderships to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the scientificLeaderships, or with status {@code 404 (Not Found)}.
+     * @param id the id of the scientificLeadershipsDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the scientificLeadershipsDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/scientific-leaderships/{id}")
-    public ResponseEntity<ScientificLeaderships> getScientificLeaderships(@PathVariable Long id) {
+    public ResponseEntity<ScientificLeadershipsDTO> getScientificLeaderships(@PathVariable Long id) {
         log.debug("REST request to get ScientificLeaderships : {}", id);
-        Optional<ScientificLeaderships> scientificLeaderships = scientificLeadershipsService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(scientificLeaderships);
+        Optional<ScientificLeadershipsDTO> scientificLeadershipsDTO = scientificLeadershipsService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(scientificLeadershipsDTO);
     }
 
     /**
      * {@code DELETE  /scientific-leaderships/:id} : delete the "id" scientificLeaderships.
      *
-     * @param id the id of the scientificLeaderships to delete.
+     * @param id the id of the scientificLeadershipsDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/scientific-leaderships/{id}")

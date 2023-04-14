@@ -2,8 +2,12 @@ package cs.vsu.is.service;
 
 import cs.vsu.is.domain.Teaching;
 import cs.vsu.is.repository.TeachingRepository;
+import cs.vsu.is.service.dto.TeachingDTO;
+import cs.vsu.is.service.mapper.TeachingMapper;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,47 +24,57 @@ public class TeachingService {
 
     private final TeachingRepository teachingRepository;
 
-    public TeachingService(TeachingRepository teachingRepository) {
+    private final TeachingMapper teachingMapper;
+
+    public TeachingService(TeachingRepository teachingRepository, TeachingMapper teachingMapper) {
         this.teachingRepository = teachingRepository;
+        this.teachingMapper = teachingMapper;
     }
 
     /**
      * Save a teaching.
      *
-     * @param teaching the entity to save.
+     * @param teachingDTO the entity to save.
      * @return the persisted entity.
      */
-    public Teaching save(Teaching teaching) {
-        log.debug("Request to save Teaching : {}", teaching);
-        return teachingRepository.save(teaching);
+    public TeachingDTO save(TeachingDTO teachingDTO) {
+        log.debug("Request to save Teaching : {}", teachingDTO);
+        Teaching teaching = teachingMapper.toEntity(teachingDTO);
+        teaching = teachingRepository.save(teaching);
+        return teachingMapper.toDto(teaching);
     }
 
     /**
      * Update a teaching.
      *
-     * @param teaching the entity to save.
+     * @param teachingDTO the entity to save.
      * @return the persisted entity.
      */
-    public Teaching update(Teaching teaching) {
-        log.debug("Request to update Teaching : {}", teaching);
-        return teachingRepository.save(teaching);
+    public TeachingDTO update(TeachingDTO teachingDTO) {
+        log.debug("Request to update Teaching : {}", teachingDTO);
+        Teaching teaching = teachingMapper.toEntity(teachingDTO);
+        teaching = teachingRepository.save(teaching);
+        return teachingMapper.toDto(teaching);
     }
 
     /**
      * Partially update a teaching.
      *
-     * @param teaching the entity to update partially.
+     * @param teachingDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<Teaching> partialUpdate(Teaching teaching) {
-        log.debug("Request to partially update Teaching : {}", teaching);
+    public Optional<TeachingDTO> partialUpdate(TeachingDTO teachingDTO) {
+        log.debug("Request to partially update Teaching : {}", teachingDTO);
 
         return teachingRepository
-            .findById(teaching.getId())
+            .findById(teachingDTO.getId())
             .map(existingTeaching -> {
+                teachingMapper.partialUpdate(existingTeaching, teachingDTO);
+
                 return existingTeaching;
             })
-            .map(teachingRepository::save);
+            .map(teachingRepository::save)
+            .map(teachingMapper::toDto);
     }
 
     /**
@@ -69,9 +83,9 @@ public class TeachingService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public List<Teaching> findAll() {
+    public List<TeachingDTO> findAll() {
         log.debug("Request to get all Teachings");
-        return teachingRepository.findAll();
+        return teachingRepository.findAll().stream().map(teachingMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
@@ -81,9 +95,9 @@ public class TeachingService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<Teaching> findOne(Long id) {
+    public Optional<TeachingDTO> findOne(Long id) {
         log.debug("Request to get Teaching : {}", id);
-        return teachingRepository.findById(id);
+        return teachingRepository.findById(id).map(teachingMapper::toDto);
     }
 
     /**

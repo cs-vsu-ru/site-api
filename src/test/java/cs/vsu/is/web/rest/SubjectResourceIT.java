@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import cs.vsu.is.IntegrationTest;
 import cs.vsu.is.domain.Subject;
 import cs.vsu.is.repository.SubjectRepository;
+import cs.vsu.is.service.dto.SubjectDTO;
+import cs.vsu.is.service.mapper.SubjectMapper;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -43,6 +45,9 @@ class SubjectResourceIT {
 
     @Autowired
     private SubjectRepository subjectRepository;
+
+    @Autowired
+    private SubjectMapper subjectMapper;
 
     @Autowired
     private EntityManager em;
@@ -84,8 +89,9 @@ class SubjectResourceIT {
     void createSubject() throws Exception {
         int databaseSizeBeforeCreate = subjectRepository.findAll().size();
         // Create the Subject
+        SubjectDTO subjectDTO = subjectMapper.toDto(subject);
         restSubjectMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(subject)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(subjectDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Subject in the database
@@ -101,12 +107,13 @@ class SubjectResourceIT {
     void createSubjectWithExistingId() throws Exception {
         // Create the Subject with an existing ID
         subject.setId(1L);
+        SubjectDTO subjectDTO = subjectMapper.toDto(subject);
 
         int databaseSizeBeforeCreate = subjectRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restSubjectMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(subject)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(subjectDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Subject in the database
@@ -166,12 +173,13 @@ class SubjectResourceIT {
         // Disconnect from session so that the updates on updatedSubject are not directly saved in db
         em.detach(updatedSubject);
         updatedSubject.name(UPDATED_NAME).description(UPDATED_DESCRIPTION);
+        SubjectDTO subjectDTO = subjectMapper.toDto(updatedSubject);
 
         restSubjectMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedSubject.getId())
+                put(ENTITY_API_URL_ID, subjectDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedSubject))
+                    .content(TestUtil.convertObjectToJsonBytes(subjectDTO))
             )
             .andExpect(status().isOk());
 
@@ -189,12 +197,15 @@ class SubjectResourceIT {
         int databaseSizeBeforeUpdate = subjectRepository.findAll().size();
         subject.setId(count.incrementAndGet());
 
+        // Create the Subject
+        SubjectDTO subjectDTO = subjectMapper.toDto(subject);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restSubjectMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, subject.getId())
+                put(ENTITY_API_URL_ID, subjectDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(subject))
+                    .content(TestUtil.convertObjectToJsonBytes(subjectDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -209,12 +220,15 @@ class SubjectResourceIT {
         int databaseSizeBeforeUpdate = subjectRepository.findAll().size();
         subject.setId(count.incrementAndGet());
 
+        // Create the Subject
+        SubjectDTO subjectDTO = subjectMapper.toDto(subject);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restSubjectMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(subject))
+                    .content(TestUtil.convertObjectToJsonBytes(subjectDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -229,9 +243,12 @@ class SubjectResourceIT {
         int databaseSizeBeforeUpdate = subjectRepository.findAll().size();
         subject.setId(count.incrementAndGet());
 
+        // Create the Subject
+        SubjectDTO subjectDTO = subjectMapper.toDto(subject);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restSubjectMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(subject)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(subjectDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Subject in the database
@@ -305,12 +322,15 @@ class SubjectResourceIT {
         int databaseSizeBeforeUpdate = subjectRepository.findAll().size();
         subject.setId(count.incrementAndGet());
 
+        // Create the Subject
+        SubjectDTO subjectDTO = subjectMapper.toDto(subject);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restSubjectMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, subject.getId())
+                patch(ENTITY_API_URL_ID, subjectDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(subject))
+                    .content(TestUtil.convertObjectToJsonBytes(subjectDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -325,12 +345,15 @@ class SubjectResourceIT {
         int databaseSizeBeforeUpdate = subjectRepository.findAll().size();
         subject.setId(count.incrementAndGet());
 
+        // Create the Subject
+        SubjectDTO subjectDTO = subjectMapper.toDto(subject);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restSubjectMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(subject))
+                    .content(TestUtil.convertObjectToJsonBytes(subjectDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -345,9 +368,14 @@ class SubjectResourceIT {
         int databaseSizeBeforeUpdate = subjectRepository.findAll().size();
         subject.setId(count.incrementAndGet());
 
+        // Create the Subject
+        SubjectDTO subjectDTO = subjectMapper.toDto(subject);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restSubjectMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(subject)))
+            .perform(
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(subjectDTO))
+            )
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Subject in the database

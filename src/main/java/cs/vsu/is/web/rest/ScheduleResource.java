@@ -1,7 +1,8 @@
 package cs.vsu.is.web.rest;
 
-import cs.vsu.is.domain.Schedule;
 import cs.vsu.is.repository.ScheduleRepository;
+import cs.vsu.is.service.ScheduleService;
+import cs.vsu.is.service.dto.ScheduleDTO;
 import cs.vsu.is.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -12,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -22,7 +22,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class ScheduleResource {
 
     private final Logger log = LoggerFactory.getLogger(ScheduleResource.class);
@@ -32,26 +31,29 @@ public class ScheduleResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final ScheduleService scheduleService;
+
     private final ScheduleRepository scheduleRepository;
 
-    public ScheduleResource(ScheduleRepository scheduleRepository) {
+    public ScheduleResource(ScheduleService scheduleService, ScheduleRepository scheduleRepository) {
+        this.scheduleService = scheduleService;
         this.scheduleRepository = scheduleRepository;
     }
 
     /**
      * {@code POST  /schedules} : Create a new schedule.
      *
-     * @param schedule the schedule to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new schedule, or with status {@code 400 (Bad Request)} if the schedule has already an ID.
+     * @param scheduleDTO the scheduleDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new scheduleDTO, or with status {@code 400 (Bad Request)} if the schedule has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/schedules")
-    public ResponseEntity<Schedule> createSchedule(@RequestBody Schedule schedule) throws URISyntaxException {
-        log.debug("REST request to save Schedule : {}", schedule);
-        if (schedule.getId() != null) {
+    public ResponseEntity<ScheduleDTO> createSchedule(@RequestBody ScheduleDTO scheduleDTO) throws URISyntaxException {
+        log.debug("REST request to save Schedule : {}", scheduleDTO);
+        if (scheduleDTO.getId() != null) {
             throw new BadRequestAlertException("A new schedule cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Schedule result = scheduleRepository.save(schedule);
+        ScheduleDTO result = scheduleService.save(scheduleDTO);
         return ResponseEntity
             .created(new URI("/api/schedules/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -61,23 +63,23 @@ public class ScheduleResource {
     /**
      * {@code PUT  /schedules/:id} : Updates an existing schedule.
      *
-     * @param id the id of the schedule to save.
-     * @param schedule the schedule to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated schedule,
-     * or with status {@code 400 (Bad Request)} if the schedule is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the schedule couldn't be updated.
+     * @param id the id of the scheduleDTO to save.
+     * @param scheduleDTO the scheduleDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated scheduleDTO,
+     * or with status {@code 400 (Bad Request)} if the scheduleDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the scheduleDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/schedules/{id}")
-    public ResponseEntity<Schedule> updateSchedule(
+    public ResponseEntity<ScheduleDTO> updateSchedule(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody Schedule schedule
+        @RequestBody ScheduleDTO scheduleDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update Schedule : {}, {}", id, schedule);
-        if (schedule.getId() == null) {
+        log.debug("REST request to update Schedule : {}, {}", id, scheduleDTO);
+        if (scheduleDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, schedule.getId())) {
+        if (!Objects.equals(id, scheduleDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -85,34 +87,34 @@ public class ScheduleResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Schedule result = scheduleRepository.save(schedule);
+        ScheduleDTO result = scheduleService.update(scheduleDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, schedule.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, scheduleDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /schedules/:id} : Partial updates given fields of an existing schedule, field will ignore if it is null
      *
-     * @param id the id of the schedule to save.
-     * @param schedule the schedule to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated schedule,
-     * or with status {@code 400 (Bad Request)} if the schedule is not valid,
-     * or with status {@code 404 (Not Found)} if the schedule is not found,
-     * or with status {@code 500 (Internal Server Error)} if the schedule couldn't be updated.
+     * @param id the id of the scheduleDTO to save.
+     * @param scheduleDTO the scheduleDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated scheduleDTO,
+     * or with status {@code 400 (Bad Request)} if the scheduleDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the scheduleDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the scheduleDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/schedules/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Schedule> partialUpdateSchedule(
+    public ResponseEntity<ScheduleDTO> partialUpdateSchedule(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody Schedule schedule
+        @RequestBody ScheduleDTO scheduleDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Schedule partially : {}, {}", id, schedule);
-        if (schedule.getId() == null) {
+        log.debug("REST request to partial update Schedule partially : {}, {}", id, scheduleDTO);
+        if (scheduleDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, schedule.getId())) {
+        if (!Objects.equals(id, scheduleDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -120,26 +122,11 @@ public class ScheduleResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Schedule> result = scheduleRepository
-            .findById(schedule.getId())
-            .map(existingSchedule -> {
-                if (schedule.getName() != null) {
-                    existingSchedule.setName(schedule.getName());
-                }
-                if (schedule.getUploadingTime() != null) {
-                    existingSchedule.setUploadingTime(schedule.getUploadingTime());
-                }
-                if (schedule.getIsActual() != null) {
-                    existingSchedule.setIsActual(schedule.getIsActual());
-                }
-
-                return existingSchedule;
-            })
-            .map(scheduleRepository::save);
+        Optional<ScheduleDTO> result = scheduleService.partialUpdate(scheduleDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, schedule.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, scheduleDTO.getId().toString())
         );
     }
 
@@ -149,34 +136,34 @@ public class ScheduleResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of schedules in body.
      */
     @GetMapping("/schedules")
-    public List<Schedule> getAllSchedules() {
+    public List<ScheduleDTO> getAllSchedules() {
         log.debug("REST request to get all Schedules");
-        return scheduleRepository.findAll();
+        return scheduleService.findAll();
     }
 
     /**
      * {@code GET  /schedules/:id} : get the "id" schedule.
      *
-     * @param id the id of the schedule to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the schedule, or with status {@code 404 (Not Found)}.
+     * @param id the id of the scheduleDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the scheduleDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/schedules/{id}")
-    public ResponseEntity<Schedule> getSchedule(@PathVariable Long id) {
+    public ResponseEntity<ScheduleDTO> getSchedule(@PathVariable Long id) {
         log.debug("REST request to get Schedule : {}", id);
-        Optional<Schedule> schedule = scheduleRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(schedule);
+        Optional<ScheduleDTO> scheduleDTO = scheduleService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(scheduleDTO);
     }
 
     /**
      * {@code DELETE  /schedules/:id} : delete the "id" schedule.
      *
-     * @param id the id of the schedule to delete.
+     * @param id the id of the scheduleDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/schedules/{id}")
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
         log.debug("REST request to delete Schedule : {}", id);
-        scheduleRepository.deleteById(id);
+        scheduleService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

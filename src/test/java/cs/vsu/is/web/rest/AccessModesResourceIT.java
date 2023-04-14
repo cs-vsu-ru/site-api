@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import cs.vsu.is.IntegrationTest;
 import cs.vsu.is.domain.AccessModes;
 import cs.vsu.is.repository.AccessModesRepository;
+import cs.vsu.is.service.dto.AccessModesDTO;
+import cs.vsu.is.service.mapper.AccessModesMapper;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -40,6 +42,9 @@ class AccessModesResourceIT {
 
     @Autowired
     private AccessModesRepository accessModesRepository;
+
+    @Autowired
+    private AccessModesMapper accessModesMapper;
 
     @Autowired
     private EntityManager em;
@@ -81,8 +86,11 @@ class AccessModesResourceIT {
     void createAccessModes() throws Exception {
         int databaseSizeBeforeCreate = accessModesRepository.findAll().size();
         // Create the AccessModes
+        AccessModesDTO accessModesDTO = accessModesMapper.toDto(accessModes);
         restAccessModesMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(accessModes)))
+            .perform(
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(accessModesDTO))
+            )
             .andExpect(status().isCreated());
 
         // Validate the AccessModes in the database
@@ -97,12 +105,15 @@ class AccessModesResourceIT {
     void createAccessModesWithExistingId() throws Exception {
         // Create the AccessModes with an existing ID
         accessModes.setId(1L);
+        AccessModesDTO accessModesDTO = accessModesMapper.toDto(accessModes);
 
         int databaseSizeBeforeCreate = accessModesRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restAccessModesMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(accessModes)))
+            .perform(
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(accessModesDTO))
+            )
             .andExpect(status().isBadRequest());
 
         // Validate the AccessModes in the database
@@ -160,12 +171,13 @@ class AccessModesResourceIT {
         // Disconnect from session so that the updates on updatedAccessModes are not directly saved in db
         em.detach(updatedAccessModes);
         updatedAccessModes.name(UPDATED_NAME);
+        AccessModesDTO accessModesDTO = accessModesMapper.toDto(updatedAccessModes);
 
         restAccessModesMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedAccessModes.getId())
+                put(ENTITY_API_URL_ID, accessModesDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedAccessModes))
+                    .content(TestUtil.convertObjectToJsonBytes(accessModesDTO))
             )
             .andExpect(status().isOk());
 
@@ -182,12 +194,15 @@ class AccessModesResourceIT {
         int databaseSizeBeforeUpdate = accessModesRepository.findAll().size();
         accessModes.setId(count.incrementAndGet());
 
+        // Create the AccessModes
+        AccessModesDTO accessModesDTO = accessModesMapper.toDto(accessModes);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restAccessModesMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, accessModes.getId())
+                put(ENTITY_API_URL_ID, accessModesDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(accessModes))
+                    .content(TestUtil.convertObjectToJsonBytes(accessModesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -202,12 +217,15 @@ class AccessModesResourceIT {
         int databaseSizeBeforeUpdate = accessModesRepository.findAll().size();
         accessModes.setId(count.incrementAndGet());
 
+        // Create the AccessModes
+        AccessModesDTO accessModesDTO = accessModesMapper.toDto(accessModes);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restAccessModesMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(accessModes))
+                    .content(TestUtil.convertObjectToJsonBytes(accessModesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -222,9 +240,12 @@ class AccessModesResourceIT {
         int databaseSizeBeforeUpdate = accessModesRepository.findAll().size();
         accessModes.setId(count.incrementAndGet());
 
+        // Create the AccessModes
+        AccessModesDTO accessModesDTO = accessModesMapper.toDto(accessModes);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restAccessModesMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(accessModes)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(accessModesDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the AccessModes in the database
@@ -294,12 +315,15 @@ class AccessModesResourceIT {
         int databaseSizeBeforeUpdate = accessModesRepository.findAll().size();
         accessModes.setId(count.incrementAndGet());
 
+        // Create the AccessModes
+        AccessModesDTO accessModesDTO = accessModesMapper.toDto(accessModes);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restAccessModesMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, accessModes.getId())
+                patch(ENTITY_API_URL_ID, accessModesDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(accessModes))
+                    .content(TestUtil.convertObjectToJsonBytes(accessModesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -314,12 +338,15 @@ class AccessModesResourceIT {
         int databaseSizeBeforeUpdate = accessModesRepository.findAll().size();
         accessModes.setId(count.incrementAndGet());
 
+        // Create the AccessModes
+        AccessModesDTO accessModesDTO = accessModesMapper.toDto(accessModes);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restAccessModesMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(accessModes))
+                    .content(TestUtil.convertObjectToJsonBytes(accessModesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -334,10 +361,13 @@ class AccessModesResourceIT {
         int databaseSizeBeforeUpdate = accessModesRepository.findAll().size();
         accessModes.setId(count.incrementAndGet());
 
+        // Create the AccessModes
+        AccessModesDTO accessModesDTO = accessModesMapper.toDto(accessModes);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restAccessModesMockMvc
             .perform(
-                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(accessModes))
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(accessModesDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 

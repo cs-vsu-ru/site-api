@@ -1,7 +1,7 @@
 {
-  "applications": "*",
+  "applications": ["siteApi"],
   "changelogDate": "20230321105205",
-  "dto": "no",
+  "dto": "mapstruct",
   "embedded": false,
   "entityTableName": "lesson",
   "fields": [
@@ -25,29 +25,26 @@
   "readOnly": false,
   "relationships": [
     {
-      "otherEntityField": "id",
-      "otherEntityName": "employee",
-      "relationshipName": "employee",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "otherEntityField": "id",
       "otherEntityName": "subject",
       "relationshipName": "subject",
       "relationshipType": "many-to-one"
     },
     {
-      "otherEntityField": "id",
       "otherEntityName": "eduSchedulePlace",
       "relationshipName": "eduSchedulePlace",
       "relationshipType": "many-to-one"
     },
     {
-      "otherEntityField": "id",
       "otherEntityName": "schedule",
       "relationshipName": "schedule",
       "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "employee",
+      "otherEntityRelationshipName": "lessons",
+      "relationshipName": "employee",
+      "relationshipType": "many-to-one"
     }
   ],
-  "service": "no"
+  "service": "serviceClass"
 }

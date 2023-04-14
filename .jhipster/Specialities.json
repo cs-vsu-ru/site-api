@@ -1,7 +1,11 @@
 {
+  "applications": ["siteApi"],
   "changelogDate": "20230409134112",
-  "dto": "no",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "specialities",
   "fields": [],
+  "fluentMethods": true,
   "jpaMetamodelFiltering": false,
   "name": "Specialities",
   "pagination": "no",

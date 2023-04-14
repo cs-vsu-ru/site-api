@@ -9,6 +9,8 @@ import cs.vsu.is.IntegrationTest;
 import cs.vsu.is.domain.Employee;
 import cs.vsu.is.domain.Pages;
 import cs.vsu.is.repository.PagesRepository;
+import cs.vsu.is.service.dto.PagesDTO;
+import cs.vsu.is.service.mapper.PagesMapper;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -41,6 +43,9 @@ class PagesResourceIT {
 
     @Autowired
     private PagesRepository pagesRepository;
+
+    @Autowired
+    private PagesMapper pagesMapper;
 
     @Autowired
     private EntityManager em;
@@ -102,8 +107,9 @@ class PagesResourceIT {
     void createPages() throws Exception {
         int databaseSizeBeforeCreate = pagesRepository.findAll().size();
         // Create the Pages
+        PagesDTO pagesDTO = pagesMapper.toDto(pages);
         restPagesMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(pages)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(pagesDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Pages in the database
@@ -118,12 +124,13 @@ class PagesResourceIT {
     void createPagesWithExistingId() throws Exception {
         // Create the Pages with an existing ID
         pages.setId(1L);
+        PagesDTO pagesDTO = pagesMapper.toDto(pages);
 
         int databaseSizeBeforeCreate = pagesRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restPagesMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(pages)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(pagesDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Pages in the database
@@ -181,12 +188,13 @@ class PagesResourceIT {
         // Disconnect from session so that the updates on updatedPages are not directly saved in db
         em.detach(updatedPages);
         updatedPages.content(UPDATED_CONTENT);
+        PagesDTO pagesDTO = pagesMapper.toDto(updatedPages);
 
         restPagesMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedPages.getId())
+                put(ENTITY_API_URL_ID, pagesDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedPages))
+                    .content(TestUtil.convertObjectToJsonBytes(pagesDTO))
             )
             .andExpect(status().isOk());
 
@@ -203,12 +211,15 @@ class PagesResourceIT {
         int databaseSizeBeforeUpdate = pagesRepository.findAll().size();
         pages.setId(count.incrementAndGet());
 
+        // Create the Pages
+        PagesDTO pagesDTO = pagesMapper.toDto(pages);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPagesMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, pages.getId())
+                put(ENTITY_API_URL_ID, pagesDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(pages))
+                    .content(TestUtil.convertObjectToJsonBytes(pagesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -223,12 +234,15 @@ class PagesResourceIT {
         int databaseSizeBeforeUpdate = pagesRepository.findAll().size();
         pages.setId(count.incrementAndGet());
 
+        // Create the Pages
+        PagesDTO pagesDTO = pagesMapper.toDto(pages);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPagesMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(pages))
+                    .content(TestUtil.convertObjectToJsonBytes(pagesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -243,9 +257,12 @@ class PagesResourceIT {
         int databaseSizeBeforeUpdate = pagesRepository.findAll().size();
         pages.setId(count.incrementAndGet());
 
+        // Create the Pages
+        PagesDTO pagesDTO = pagesMapper.toDto(pages);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPagesMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(pages)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(pagesDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Pages in the database
@@ -317,12 +334,15 @@ class PagesResourceIT {
         int databaseSizeBeforeUpdate = pagesRepository.findAll().size();
         pages.setId(count.incrementAndGet());
 
+        // Create the Pages
+        PagesDTO pagesDTO = pagesMapper.toDto(pages);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPagesMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, pages.getId())
+                patch(ENTITY_API_URL_ID, pagesDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(pages))
+                    .content(TestUtil.convertObjectToJsonBytes(pagesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -337,12 +357,15 @@ class PagesResourceIT {
         int databaseSizeBeforeUpdate = pagesRepository.findAll().size();
         pages.setId(count.incrementAndGet());
 
+        // Create the Pages
+        PagesDTO pagesDTO = pagesMapper.toDto(pages);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPagesMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(pages))
+                    .content(TestUtil.convertObjectToJsonBytes(pagesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -357,9 +380,12 @@ class PagesResourceIT {
         int databaseSizeBeforeUpdate = pagesRepository.findAll().size();
         pages.setId(count.incrementAndGet());
 
+        // Create the Pages
+        PagesDTO pagesDTO = pagesMapper.toDto(pages);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPagesMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(pages)))
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(pagesDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Pages in the database

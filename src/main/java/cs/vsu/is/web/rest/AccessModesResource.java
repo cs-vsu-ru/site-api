@@ -1,8 +1,8 @@
 package cs.vsu.is.web.rest;
 
-import cs.vsu.is.domain.AccessModes;
 import cs.vsu.is.repository.AccessModesRepository;
 import cs.vsu.is.service.AccessModesService;
+import cs.vsu.is.service.dto.AccessModesDTO;
 import cs.vsu.is.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -43,17 +43,17 @@ public class AccessModesResource {
     /**
      * {@code POST  /access-modes} : Create a new accessModes.
      *
-     * @param accessModes the accessModes to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new accessModes, or with status {@code 400 (Bad Request)} if the accessModes has already an ID.
+     * @param accessModesDTO the accessModesDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new accessModesDTO, or with status {@code 400 (Bad Request)} if the accessModes has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/access-modes")
-    public ResponseEntity<AccessModes> createAccessModes(@RequestBody AccessModes accessModes) throws URISyntaxException {
-        log.debug("REST request to save AccessModes : {}", accessModes);
-        if (accessModes.getId() != null) {
+    public ResponseEntity<AccessModesDTO> createAccessModes(@RequestBody AccessModesDTO accessModesDTO) throws URISyntaxException {
+        log.debug("REST request to save AccessModes : {}", accessModesDTO);
+        if (accessModesDTO.getId() != null) {
             throw new BadRequestAlertException("A new accessModes cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        AccessModes result = accessModesService.save(accessModes);
+        AccessModesDTO result = accessModesService.save(accessModesDTO);
         return ResponseEntity
             .created(new URI("/api/access-modes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -63,23 +63,23 @@ public class AccessModesResource {
     /**
      * {@code PUT  /access-modes/:id} : Updates an existing accessModes.
      *
-     * @param id the id of the accessModes to save.
-     * @param accessModes the accessModes to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated accessModes,
-     * or with status {@code 400 (Bad Request)} if the accessModes is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the accessModes couldn't be updated.
+     * @param id the id of the accessModesDTO to save.
+     * @param accessModesDTO the accessModesDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated accessModesDTO,
+     * or with status {@code 400 (Bad Request)} if the accessModesDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the accessModesDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/access-modes/{id}")
-    public ResponseEntity<AccessModes> updateAccessModes(
+    public ResponseEntity<AccessModesDTO> updateAccessModes(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody AccessModes accessModes
+        @RequestBody AccessModesDTO accessModesDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update AccessModes : {}, {}", id, accessModes);
-        if (accessModes.getId() == null) {
+        log.debug("REST request to update AccessModes : {}, {}", id, accessModesDTO);
+        if (accessModesDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, accessModes.getId())) {
+        if (!Objects.equals(id, accessModesDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -87,34 +87,34 @@ public class AccessModesResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        AccessModes result = accessModesService.update(accessModes);
+        AccessModesDTO result = accessModesService.update(accessModesDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, accessModes.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, accessModesDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /access-modes/:id} : Partial updates given fields of an existing accessModes, field will ignore if it is null
      *
-     * @param id the id of the accessModes to save.
-     * @param accessModes the accessModes to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated accessModes,
-     * or with status {@code 400 (Bad Request)} if the accessModes is not valid,
-     * or with status {@code 404 (Not Found)} if the accessModes is not found,
-     * or with status {@code 500 (Internal Server Error)} if the accessModes couldn't be updated.
+     * @param id the id of the accessModesDTO to save.
+     * @param accessModesDTO the accessModesDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated accessModesDTO,
+     * or with status {@code 400 (Bad Request)} if the accessModesDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the accessModesDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the accessModesDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/access-modes/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<AccessModes> partialUpdateAccessModes(
+    public ResponseEntity<AccessModesDTO> partialUpdateAccessModes(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody AccessModes accessModes
+        @RequestBody AccessModesDTO accessModesDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update AccessModes partially : {}, {}", id, accessModes);
-        if (accessModes.getId() == null) {
+        log.debug("REST request to partial update AccessModes partially : {}, {}", id, accessModesDTO);
+        if (accessModesDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, accessModes.getId())) {
+        if (!Objects.equals(id, accessModesDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -122,11 +122,11 @@ public class AccessModesResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<AccessModes> result = accessModesService.partialUpdate(accessModes);
+        Optional<AccessModesDTO> result = accessModesService.partialUpdate(accessModesDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, accessModes.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, accessModesDTO.getId().toString())
         );
     }
 
@@ -136,7 +136,7 @@ public class AccessModesResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of accessModes in body.
      */
     @GetMapping("/access-modes")
-    public List<AccessModes> getAllAccessModes() {
+    public List<AccessModesDTO> getAllAccessModes() {
         log.debug("REST request to get all AccessModes");
         return accessModesService.findAll();
     }
@@ -144,20 +144,20 @@ public class AccessModesResource {
     /**
      * {@code GET  /access-modes/:id} : get the "id" accessModes.
      *
-     * @param id the id of the accessModes to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the accessModes, or with status {@code 404 (Not Found)}.
+     * @param id the id of the accessModesDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the accessModesDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/access-modes/{id}")
-    public ResponseEntity<AccessModes> getAccessModes(@PathVariable Long id) {
+    public ResponseEntity<AccessModesDTO> getAccessModes(@PathVariable Long id) {
         log.debug("REST request to get AccessModes : {}", id);
-        Optional<AccessModes> accessModes = accessModesService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(accessModes);
+        Optional<AccessModesDTO> accessModesDTO = accessModesService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(accessModesDTO);
     }
 
     /**
      * {@code DELETE  /access-modes/:id} : delete the "id" accessModes.
      *
-     * @param id the id of the accessModes to delete.
+     * @param id the id of the accessModesDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/access-modes/{id}")

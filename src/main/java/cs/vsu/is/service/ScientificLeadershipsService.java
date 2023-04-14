@@ -2,8 +2,12 @@ package cs.vsu.is.service;
 
 import cs.vsu.is.domain.ScientificLeaderships;
 import cs.vsu.is.repository.ScientificLeadershipsRepository;
+import cs.vsu.is.service.dto.ScientificLeadershipsDTO;
+import cs.vsu.is.service.mapper.ScientificLeadershipsMapper;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,51 +24,60 @@ public class ScientificLeadershipsService {
 
     private final ScientificLeadershipsRepository scientificLeadershipsRepository;
 
-    public ScientificLeadershipsService(ScientificLeadershipsRepository scientificLeadershipsRepository) {
+    private final ScientificLeadershipsMapper scientificLeadershipsMapper;
+
+    public ScientificLeadershipsService(
+        ScientificLeadershipsRepository scientificLeadershipsRepository,
+        ScientificLeadershipsMapper scientificLeadershipsMapper
+    ) {
         this.scientificLeadershipsRepository = scientificLeadershipsRepository;
+        this.scientificLeadershipsMapper = scientificLeadershipsMapper;
     }
 
     /**
      * Save a scientificLeaderships.
      *
-     * @param scientificLeaderships the entity to save.
+     * @param scientificLeadershipsDTO the entity to save.
      * @return the persisted entity.
      */
-    public ScientificLeaderships save(ScientificLeaderships scientificLeaderships) {
-        log.debug("Request to save ScientificLeaderships : {}", scientificLeaderships);
-        return scientificLeadershipsRepository.save(scientificLeaderships);
+    public ScientificLeadershipsDTO save(ScientificLeadershipsDTO scientificLeadershipsDTO) {
+        log.debug("Request to save ScientificLeaderships : {}", scientificLeadershipsDTO);
+        ScientificLeaderships scientificLeaderships = scientificLeadershipsMapper.toEntity(scientificLeadershipsDTO);
+        scientificLeaderships = scientificLeadershipsRepository.save(scientificLeaderships);
+        return scientificLeadershipsMapper.toDto(scientificLeaderships);
     }
 
     /**
      * Update a scientificLeaderships.
      *
-     * @param scientificLeaderships the entity to save.
+     * @param scientificLeadershipsDTO the entity to save.
      * @return the persisted entity.
      */
-    public ScientificLeaderships update(ScientificLeaderships scientificLeaderships) {
-        log.debug("Request to update ScientificLeaderships : {}", scientificLeaderships);
-        return scientificLeadershipsRepository.save(scientificLeaderships);
+    public ScientificLeadershipsDTO update(ScientificLeadershipsDTO scientificLeadershipsDTO) {
+        log.debug("Request to update ScientificLeaderships : {}", scientificLeadershipsDTO);
+        ScientificLeaderships scientificLeaderships = scientificLeadershipsMapper.toEntity(scientificLeadershipsDTO);
+        scientificLeaderships = scientificLeadershipsRepository.save(scientificLeaderships);
+        return scientificLeadershipsMapper.toDto(scientificLeaderships);
     }
 
     /**
      * Partially update a scientificLeaderships.
      *
-     * @param scientificLeaderships the entity to update partially.
+     * @param scientificLeadershipsDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<ScientificLeaderships> partialUpdate(ScientificLeaderships scientificLeaderships) {
-        log.debug("Request to partially update ScientificLeaderships : {}", scientificLeaderships);
+    public Optional<ScientificLeadershipsDTO> partialUpdate(ScientificLeadershipsDTO scientificLeadershipsDTO) {
+        log.debug("Request to partially update ScientificLeaderships : {}", scientificLeadershipsDTO);
 
         return scientificLeadershipsRepository
-            .findById(scientificLeaderships.getId())
+            .findById(scientificLeadershipsDTO.getId())
             .map(existingScientificLeaderships -> {
-                if (scientificLeaderships.getYear() != null) {
-                    existingScientificLeaderships.setYear(scientificLeaderships.getYear());
-                }
+                scientificLeadershipsMapper.partialUpdate(existingScientificLeaderships, scientificLeadershipsDTO);
 
                 return existingScientificLeaderships;
             })
-            .map(scientificLeadershipsRepository::save);
+            .map(scientificLeadershipsRepository::save)
+            .map(scientificLeadershipsMapper::toDto);
     }
 
     /**
@@ -73,9 +86,13 @@ public class ScientificLeadershipsService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public List<ScientificLeaderships> findAll() {
+    public List<ScientificLeadershipsDTO> findAll() {
         log.debug("Request to get all ScientificLeaderships");
-        return scientificLeadershipsRepository.findAll();
+        return scientificLeadershipsRepository
+            .findAll()
+            .stream()
+            .map(scientificLeadershipsMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
@@ -85,9 +102,9 @@ public class ScientificLeadershipsService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<ScientificLeaderships> findOne(Long id) {
+    public Optional<ScientificLeadershipsDTO> findOne(Long id) {
         log.debug("Request to get ScientificLeaderships : {}", id);
-        return scientificLeadershipsRepository.findById(id);
+        return scientificLeadershipsRepository.findById(id).map(scientificLeadershipsMapper::toDto);
     }
 
     /**

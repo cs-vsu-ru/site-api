@@ -29,12 +29,12 @@ public class AccessModes implements Serializable {
     private Set<Articles> articles = new HashSet<>();
 
     @OneToMany(mappedBy = "accessModes")
-    @JsonIgnoreProperties(value = { "employee", "accessModes", "employee" }, allowSetters = true)
-    private Set<Pages> pages = new HashSet<>();
+    @JsonIgnoreProperties(value = { "employee", "accessModes" }, allowSetters = true)
+    private Set<Events> events = new HashSet<>();
 
     @OneToMany(mappedBy = "accessModes")
     @JsonIgnoreProperties(value = { "employee", "accessModes" }, allowSetters = true)
-    private Set<Events> events = new HashSet<>();
+    private Set<Pages> pages = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -95,37 +95,6 @@ public class AccessModes implements Serializable {
         return this;
     }
 
-    public Set<Pages> getPages() {
-        return this.pages;
-    }
-
-    public void setPages(Set<Pages> pages) {
-        if (this.pages != null) {
-            this.pages.forEach(i -> i.setAccessModes(null));
-        }
-        if (pages != null) {
-            pages.forEach(i -> i.setAccessModes(this));
-        }
-        this.pages = pages;
-    }
-
-    public AccessModes pages(Set<Pages> pages) {
-        this.setPages(pages);
-        return this;
-    }
-
-    public AccessModes addPages(Pages pages) {
-        this.pages.add(pages);
-        pages.setAccessModes(this);
-        return this;
-    }
-
-    public AccessModes removePages(Pages pages) {
-        this.pages.remove(pages);
-        pages.setAccessModes(null);
-        return this;
-    }
-
     public Set<Events> getEvents() {
         return this.events;
     }
@@ -154,6 +123,37 @@ public class AccessModes implements Serializable {
     public AccessModes removeEvents(Events events) {
         this.events.remove(events);
         events.setAccessModes(null);
+        return this;
+    }
+
+    public Set<Pages> getPages() {
+        return this.pages;
+    }
+
+    public void setPages(Set<Pages> pages) {
+        if (this.pages != null) {
+            this.pages.forEach(i -> i.setAccessModes(null));
+        }
+        if (pages != null) {
+            pages.forEach(i -> i.setAccessModes(this));
+        }
+        this.pages = pages;
+    }
+
+    public AccessModes pages(Set<Pages> pages) {
+        this.setPages(pages);
+        return this;
+    }
+
+    public AccessModes addPages(Pages pages) {
+        this.pages.add(pages);
+        pages.setAccessModes(this);
+        return this;
+    }
+
+    public AccessModes removePages(Pages pages) {
+        this.pages.remove(pages);
+        pages.setAccessModes(null);
         return this;
     }
 

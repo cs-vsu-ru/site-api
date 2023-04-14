@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import cs.vsu.is.IntegrationTest;
 import cs.vsu.is.domain.Events;
 import cs.vsu.is.repository.EventsRepository;
+import cs.vsu.is.service.dto.EventsDTO;
+import cs.vsu.is.service.mapper.EventsMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -54,6 +56,9 @@ class EventsResourceIT {
 
     @Autowired
     private EventsRepository eventsRepository;
+
+    @Autowired
+    private EventsMapper eventsMapper;
 
     @Autowired
     private EntityManager em;
@@ -105,8 +110,9 @@ class EventsResourceIT {
     void createEvents() throws Exception {
         int databaseSizeBeforeCreate = eventsRepository.findAll().size();
         // Create the Events
+        EventsDTO eventsDTO = eventsMapper.toDto(events);
         restEventsMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(events)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(eventsDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Events in the database
@@ -125,12 +131,13 @@ class EventsResourceIT {
     void createEventsWithExistingId() throws Exception {
         // Create the Events with an existing ID
         events.setId(1L);
+        EventsDTO eventsDTO = eventsMapper.toDto(events);
 
         int databaseSizeBeforeCreate = eventsRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restEventsMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(events)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(eventsDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Events in the database
@@ -201,12 +208,13 @@ class EventsResourceIT {
             .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE)
             .startTime(UPDATED_START_TIME)
             .endTime(UPDATED_END_TIME);
+        EventsDTO eventsDTO = eventsMapper.toDto(updatedEvents);
 
         restEventsMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedEvents.getId())
+                put(ENTITY_API_URL_ID, eventsDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedEvents))
+                    .content(TestUtil.convertObjectToJsonBytes(eventsDTO))
             )
             .andExpect(status().isOk());
 
@@ -227,12 +235,15 @@ class EventsResourceIT {
         int databaseSizeBeforeUpdate = eventsRepository.findAll().size();
         events.setId(count.incrementAndGet());
 
+        // Create the Events
+        EventsDTO eventsDTO = eventsMapper.toDto(events);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restEventsMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, events.getId())
+                put(ENTITY_API_URL_ID, eventsDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(events))
+                    .content(TestUtil.convertObjectToJsonBytes(eventsDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -247,12 +258,15 @@ class EventsResourceIT {
         int databaseSizeBeforeUpdate = eventsRepository.findAll().size();
         events.setId(count.incrementAndGet());
 
+        // Create the Events
+        EventsDTO eventsDTO = eventsMapper.toDto(events);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restEventsMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(events))
+                    .content(TestUtil.convertObjectToJsonBytes(eventsDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -267,9 +281,12 @@ class EventsResourceIT {
         int databaseSizeBeforeUpdate = eventsRepository.findAll().size();
         events.setId(count.incrementAndGet());
 
+        // Create the Events
+        EventsDTO eventsDTO = eventsMapper.toDto(events);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restEventsMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(events)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(eventsDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Events in the database
@@ -358,12 +375,15 @@ class EventsResourceIT {
         int databaseSizeBeforeUpdate = eventsRepository.findAll().size();
         events.setId(count.incrementAndGet());
 
+        // Create the Events
+        EventsDTO eventsDTO = eventsMapper.toDto(events);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restEventsMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, events.getId())
+                patch(ENTITY_API_URL_ID, eventsDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(events))
+                    .content(TestUtil.convertObjectToJsonBytes(eventsDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -378,12 +398,15 @@ class EventsResourceIT {
         int databaseSizeBeforeUpdate = eventsRepository.findAll().size();
         events.setId(count.incrementAndGet());
 
+        // Create the Events
+        EventsDTO eventsDTO = eventsMapper.toDto(events);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restEventsMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(events))
+                    .content(TestUtil.convertObjectToJsonBytes(eventsDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -398,9 +421,14 @@ class EventsResourceIT {
         int databaseSizeBeforeUpdate = eventsRepository.findAll().size();
         events.setId(count.incrementAndGet());
 
+        // Create the Events
+        EventsDTO eventsDTO = eventsMapper.toDto(events);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restEventsMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(events)))
+            .perform(
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(eventsDTO))
+            )
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Events in the database

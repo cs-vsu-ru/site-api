@@ -2,8 +2,12 @@ package cs.vsu.is.service;
 
 import cs.vsu.is.domain.AccessModes;
 import cs.vsu.is.repository.AccessModesRepository;
+import cs.vsu.is.service.dto.AccessModesDTO;
+import cs.vsu.is.service.mapper.AccessModesMapper;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,51 +24,57 @@ public class AccessModesService {
 
     private final AccessModesRepository accessModesRepository;
 
-    public AccessModesService(AccessModesRepository accessModesRepository) {
+    private final AccessModesMapper accessModesMapper;
+
+    public AccessModesService(AccessModesRepository accessModesRepository, AccessModesMapper accessModesMapper) {
         this.accessModesRepository = accessModesRepository;
+        this.accessModesMapper = accessModesMapper;
     }
 
     /**
      * Save a accessModes.
      *
-     * @param accessModes the entity to save.
+     * @param accessModesDTO the entity to save.
      * @return the persisted entity.
      */
-    public AccessModes save(AccessModes accessModes) {
-        log.debug("Request to save AccessModes : {}", accessModes);
-        return accessModesRepository.save(accessModes);
+    public AccessModesDTO save(AccessModesDTO accessModesDTO) {
+        log.debug("Request to save AccessModes : {}", accessModesDTO);
+        AccessModes accessModes = accessModesMapper.toEntity(accessModesDTO);
+        accessModes = accessModesRepository.save(accessModes);
+        return accessModesMapper.toDto(accessModes);
     }
 
     /**
      * Update a accessModes.
      *
-     * @param accessModes the entity to save.
+     * @param accessModesDTO the entity to save.
      * @return the persisted entity.
      */
-    public AccessModes update(AccessModes accessModes) {
-        log.debug("Request to update AccessModes : {}", accessModes);
-        return accessModesRepository.save(accessModes);
+    public AccessModesDTO update(AccessModesDTO accessModesDTO) {
+        log.debug("Request to update AccessModes : {}", accessModesDTO);
+        AccessModes accessModes = accessModesMapper.toEntity(accessModesDTO);
+        accessModes = accessModesRepository.save(accessModes);
+        return accessModesMapper.toDto(accessModes);
     }
 
     /**
      * Partially update a accessModes.
      *
-     * @param accessModes the entity to update partially.
+     * @param accessModesDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<AccessModes> partialUpdate(AccessModes accessModes) {
-        log.debug("Request to partially update AccessModes : {}", accessModes);
+    public Optional<AccessModesDTO> partialUpdate(AccessModesDTO accessModesDTO) {
+        log.debug("Request to partially update AccessModes : {}", accessModesDTO);
 
         return accessModesRepository
-            .findById(accessModes.getId())
+            .findById(accessModesDTO.getId())
             .map(existingAccessModes -> {
-                if (accessModes.getName() != null) {
-                    existingAccessModes.setName(accessModes.getName());
-                }
+                accessModesMapper.partialUpdate(existingAccessModes, accessModesDTO);
 
                 return existingAccessModes;
             })
-            .map(accessModesRepository::save);
+            .map(accessModesRepository::save)
+            .map(accessModesMapper::toDto);
     }
 
     /**
@@ -73,9 +83,9 @@ public class AccessModesService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public List<AccessModes> findAll() {
+    public List<AccessModesDTO> findAll() {
         log.debug("Request to get all AccessModes");
-        return accessModesRepository.findAll();
+        return accessModesRepository.findAll().stream().map(accessModesMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
@@ -85,9 +95,9 @@ public class AccessModesService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<AccessModes> findOne(Long id) {
+    public Optional<AccessModesDTO> findOne(Long id) {
         log.debug("Request to get AccessModes : {}", id);
-        return accessModesRepository.findById(id);
+        return accessModesRepository.findById(id).map(accessModesMapper::toDto);
     }
 
     /**

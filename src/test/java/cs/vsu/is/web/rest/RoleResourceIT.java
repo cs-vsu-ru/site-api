@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import cs.vsu.is.IntegrationTest;
 import cs.vsu.is.domain.Role;
 import cs.vsu.is.repository.RoleRepository;
+import cs.vsu.is.service.dto.RoleDTO;
+import cs.vsu.is.service.mapper.RoleMapper;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -40,6 +42,9 @@ class RoleResourceIT {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Autowired
     private EntityManager em;
@@ -81,8 +86,9 @@ class RoleResourceIT {
     void createRole() throws Exception {
         int databaseSizeBeforeCreate = roleRepository.findAll().size();
         // Create the Role
+        RoleDTO roleDTO = roleMapper.toDto(role);
         restRoleMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(role)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(roleDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Role in the database
@@ -97,12 +103,13 @@ class RoleResourceIT {
     void createRoleWithExistingId() throws Exception {
         // Create the Role with an existing ID
         role.setId(1L);
+        RoleDTO roleDTO = roleMapper.toDto(role);
 
         int databaseSizeBeforeCreate = roleRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restRoleMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(role)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(roleDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Role in the database
@@ -160,12 +167,13 @@ class RoleResourceIT {
         // Disconnect from session so that the updates on updatedRole are not directly saved in db
         em.detach(updatedRole);
         updatedRole.name(UPDATED_NAME);
+        RoleDTO roleDTO = roleMapper.toDto(updatedRole);
 
         restRoleMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedRole.getId())
+                put(ENTITY_API_URL_ID, roleDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedRole))
+                    .content(TestUtil.convertObjectToJsonBytes(roleDTO))
             )
             .andExpect(status().isOk());
 
@@ -182,12 +190,15 @@ class RoleResourceIT {
         int databaseSizeBeforeUpdate = roleRepository.findAll().size();
         role.setId(count.incrementAndGet());
 
+        // Create the Role
+        RoleDTO roleDTO = roleMapper.toDto(role);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restRoleMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, role.getId())
+                put(ENTITY_API_URL_ID, roleDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(role))
+                    .content(TestUtil.convertObjectToJsonBytes(roleDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -202,12 +213,15 @@ class RoleResourceIT {
         int databaseSizeBeforeUpdate = roleRepository.findAll().size();
         role.setId(count.incrementAndGet());
 
+        // Create the Role
+        RoleDTO roleDTO = roleMapper.toDto(role);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restRoleMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(role))
+                    .content(TestUtil.convertObjectToJsonBytes(roleDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -222,9 +236,12 @@ class RoleResourceIT {
         int databaseSizeBeforeUpdate = roleRepository.findAll().size();
         role.setId(count.incrementAndGet());
 
+        // Create the Role
+        RoleDTO roleDTO = roleMapper.toDto(role);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restRoleMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(role)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(roleDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Role in the database
@@ -294,12 +311,15 @@ class RoleResourceIT {
         int databaseSizeBeforeUpdate = roleRepository.findAll().size();
         role.setId(count.incrementAndGet());
 
+        // Create the Role
+        RoleDTO roleDTO = roleMapper.toDto(role);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restRoleMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, role.getId())
+                patch(ENTITY_API_URL_ID, roleDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(role))
+                    .content(TestUtil.convertObjectToJsonBytes(roleDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -314,12 +334,15 @@ class RoleResourceIT {
         int databaseSizeBeforeUpdate = roleRepository.findAll().size();
         role.setId(count.incrementAndGet());
 
+        // Create the Role
+        RoleDTO roleDTO = roleMapper.toDto(role);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restRoleMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(role))
+                    .content(TestUtil.convertObjectToJsonBytes(roleDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -334,9 +357,12 @@ class RoleResourceIT {
         int databaseSizeBeforeUpdate = roleRepository.findAll().size();
         role.setId(count.incrementAndGet());
 
+        // Create the Role
+        RoleDTO roleDTO = roleMapper.toDto(role);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restRoleMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(role)))
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(roleDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Role in the database

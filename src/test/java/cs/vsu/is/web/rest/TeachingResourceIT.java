@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import cs.vsu.is.IntegrationTest;
 import cs.vsu.is.domain.Teaching;
 import cs.vsu.is.repository.TeachingRepository;
+import cs.vsu.is.service.dto.TeachingDTO;
+import cs.vsu.is.service.mapper.TeachingMapper;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -37,6 +39,9 @@ class TeachingResourceIT {
 
     @Autowired
     private TeachingRepository teachingRepository;
+
+    @Autowired
+    private TeachingMapper teachingMapper;
 
     @Autowired
     private EntityManager em;
@@ -78,8 +83,9 @@ class TeachingResourceIT {
     void createTeaching() throws Exception {
         int databaseSizeBeforeCreate = teachingRepository.findAll().size();
         // Create the Teaching
+        TeachingDTO teachingDTO = teachingMapper.toDto(teaching);
         restTeachingMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(teaching)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(teachingDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Teaching in the database
@@ -93,12 +99,13 @@ class TeachingResourceIT {
     void createTeachingWithExistingId() throws Exception {
         // Create the Teaching with an existing ID
         teaching.setId(1L);
+        TeachingDTO teachingDTO = teachingMapper.toDto(teaching);
 
         int databaseSizeBeforeCreate = teachingRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restTeachingMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(teaching)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(teachingDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Teaching in the database
@@ -153,12 +160,13 @@ class TeachingResourceIT {
         Teaching updatedTeaching = teachingRepository.findById(teaching.getId()).get();
         // Disconnect from session so that the updates on updatedTeaching are not directly saved in db
         em.detach(updatedTeaching);
+        TeachingDTO teachingDTO = teachingMapper.toDto(updatedTeaching);
 
         restTeachingMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedTeaching.getId())
+                put(ENTITY_API_URL_ID, teachingDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedTeaching))
+                    .content(TestUtil.convertObjectToJsonBytes(teachingDTO))
             )
             .andExpect(status().isOk());
 
@@ -174,12 +182,15 @@ class TeachingResourceIT {
         int databaseSizeBeforeUpdate = teachingRepository.findAll().size();
         teaching.setId(count.incrementAndGet());
 
+        // Create the Teaching
+        TeachingDTO teachingDTO = teachingMapper.toDto(teaching);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTeachingMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, teaching.getId())
+                put(ENTITY_API_URL_ID, teachingDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(teaching))
+                    .content(TestUtil.convertObjectToJsonBytes(teachingDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -194,12 +205,15 @@ class TeachingResourceIT {
         int databaseSizeBeforeUpdate = teachingRepository.findAll().size();
         teaching.setId(count.incrementAndGet());
 
+        // Create the Teaching
+        TeachingDTO teachingDTO = teachingMapper.toDto(teaching);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTeachingMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(teaching))
+                    .content(TestUtil.convertObjectToJsonBytes(teachingDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -214,9 +228,12 @@ class TeachingResourceIT {
         int databaseSizeBeforeUpdate = teachingRepository.findAll().size();
         teaching.setId(count.incrementAndGet());
 
+        // Create the Teaching
+        TeachingDTO teachingDTO = teachingMapper.toDto(teaching);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTeachingMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(teaching)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(teachingDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Teaching in the database
@@ -282,12 +299,15 @@ class TeachingResourceIT {
         int databaseSizeBeforeUpdate = teachingRepository.findAll().size();
         teaching.setId(count.incrementAndGet());
 
+        // Create the Teaching
+        TeachingDTO teachingDTO = teachingMapper.toDto(teaching);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTeachingMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, teaching.getId())
+                patch(ENTITY_API_URL_ID, teachingDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(teaching))
+                    .content(TestUtil.convertObjectToJsonBytes(teachingDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -302,12 +322,15 @@ class TeachingResourceIT {
         int databaseSizeBeforeUpdate = teachingRepository.findAll().size();
         teaching.setId(count.incrementAndGet());
 
+        // Create the Teaching
+        TeachingDTO teachingDTO = teachingMapper.toDto(teaching);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTeachingMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(teaching))
+                    .content(TestUtil.convertObjectToJsonBytes(teachingDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -322,9 +345,14 @@ class TeachingResourceIT {
         int databaseSizeBeforeUpdate = teachingRepository.findAll().size();
         teaching.setId(count.incrementAndGet());
 
+        // Create the Teaching
+        TeachingDTO teachingDTO = teachingMapper.toDto(teaching);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTeachingMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(teaching)))
+            .perform(
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(teachingDTO))
+            )
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Teaching in the database

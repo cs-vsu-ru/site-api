@@ -1,7 +1,7 @@
 {
-  "applications": "*",
+  "applications": ["siteApi"],
   "changelogDate": "20230321105212",
-  "dto": "no",
+  "dto": "mapstruct",
   "embedded": false,
   "entityTableName": "events",
   "fields": [
@@ -33,17 +33,17 @@
   "readOnly": false,
   "relationships": [
     {
-      "otherEntityField": "id",
       "otherEntityName": "employee",
+      "otherEntityRelationshipName": "events",
       "relationshipName": "employee",
       "relationshipType": "many-to-one"
     },
     {
-      "otherEntityField": "id",
       "otherEntityName": "accessModes",
+      "otherEntityRelationshipName": "events",
       "relationshipName": "accessModes",
       "relationshipType": "many-to-one"
     }
   ],
-  "service": "no"
+  "service": "serviceClass"
 }

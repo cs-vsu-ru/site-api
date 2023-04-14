@@ -1,33 +1,35 @@
 {
+  "applications": ["siteApi"],
   "changelogDate": "20230409135053",
-  "dto": "no",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "scientific_leaderships",
   "fields": [
     {
       "fieldName": "year",
       "fieldType": "Integer"
     }
   ],
+  "fluentMethods": true,
   "jpaMetamodelFiltering": false,
   "name": "ScientificLeaderships",
   "pagination": "no",
   "readOnly": false,
   "relationships": [
     {
-      "otherEntityField": "id",
       "otherEntityName": "students",
       "relationshipName": "student",
       "relationshipType": "many-to-one"
     },
     {
-      "otherEntityField": "id",
-      "otherEntityName": "employee",
-      "relationshipName": "employee",
+      "otherEntityName": "scientificWorkType",
+      "relationshipName": "scientificWorkType",
       "relationshipType": "many-to-one"
     },
     {
-      "otherEntityField": "id",
-      "otherEntityName": "scientificWorkType",
-      "relationshipName": "scientificWorkType",
+      "otherEntityName": "employee",
+      "otherEntityRelationshipName": "scientificLeaderships",
+      "relationshipName": "employee",
       "relationshipType": "many-to-one"
     }
   ],

@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import cs.vsu.is.IntegrationTest;
 import cs.vsu.is.domain.Schedule;
 import cs.vsu.is.repository.ScheduleRepository;
+import cs.vsu.is.service.dto.ScheduleDTO;
+import cs.vsu.is.service.mapper.ScheduleMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -50,6 +52,9 @@ class ScheduleResourceIT {
     private ScheduleRepository scheduleRepository;
 
     @Autowired
+    private ScheduleMapper scheduleMapper;
+
+    @Autowired
     private EntityManager em;
 
     @Autowired
@@ -89,8 +94,9 @@ class ScheduleResourceIT {
     void createSchedule() throws Exception {
         int databaseSizeBeforeCreate = scheduleRepository.findAll().size();
         // Create the Schedule
+        ScheduleDTO scheduleDTO = scheduleMapper.toDto(schedule);
         restScheduleMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(schedule)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(scheduleDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Schedule in the database
@@ -107,12 +113,13 @@ class ScheduleResourceIT {
     void createScheduleWithExistingId() throws Exception {
         // Create the Schedule with an existing ID
         schedule.setId(1L);
+        ScheduleDTO scheduleDTO = scheduleMapper.toDto(schedule);
 
         int databaseSizeBeforeCreate = scheduleRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restScheduleMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(schedule)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(scheduleDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Schedule in the database
@@ -174,12 +181,13 @@ class ScheduleResourceIT {
         // Disconnect from session so that the updates on updatedSchedule are not directly saved in db
         em.detach(updatedSchedule);
         updatedSchedule.name(UPDATED_NAME).uploadingTime(UPDATED_UPLOADING_TIME).isActual(UPDATED_IS_ACTUAL);
+        ScheduleDTO scheduleDTO = scheduleMapper.toDto(updatedSchedule);
 
         restScheduleMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedSchedule.getId())
+                put(ENTITY_API_URL_ID, scheduleDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedSchedule))
+                    .content(TestUtil.convertObjectToJsonBytes(scheduleDTO))
             )
             .andExpect(status().isOk());
 
@@ -198,12 +206,15 @@ class ScheduleResourceIT {
         int databaseSizeBeforeUpdate = scheduleRepository.findAll().size();
         schedule.setId(count.incrementAndGet());
 
+        // Create the Schedule
+        ScheduleDTO scheduleDTO = scheduleMapper.toDto(schedule);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restScheduleMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, schedule.getId())
+                put(ENTITY_API_URL_ID, scheduleDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(schedule))
+                    .content(TestUtil.convertObjectToJsonBytes(scheduleDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -218,12 +229,15 @@ class ScheduleResourceIT {
         int databaseSizeBeforeUpdate = scheduleRepository.findAll().size();
         schedule.setId(count.incrementAndGet());
 
+        // Create the Schedule
+        ScheduleDTO scheduleDTO = scheduleMapper.toDto(schedule);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restScheduleMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(schedule))
+                    .content(TestUtil.convertObjectToJsonBytes(scheduleDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -238,9 +252,12 @@ class ScheduleResourceIT {
         int databaseSizeBeforeUpdate = scheduleRepository.findAll().size();
         schedule.setId(count.incrementAndGet());
 
+        // Create the Schedule
+        ScheduleDTO scheduleDTO = scheduleMapper.toDto(schedule);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restScheduleMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(schedule)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(scheduleDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Schedule in the database
@@ -316,12 +333,15 @@ class ScheduleResourceIT {
         int databaseSizeBeforeUpdate = scheduleRepository.findAll().size();
         schedule.setId(count.incrementAndGet());
 
+        // Create the Schedule
+        ScheduleDTO scheduleDTO = scheduleMapper.toDto(schedule);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restScheduleMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, schedule.getId())
+                patch(ENTITY_API_URL_ID, scheduleDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(schedule))
+                    .content(TestUtil.convertObjectToJsonBytes(scheduleDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -336,12 +356,15 @@ class ScheduleResourceIT {
         int databaseSizeBeforeUpdate = scheduleRepository.findAll().size();
         schedule.setId(count.incrementAndGet());
 
+        // Create the Schedule
+        ScheduleDTO scheduleDTO = scheduleMapper.toDto(schedule);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restScheduleMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(schedule))
+                    .content(TestUtil.convertObjectToJsonBytes(scheduleDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -356,9 +379,14 @@ class ScheduleResourceIT {
         int databaseSizeBeforeUpdate = scheduleRepository.findAll().size();
         schedule.setId(count.incrementAndGet());
 
+        // Create the Schedule
+        ScheduleDTO scheduleDTO = scheduleMapper.toDto(schedule);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restScheduleMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(schedule)))
+            .perform(
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(scheduleDTO))
+            )
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Schedule in the database

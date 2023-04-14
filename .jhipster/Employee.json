@@ -1,7 +1,7 @@
 {
-  "applications": "*",
+  "applications": ["siteApi"],
   "changelogDate": "20230408144338",
-  "dto": "no",
+  "dto": "mapstruct",
   "embedded": false,
   "entityTableName": "employee",
   "fields": [
@@ -21,17 +21,23 @@
   "readOnly": false,
   "relationships": [
     {
-      "otherEntityField": "name",
-      "otherEntityName": "role",
-      "otherEntityRelationshipName": "employee",
+      "otherEntityField": "login",
+      "otherEntityName": "user",
       "ownerSide": true,
-      "relationshipName": "role",
-      "relationshipType": "many-to-many"
+      "relationshipName": "user",
+      "relationshipType": "one-to-one",
+      "relationshipValidateRules": "required"
     },
     {
       "otherEntityName": "articles",
       "otherEntityRelationshipName": "employee",
       "relationshipName": "articles",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "events",
+      "otherEntityRelationshipName": "employee",
+      "relationshipName": "events",
       "relationshipType": "one-to-many"
     },
     {
@@ -41,9 +47,9 @@
       "relationshipType": "one-to-many"
     },
     {
-      "otherEntityName": "events",
+      "otherEntityName": "pages",
       "otherEntityRelationshipName": "employee",
-      "relationshipName": "events",
+      "relationshipName": "pages",
       "relationshipType": "one-to-many"
     },
     {
@@ -59,21 +65,13 @@
       "relationshipType": "one-to-many"
     },
     {
-      "id": false,
-      "otherEntityField": "login",
-      "otherEntityName": "user",
+      "otherEntityField": "name",
+      "otherEntityName": "role",
       "otherEntityRelationshipName": "employee",
       "ownerSide": true,
-      "relationshipName": "user",
-      "relationshipType": "one-to-one",
-      "relationshipValidateRules": ["required"]
-    },
-    {
-      "otherEntityName": "pages",
-      "otherEntityRelationshipName": "employee",
-      "relationshipName": "pages",
-      "relationshipType": "one-to-many"
+      "relationshipName": "role",
+      "relationshipType": "many-to-many"
     }
   ],
-  "service": "no"
+  "service": "serviceClass"
 }

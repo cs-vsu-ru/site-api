@@ -23,19 +23,17 @@ public class ScientificLeaderships implements Serializable {
     private Integer year;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "scientificLeadeships" }, allowSetters = true)
     private Students student;
 
     @ManyToOne
+    private ScientificWorkType scientificWorkType;
+
+    @ManyToOne
     @JsonIgnoreProperties(
-        value = { "roles", "articles", "lessons", "events", "scientificLeaderships", "teachings", "user", "pages" },
+        value = { "user", "articles", "events", "lessons", "pages", "scientificLeaderships", "teachings", "roles" },
         allowSetters = true
     )
     private Employee employee;
-
-    @ManyToOne
-    @JsonIgnoreProperties(value = { "scientificLeadeships" }, allowSetters = true)
-    private ScientificWorkType scientificWorkType;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -78,19 +76,6 @@ public class ScientificLeaderships implements Serializable {
         return this;
     }
 
-    public Employee getEmployee() {
-        return this.employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
-    }
-
-    public ScientificLeaderships employee(Employee employee) {
-        this.setEmployee(employee);
-        return this;
-    }
-
     public ScientificWorkType getScientificWorkType() {
         return this.scientificWorkType;
     }
@@ -101,6 +86,19 @@ public class ScientificLeaderships implements Serializable {
 
     public ScientificLeaderships scientificWorkType(ScientificWorkType scientificWorkType) {
         this.setScientificWorkType(scientificWorkType);
+        return this;
+    }
+
+    public Employee getEmployee() {
+        return this.employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    public ScientificLeaderships employee(Employee employee) {
+        this.setEmployee(employee);
         return this;
     }
 

@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import cs.vsu.is.IntegrationTest;
 import cs.vsu.is.domain.EduSchedulePlace;
 import cs.vsu.is.repository.EduSchedulePlaceRepository;
+import cs.vsu.is.service.dto.EduSchedulePlaceDTO;
+import cs.vsu.is.service.mapper.EduSchedulePlaceMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -51,6 +53,9 @@ class EduSchedulePlaceResourceIT {
 
     @Autowired
     private EduSchedulePlaceRepository eduSchedulePlaceRepository;
+
+    @Autowired
+    private EduSchedulePlaceMapper eduSchedulePlaceMapper;
 
     @Autowired
     private EntityManager em;
@@ -100,9 +105,10 @@ class EduSchedulePlaceResourceIT {
     void createEduSchedulePlace() throws Exception {
         int databaseSizeBeforeCreate = eduSchedulePlaceRepository.findAll().size();
         // Create the EduSchedulePlace
+        EduSchedulePlaceDTO eduSchedulePlaceDTO = eduSchedulePlaceMapper.toDto(eduSchedulePlace);
         restEduSchedulePlaceMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(eduSchedulePlace))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(eduSchedulePlaceDTO))
             )
             .andExpect(status().isCreated());
 
@@ -121,13 +127,14 @@ class EduSchedulePlaceResourceIT {
     void createEduSchedulePlaceWithExistingId() throws Exception {
         // Create the EduSchedulePlace with an existing ID
         eduSchedulePlace.setId(1L);
+        EduSchedulePlaceDTO eduSchedulePlaceDTO = eduSchedulePlaceMapper.toDto(eduSchedulePlace);
 
         int databaseSizeBeforeCreate = eduSchedulePlaceRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restEduSchedulePlaceMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(eduSchedulePlace))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(eduSchedulePlaceDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -196,12 +203,13 @@ class EduSchedulePlaceResourceIT {
             .startTime(UPDATED_START_TIME)
             .endTime(UPDATED_END_TIME)
             .dayOfWeak(UPDATED_DAY_OF_WEAK);
+        EduSchedulePlaceDTO eduSchedulePlaceDTO = eduSchedulePlaceMapper.toDto(updatedEduSchedulePlace);
 
         restEduSchedulePlaceMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedEduSchedulePlace.getId())
+                put(ENTITY_API_URL_ID, eduSchedulePlaceDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedEduSchedulePlace))
+                    .content(TestUtil.convertObjectToJsonBytes(eduSchedulePlaceDTO))
             )
             .andExpect(status().isOk());
 
@@ -221,12 +229,15 @@ class EduSchedulePlaceResourceIT {
         int databaseSizeBeforeUpdate = eduSchedulePlaceRepository.findAll().size();
         eduSchedulePlace.setId(count.incrementAndGet());
 
+        // Create the EduSchedulePlace
+        EduSchedulePlaceDTO eduSchedulePlaceDTO = eduSchedulePlaceMapper.toDto(eduSchedulePlace);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restEduSchedulePlaceMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, eduSchedulePlace.getId())
+                put(ENTITY_API_URL_ID, eduSchedulePlaceDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(eduSchedulePlace))
+                    .content(TestUtil.convertObjectToJsonBytes(eduSchedulePlaceDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -241,12 +252,15 @@ class EduSchedulePlaceResourceIT {
         int databaseSizeBeforeUpdate = eduSchedulePlaceRepository.findAll().size();
         eduSchedulePlace.setId(count.incrementAndGet());
 
+        // Create the EduSchedulePlace
+        EduSchedulePlaceDTO eduSchedulePlaceDTO = eduSchedulePlaceMapper.toDto(eduSchedulePlace);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restEduSchedulePlaceMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(eduSchedulePlace))
+                    .content(TestUtil.convertObjectToJsonBytes(eduSchedulePlaceDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -261,10 +275,13 @@ class EduSchedulePlaceResourceIT {
         int databaseSizeBeforeUpdate = eduSchedulePlaceRepository.findAll().size();
         eduSchedulePlace.setId(count.incrementAndGet());
 
+        // Create the EduSchedulePlace
+        EduSchedulePlaceDTO eduSchedulePlaceDTO = eduSchedulePlaceMapper.toDto(eduSchedulePlace);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restEduSchedulePlaceMockMvc
             .perform(
-                put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(eduSchedulePlace))
+                put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(eduSchedulePlaceDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 
@@ -347,12 +364,15 @@ class EduSchedulePlaceResourceIT {
         int databaseSizeBeforeUpdate = eduSchedulePlaceRepository.findAll().size();
         eduSchedulePlace.setId(count.incrementAndGet());
 
+        // Create the EduSchedulePlace
+        EduSchedulePlaceDTO eduSchedulePlaceDTO = eduSchedulePlaceMapper.toDto(eduSchedulePlace);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restEduSchedulePlaceMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, eduSchedulePlace.getId())
+                patch(ENTITY_API_URL_ID, eduSchedulePlaceDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(eduSchedulePlace))
+                    .content(TestUtil.convertObjectToJsonBytes(eduSchedulePlaceDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -367,12 +387,15 @@ class EduSchedulePlaceResourceIT {
         int databaseSizeBeforeUpdate = eduSchedulePlaceRepository.findAll().size();
         eduSchedulePlace.setId(count.incrementAndGet());
 
+        // Create the EduSchedulePlace
+        EduSchedulePlaceDTO eduSchedulePlaceDTO = eduSchedulePlaceMapper.toDto(eduSchedulePlace);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restEduSchedulePlaceMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(eduSchedulePlace))
+                    .content(TestUtil.convertObjectToJsonBytes(eduSchedulePlaceDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -387,12 +410,15 @@ class EduSchedulePlaceResourceIT {
         int databaseSizeBeforeUpdate = eduSchedulePlaceRepository.findAll().size();
         eduSchedulePlace.setId(count.incrementAndGet());
 
+        // Create the EduSchedulePlace
+        EduSchedulePlaceDTO eduSchedulePlaceDTO = eduSchedulePlaceMapper.toDto(eduSchedulePlace);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restEduSchedulePlaceMockMvc
             .perform(
                 patch(ENTITY_API_URL)
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(eduSchedulePlace))
+                    .content(TestUtil.convertObjectToJsonBytes(eduSchedulePlaceDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 
