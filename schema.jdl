@@ -1,54 +1,130 @@
-entity User {
+application {
+  config {
+    applicationType monolith
+    authenticationType jwt
+    baseName siteApi
+    blueprints []
+    buildTool maven
+    cacheProvider redis
+    clientFramework no
+    clientPackageManager npm
+    clientTheme none
+    creationTimestamp 1677518117248
+    databaseType sql
+    devDatabaseType mysql
+    dtoSuffix DTO
+    enableGradleEnterprise false
+    enableHibernateCache false
+    enableSwaggerCodegen true
+    enableTranslation false
+    gradleEnterpriseHost ""
+    jhiPrefix jhi
+    jhipsterVersion "7.9.3"
+    jwtSecretKey "OGUyZmQ1MDI2NWI3ZDhiMDBiYmRmZWI0Y2Q3ZWQwNzU1ZTRmYzA0Y2UwMDg2N2I0ZDUxNjAwMDdlMzUxNjFkNWIwMzkzODM5MjYxNzUzYTk3YTM0NTgwMDZlZDgxNzM1MjkzY2MzNmYzOWZiZjRkODcwOTNlNjdlNTJjM2E4NWE="
+    languages [en, fr]
+    messageBroker false
+    microfrontend false
+    microfrontends []
+    nativeLanguage ru
+    otherModules []
+    packageName cs.vsu.is
+    prodDatabaseType mysql
+    reactive false
+    searchEngine false
+    serverPort 8080
+    serviceDiscoveryType no
+    skipClient true
+    skipUserManagement false
+    testFrameworks []
+    websocket false
+    withAdminUi true
+  }
+
+  entities AccessModes, Articles, EduSchedulePlace, Employee, Events, Lesson, Pages, Role, Schedule, ScientificLeaderships, ScientificWorkType, Specialities, Students, Subject, Teaching
 }
-entity Lesson {
-	course Integer,
-    group Integer,
-    subgroup Integer 
-}
-entity Subject {
-	name String,
-    description String
-}
-entity EduSchedulePlace {
-	isDenominator Boolean,
-    startTime Instant,
-    endTime Instant,
-    dayOfWeak Integer	
-}
-entity Schedule {
-	name String,
-    uploadingTime Instant,
-    isActual Boolean,
-}
-entity ScientificLeadeship {
-}
-entity ScientificWorkType{
-	name String,
-}
-entity Students {
-	name String,
-    surname String
-}
-entity Events {
-	publicationDate Instant,
-    content String,
-    lastModifiedDate Instant,
-    startTime Instant,
-    endTime Instant,
+
+entity AccessModes {
+  name String
 }
 entity Articles {
-	publicationDate Instant,
-    content String 
+  publicationDate Instant
+  content String
+}
+entity EduSchedulePlace {
+  isDenominator Boolean
+  startTime Instant
+  endTime Instant
+  dayOfWeak Integer
+}
+entity Employee {
+  patronymic String
+  dateOfBirth Instant
+}
+entity Events {
+  publicationDate Instant
+  content String
+  lastModifiedDate Instant
+  startTime Instant
+  endTime Instant
+}
+entity Lesson {
+  course Integer
+  group Integer
+  subgroup Integer
 }
 entity Pages {
-    content String 
+  content String
 }
-
+entity Role {
+  name String
+}
+entity Schedule {
+  name String
+  uploadingTime Instant
+  isActual Boolean
+}
+entity ScientificLeaderships {
+  year Integer
+}
+entity ScientificWorkType {
+  name String
+}
+entity Specialities
+entity Students {
+  name String
+  surname String
+}
+entity Subject {
+  name String
+  description String
+}
+entity Teaching
+relationship OneToOne {
+  Employee{user(login) required} to User
+}
+relationship OneToMany {
+  Employee{articles} to Articles{employee}
+  AccessModes{articles} to Articles{accessModes}
+  Employee{events} to Events{employee}
+  AccessModes{events} to Events{accessModes}
+  Employee{lessons} to Lesson{employee}
+  Employee{pages} to Pages{employee required}
+  AccessModes{pages} to Pages{accessModes}
+  Employee{scientificLeaderships} to ScientificLeaderships{employee}
+  Employee{teaching} to Teaching{employee}
+}
+relationship ManyToOne {
+  Lesson{subject} to Subject
+  Lesson{eduSchedulePlace} to EduSchedulePlace
+  Lesson{schedule} to Schedule
+  ScientificLeaderships{student} to Students
+  ScientificLeaderships{scientificWorkType} to ScientificWorkType
+  Teaching{subject} to Subject
+  Teaching{specialities} to Specialities
+}
 relationship ManyToMany {
-	Subject{lesson} to Lesson{subject}
-    EduSchedulePlace{lesson} to Lesson{eduSchedulePlace}
-    Schedule{lesson} to Lesson{schedule}
-    ScientificWorkType{scientificLeadeship} to ScientificLeadeship{scientificWorkType}
-	Students{scientificLeadeship} to ScientificLeadeship{students}
+  Employee{role(name)} to Role{employee}
 }
 
+service AccessModes, ScientificLeaderships, Specialities, Teaching with serviceClass
+dto * with mapstruct
