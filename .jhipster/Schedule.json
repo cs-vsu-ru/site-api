@@ -1,0 +1,28 @@
+{
+  "applications": "*",
+  "changelogDate": "20230321105208",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "schedule",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "uploadingTime",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "isActual",
+      "fieldType": "Boolean"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Schedule",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "service": "no"
+}

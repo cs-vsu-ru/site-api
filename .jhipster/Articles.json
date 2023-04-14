@@ -1,0 +1,37 @@
+{
+  "applications": "*",
+  "changelogDate": "20230321105213",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "articles",
+  "fields": [
+    {
+      "fieldName": "publicationDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "content",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Articles",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "employee",
+      "relationshipName": "employee",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "accessModes",
+      "relationshipName": "accessModes",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "no"
+}

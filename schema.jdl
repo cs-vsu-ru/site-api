@@ -1,0 +1,54 @@
+entity User {
+}
+entity Lesson {
+	course Integer,
+    group Integer,
+    subgroup Integer 
+}
+entity Subject {
+	name String,
+    description String
+}
+entity EduSchedulePlace {
+	isDenominator Boolean,
+    startTime Instant,
+    endTime Instant,
+    dayOfWeak Integer	
+}
+entity Schedule {
+	name String,
+    uploadingTime Instant,
+    isActual Boolean,
+}
+entity ScientificLeadeship {
+}
+entity ScientificWorkType{
+	name String,
+}
+entity Students {
+	name String,
+    surname String
+}
+entity Events {
+	publicationDate Instant,
+    content String,
+    lastModifiedDate Instant,
+    startTime Instant,
+    endTime Instant,
+}
+entity Articles {
+	publicationDate Instant,
+    content String 
+}
+entity Pages {
+    content String 
+}
+
+relationship ManyToMany {
+	Subject{lesson} to Lesson{subject}
+    EduSchedulePlace{lesson} to Lesson{eduSchedulePlace}
+    Schedule{lesson} to Lesson{schedule}
+    ScientificWorkType{scientificLeadeship} to ScientificLeadeship{scientificWorkType}
+	Students{scientificLeadeship} to ScientificLeadeship{students}
+}
+
