@@ -1,6 +1,11 @@
 package cs.vsu.is.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -9,6 +14,8 @@ import javax.validation.constraints.*;
  * A Pages.
  */
 @Entity
+@Getter
+@Setter
 @Table(name = "pages")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Pages implements Serializable {

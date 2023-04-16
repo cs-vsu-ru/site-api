@@ -3,6 +3,8 @@ package cs.vsu.is.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -15,7 +17,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "role")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-@Data
+@Getter
+@Setter
 public class Role implements Serializable {
 
   private static final long serialVersionUID = 1L;

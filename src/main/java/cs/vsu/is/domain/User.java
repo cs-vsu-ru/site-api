@@ -3,6 +3,8 @@ package cs.vsu.is.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import cs.vsu.is.config.Constants;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -21,7 +23,8 @@ import org.hibernate.annotations.BatchSize;
  * A user.
  */
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "jhi_user")
 public class User extends AbstractAuditingEntity<Long> implements Serializable {
 

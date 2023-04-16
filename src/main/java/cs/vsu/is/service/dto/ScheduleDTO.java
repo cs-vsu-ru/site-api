@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class ScheduleDTO implements Serializable {
+public class ScheduleDTO {
 
   private Long id;
 

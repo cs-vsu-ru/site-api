@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @Data
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class ScientificLeadershipsDTO implements Serializable {
+public class ScientificLeadershipsDTO {
 
   private Long id;
 

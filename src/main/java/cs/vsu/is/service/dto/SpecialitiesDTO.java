@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class SpecialitiesDTO implements Serializable {
+public class SpecialitiesDTO {
 
   private Long id;
 }

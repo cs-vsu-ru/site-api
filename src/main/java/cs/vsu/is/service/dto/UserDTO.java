@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.time.Instant;
 
 @Data
-public class UserDTO implements Serializable {
+public class UserDTO {
   private Long id;
   private String login;
   private String password;

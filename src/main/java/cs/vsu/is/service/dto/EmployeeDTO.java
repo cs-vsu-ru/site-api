@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @Data
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class EmployeeDTO implements Serializable {
+public class EmployeeDTO {
 
   private Long id;
   private String patronymic;

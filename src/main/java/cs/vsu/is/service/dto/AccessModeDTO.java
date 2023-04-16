@@ -6,6 +6,7 @@ import java.util.Set;
 import lombok.Data;
 
 @Data
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class AccessModeDTO {
 
   private Long id;

@@ -1,6 +1,13 @@
 package cs.vsu.is.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
@@ -13,6 +20,8 @@ import javax.validation.constraints.*;
  */
 @Entity
 @Table(name = "employee")
+@Getter
+@Setter
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Employee implements Serializable {
 
