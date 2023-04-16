@@ -110,30 +110,30 @@ public class ScientificLeadershipsResource {
      * or with status {@code 500 (Internal Server Error)} if the scientificLeadershipsDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/scientific-leaderships/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<ScientificLeadershipsDTO> partialUpdateScientificLeaderships(
-        @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody ScientificLeadershipsDTO scientificLeadershipsDTO
-    ) throws URISyntaxException {
-        log.debug("REST request to partial update ScientificLeaderships partially : {}, {}", id, scientificLeadershipsDTO);
-        if (scientificLeadershipsDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        if (!Objects.equals(id, scientificLeadershipsDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
+    // @PatchMapping(value = "/scientific-leaderships/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    // public ResponseEntity<ScientificLeadershipsDTO> partialUpdateScientificLeaderships(
+    //     @PathVariable(value = "id", required = false) final Long id,
+    //     @RequestBody ScientificLeadershipsDTO scientificLeadershipsDTO
+    // ) throws URISyntaxException {
+    //     log.debug("REST request to partial update ScientificLeaderships partially : {}, {}", id, scientificLeadershipsDTO);
+    //     if (scientificLeadershipsDTO.getId() == null) {
+    //         throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+    //     }
+    //     if (!Objects.equals(id, scientificLeadershipsDTO.getId())) {
+    //         throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+    //     }
 
-        if (!scientificLeadershipsRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
+    //     if (!scientificLeadershipsRepository.existsById(id)) {
+    //         throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+    //     }
 
-        Optional<ScientificLeadershipsDTO> result = scientificLeadershipsService.partialUpdate(scientificLeadershipsDTO);
+    //     Optional<ScientificLeadershipsDTO> result = scientificLeadershipsService.partialUpdate(scientificLeadershipsDTO);
 
-        return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, scientificLeadershipsDTO.getId().toString())
-        );
-    }
+    //     return ResponseUtil.wrapOrNotFound(
+    //         result,
+    //         HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, scientificLeadershipsDTO.getId().toString())
+    //     );
+    // }
 
     /**
      * {@code GET  /scientific-leaderships} : get all the scientificLeaderships.

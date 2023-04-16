@@ -21,7 +21,6 @@
   "readOnly": false,
   "relationships": [
     {
-      "otherEntityField": "login",
       "otherEntityName": "user",
       "ownerSide": true,
       "relationshipName": "user",
@@ -65,7 +64,6 @@
       "relationshipType": "one-to-many"
     },
     {
-      "otherEntityField": "name",
       "otherEntityName": "role",
       "otherEntityRelationshipName": "employee",
       "ownerSide": true,

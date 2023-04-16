@@ -100,7 +100,7 @@ entity Subject {
 }
 entity Teaching
 relationship OneToOne {
-  Employee{user(login) required} to User
+  Employee{user required} to User
 }
 relationship OneToMany {
   Employee{articles} to Articles{employee}
@@ -123,7 +123,7 @@ relationship ManyToOne {
   Teaching{specialities} to Specialities
 }
 relationship ManyToMany {
-  Employee{role(name)} to Role{employee}
+  Employee{role} to Role{employee}
 }
 
 service AccessModes, ScientificLeaderships, Specialities, Teaching with serviceClass
