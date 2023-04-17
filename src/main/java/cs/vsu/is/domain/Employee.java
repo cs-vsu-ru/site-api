@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
@@ -36,7 +37,7 @@ public class Employee implements Serializable {
   private String patronymic;
 
   @Column(name = "date_of_birth")
-  private Instant dateOfBirth;
+  private LocalDate dateOfBirth;
 
   @OneToOne(optional = false)
   @NotNull

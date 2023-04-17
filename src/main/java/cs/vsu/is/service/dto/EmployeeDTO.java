@@ -2,6 +2,7 @@ package cs.vsu.is.service.dto;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -18,7 +19,7 @@ public class EmployeeDTO {
 
   private Long id;
   private String patronymic;
-  private Instant dateOfBirth;
+  private LocalDate dateOfBirth;
   private UserDTO user;
   private Set<ArticleDTO> articles = new HashSet<>();
   private Set<EventDTO> events = new HashSet<>();
