@@ -1,0 +1,24 @@
+{
+  "applications": ["siteApi"],
+  "changelogDate": "20230321105211",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "students",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "surname",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Students",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "service": "serviceClass"
+}

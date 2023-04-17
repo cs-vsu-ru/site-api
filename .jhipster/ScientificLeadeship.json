@@ -1,0 +1,15 @@
+{
+  "applications": "*",
+  "changelogDate": "20230321105209",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "scientific_leadeship",
+  "fields": [],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "ScientificLeadeship",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "service": "no"
+}

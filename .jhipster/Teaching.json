@@ -1,0 +1,32 @@
+{
+  "applications": ["siteApi"],
+  "changelogDate": "20230409103909",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "teaching",
+  "fields": [],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Teaching",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "subject",
+      "relationshipName": "subject",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "specialities",
+      "relationshipName": "specialities",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "employee",
+      "otherEntityRelationshipName": "teaching",
+      "relationshipName": "employee",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceClass"
+}

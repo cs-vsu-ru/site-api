@@ -1,0 +1,37 @@
+{
+  "applications": ["siteApi"],
+  "changelogDate": "20230321105213",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "articles",
+  "fields": [
+    {
+      "fieldName": "publicationDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "content",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Articles",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "employee",
+      "otherEntityRelationshipName": "articles",
+      "relationshipName": "employee",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "accessModes",
+      "otherEntityRelationshipName": "articles",
+      "relationshipName": "accessModes",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceClass"
+}

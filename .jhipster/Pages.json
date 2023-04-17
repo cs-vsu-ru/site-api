@@ -1,0 +1,34 @@
+{
+  "applications": ["siteApi"],
+  "changelogDate": "20230321105214",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "pages",
+  "fields": [
+    {
+      "fieldName": "content",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Pages",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "employee",
+      "otherEntityRelationshipName": "pages",
+      "relationshipName": "employee",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "accessModes",
+      "otherEntityRelationshipName": "pages",
+      "relationshipName": "accessModes",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceClass"
+}

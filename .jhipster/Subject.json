@@ -1,0 +1,24 @@
+{
+  "applications": ["siteApi"],
+  "changelogDate": "20230321105206",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "subject",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Subject",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "service": "serviceClass"
+}

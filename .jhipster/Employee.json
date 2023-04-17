@@ -1,0 +1,75 @@
+{
+  "applications": ["siteApi"],
+  "changelogDate": "20230408144338",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "employee",
+  "fields": [
+    {
+      "fieldName": "patronymic",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateOfBirth",
+      "fieldType": "Instant"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Employee",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "user",
+      "ownerSide": true,
+      "relationshipName": "user",
+      "relationshipType": "one-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "articles",
+      "otherEntityRelationshipName": "employee",
+      "relationshipName": "articles",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "events",
+      "otherEntityRelationshipName": "employee",
+      "relationshipName": "events",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "lesson",
+      "otherEntityRelationshipName": "employee",
+      "relationshipName": "lessons",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "pages",
+      "otherEntityRelationshipName": "employee",
+      "relationshipName": "pages",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "scientificLeaderships",
+      "otherEntityRelationshipName": "employee",
+      "relationshipName": "scientificLeaderships",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "teaching",
+      "otherEntityRelationshipName": "employee",
+      "relationshipName": "teaching",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "role",
+      "otherEntityRelationshipName": "employee",
+      "ownerSide": true,
+      "relationshipName": "role",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "service": "serviceClass"
+}

@@ -1,0 +1,50 @@
+{
+  "applications": ["siteApi"],
+  "changelogDate": "20230321105205",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "lesson",
+  "fields": [
+    {
+      "fieldName": "course",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "group",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "subgroup",
+      "fieldType": "Integer"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Lesson",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "subject",
+      "relationshipName": "subject",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "eduSchedulePlace",
+      "relationshipName": "eduSchedulePlace",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "schedule",
+      "relationshipName": "schedule",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "employee",
+      "otherEntityRelationshipName": "lessons",
+      "relationshipName": "employee",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceClass"
+}

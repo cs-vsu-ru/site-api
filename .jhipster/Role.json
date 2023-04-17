@@ -1,0 +1,28 @@
+{
+  "applications": ["siteApi"],
+  "changelogDate": "20230408144339",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "role",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Role",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "employee",
+      "otherEntityRelationshipName": "role",
+      "ownerSide": false,
+      "relationshipName": "employee",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "service": "serviceClass"
+}
