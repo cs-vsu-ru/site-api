@@ -1,3 +1,7 @@
 id;login;password_hash;first_name;last_name;email;image_url;activated;lang_key;created_by;last_modified_by
-1;admin;$2a$10$gSAhZrxMllrbgj/kkK9UceBPpChGWJA7SYIb1Mqo.n5aNLq1/oRrC;Administrator;Administrator;admin@localhost;;true;ru;system;system
-2;user;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;User;User;user@localhost;;true;ru;system;system
+1;admin;$2a$10$gSAhZrxMllrbgj/kkK9UceBPpChGWJA7SYIb1Mqo.n5aNLq1/oRrC;Борисов;Дмитрий;borisov@cs.vsu.ru;https://www.vsu.ru/ru/persons/photo.php?p=24431;true;ru;system;system
+2;user;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Ермаков;Михаил;ermakov@cs.vsu.ru;https://www.vsu.ru/ru/persons/photo.php?p=8402;true;ru;system;system
+3;koval;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Коваль;Андрей;koval@cs.vsu.ru;https://www.vsu.ru/ru/persons/photo.php?p=3869;true;ru;system;system
+4;mahortov;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Махортов;Сергей;mahortov@cs.vsu.ru;https://www.vsu.ru/ru/persons/photo.php?p=2979;true;ru;system;system
+5;savinkov;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Савинков;Андрей;savinkov@cs.vsu.ru;https://www.vsu.ru/ru/persons/photo.php?p=46863;true;ru;system;system
+6;stromov;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Стромов;Александр;stromov@cs.vsu.ru;https://www.vsu.ru/ru/persons/photo.php?p=42027;true;ru;system;system
