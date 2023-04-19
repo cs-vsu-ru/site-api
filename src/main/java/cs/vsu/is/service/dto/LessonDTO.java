@@ -4,8 +4,11 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class LessonDTO {
 

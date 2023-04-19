@@ -27,21 +27,6 @@
         </createTable>
         <dropDefaultValue tableName="employee" columnName="date_of_birth" columnDataType="${datetimeType}"/>
     </changeSet>
-
-    <changeSet id="20230408144338-1-relations" author="jhipster">
-
-        <createTable tableName="rel_employee__role">
-            <column name="role_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="employee_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey columnNames="employee_id, role_id" tableName="rel_employee__role"/>
-    </changeSet>
-
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 
     <!--
@@ -62,18 +47,6 @@
             <column name="patronymic" type="string"/>
             <column name="date_of_birth" type="date"/>
             <column name="user_id" type="numeric"/>
-            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
-        </loadData>
-    </changeSet>
-
-      <changeSet id="20230408144338-2-data" author="jhipster" context="faker">
-        <loadData
-                  file="config/liquibase/fake-data/rel_employee__role.csv"
-                  separator=";"
-                  tableName="rel_employee__role"
-                  usePreparedStatements="true">
-            <column name="role_id" type="numeric"/>
-            <column name="employee_id" type="numeric"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

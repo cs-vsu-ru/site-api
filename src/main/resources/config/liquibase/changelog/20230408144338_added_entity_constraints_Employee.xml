@@ -8,18 +8,6 @@
     -->
     <changeSet id="20230408144338-2" author="jhipster">
 
-        <addForeignKeyConstraint baseColumnNames="employee_id"
-                                 baseTableName="rel_employee__role"
-                                 constraintName="fk_rel_employee__role__employee_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="employee"/>
-
-        <addForeignKeyConstraint baseColumnNames="role_id"
-                                 baseTableName="rel_employee__role"
-                                 constraintName="fk_rel_employee__role__role_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="role"/>
-
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="employee"
                                  constraintName="fk_employee__user_id"

@@ -4,7 +4,16 @@
   "dto": "mapstruct",
   "embedded": false,
   "entityTableName": "specialities",
-  "fields": [],
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    }
+  ],
   "fluentMethods": true,
   "jpaMetamodelFiltering": false,
   "name": "Specialities",
