@@ -19,6 +19,8 @@ public class ArticleDTO {
   private String publicationDate;
   private String publicationTime;
   private String content;
+  private String title;
+  private String imageURL;
   // private EmployeeDTO employee;
   private AccessModeDTO accessModes;
 
