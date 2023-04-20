@@ -2,7 +2,6 @@ package cs.vsu.is.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,10 +9,14 @@ import java.io.Serializable;
 import java.time.Instant;
 import javax.persistence.*;
 
+/**
+ * A Events.
+ */
 @Entity
 @Getter
 @Setter
 @Table(name = "events")
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class Events implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -24,19 +27,34 @@ public class Events implements Serializable {
   private Long id;
 
   @Column(name = "publication_date")
-  private Instant publicationDate;
+  private String publicationDate;
 
-  @Column(name = "content")
+  @Column(name = "publication_time")
+  private String publicationTime;
+
+  @Column(name = "content", columnDefinition = "json")
   private String content;
 
   @Column(name = "last_modified_date")
-  private Instant lastModifiedDate;
+  private String lastModifiedDate;
+
+  @Column(name = "last_modified_time")
+  private String lastModifiedTime;
 
   @Column(name = "start_time")
-  private Instant startTime;
+  private String startTime;
+
+  @Column(name = "start_date")
+  private String startDate;
 
   @Column(name = "end_time")
-  private Instant endTime;
+  private String endTime;
+
+  @Column(name = "end_date")
+  private String endDate;
+
+  @Column(name = "title")
+  private String title;
 
   @ManyToOne
   @JsonIgnoreProperties(value = { "user", "articles", "events", "lessons", "pages", "scientificLeaderships",

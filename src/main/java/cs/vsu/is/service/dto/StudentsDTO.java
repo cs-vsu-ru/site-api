@@ -4,8 +4,13 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class StudentsDTO {
 

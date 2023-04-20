@@ -27,8 +27,14 @@ public class Pages implements Serializable {
   @Column(name = "id")
   private Long id;
 
-  @Column(name = "content")
+  @Column(name = "content", columnDefinition = "json")
   private String content;
+
+  @Column(name = "title")
+  private String title;
+
+  @Column(name = "url")
+  private String url;
 
   @ManyToOne(optional = false)
   @NotNull

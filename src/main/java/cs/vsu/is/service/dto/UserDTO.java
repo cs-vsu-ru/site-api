@@ -5,8 +5,13 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.Instant;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class UserDTO {
   private Long id;
   private String login;

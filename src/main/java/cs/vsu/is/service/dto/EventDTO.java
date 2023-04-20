@@ -1,18 +1,26 @@
 package cs.vsu.is.service.dto;
 
-import java.time.Instant;
-
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class EventDTO {
   private Long id;
-  private Instant publicationDate;
+  private String publicationDate;
+  private String publicationTime;
   private String content;
-  private Instant lastModifiedDate;
-  private Instant startTime;
-  private Instant endTime;
+  private String lastModifiedDate;
+  private String lastModifiedTime;
+  private String startDate;
+  private String startTime;
+  private String endDate;
+  private String endTime;
+  private String title;
   // private EmployeeDTO employee;
   private AccessModeDTO accessModes;
 

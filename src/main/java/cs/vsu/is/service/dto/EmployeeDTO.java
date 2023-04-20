@@ -10,18 +10,22 @@ import javax.validation.constraints.*;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * A DTO for the {@link cs.vsu.is.domain.Employee} entity.
- */
 @Getter
 @Setter
+@NoArgsConstructor
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class EmployeeDTO {
 
   private Long id;
   private String patronymic;
+  private String post;
+  private String academicTitle;
+  private String academicDegree;
+  private String experience;
+  private String professionalExperience;
   private LocalDate dateOfBirth;
   private AdminUserDTO user;
   private Set<ArticleDTO> articles = new HashSet<>();

@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Date;
+
 import javax.persistence.*;
 
 /**
@@ -28,10 +30,19 @@ public class Articles implements Serializable {
   private Long id;
 
   @Column(name = "publication_date")
-  private Instant publicationDate;
+  private String publicationDate;
 
-  @Column(name = "content")
+  @Column(name = "publication_time")
+  private String publicationTime;
+
+  @Column(name = "content", columnDefinition = "json")
   private String content;
+
+  @Column(name = "title")
+  private String title;
+
+  @Column(name = "image_url")
+  private String imageURL;
 
   @ManyToOne
   @JsonIgnoreProperties(value = { "user", "articles", "events", "lessons", "pages", "scientificLeaderships",

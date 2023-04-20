@@ -33,6 +33,17 @@ public class Employee implements Serializable {
   @Column(name = "id")
   private Long id;
 
+  @Column(name = "post")
+  private String post;
+  @Column(name = "academic_title")
+  private String academicTitle;
+  @Column(name = "academic_degree")
+  private String academicDegree;
+  @Column(name = "experience")
+  private String experience;
+  @Column(name = "professional_experience")
+  private String professionalExperience;
+
   @Column(name = "patronymic")
   private String patronymic;
 

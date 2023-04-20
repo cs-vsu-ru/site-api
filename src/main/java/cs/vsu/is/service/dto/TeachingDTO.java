@@ -5,7 +5,13 @@ import java.util.Objects;
 
 import lombok.Data;
 
-@Data
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class TeachingDTO {
 

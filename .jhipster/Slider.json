@@ -1,0 +1,24 @@
+{
+  "changelogDate": "20230420121943",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "imageURL",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "urlTo",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "title",
+      "fieldType": "String"
+    }
+  ],
+  "jpaMetamodelFiltering": false,
+  "name": "Slider",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "service": "serviceClass"
+}
