@@ -9,7 +9,7 @@ import cs.vsu.is.domain.Employee;
 import cs.vsu.is.service.dto.EmployeeDTO;
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
+// @AllArgsConstructor
 @Component
 public class EmployeeConverter {
   private final ModelMapper modelMapper;
