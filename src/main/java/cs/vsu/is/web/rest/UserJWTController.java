@@ -7,6 +7,7 @@ import cs.vsu.is.repository.UserRepository;
 import cs.vsu.is.security.jwt.JWTFilter;
 import cs.vsu.is.security.jwt.TokenProvider;
 import cs.vsu.is.web.rest.vm.LoginVM;
+import lombok.Data;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,7 @@ public class UserJWTController {
         this.userRepository = userRepository;
     }
 
+    @Data
     class AuthResp {
         JWTToken jwtToken;
         Set<Authority> authorities;
