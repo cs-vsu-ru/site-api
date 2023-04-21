@@ -45,6 +45,7 @@ public class UserJWTController {
     class AuthResp {
         JWTToken jwtToken;
         Set<Authority> authorities;
+        String mainRole;
     }
 
     @PostMapping("/authenticate")
@@ -63,6 +64,16 @@ public class UserJWTController {
         AuthResp authResp = new AuthResp();
         authResp.jwtToken = new JWTToken(jwt);
         authResp.authorities = user.getAuthorities();
+        authResp.mainRole = null;
+        for(Authority authority:user.getAuthorities()) {
+            if (authority.getName().equals("ROLE_ADMIN")) {
+                authResp.mainRole = "ROLE_ADMIN";
+                break;
+            }
+        }
+        if(authResp.mainRole == null) {
+            authResp.mainRole = user.getAuthorities().iterator().next().getName();
+        }
         return new ResponseEntity<>(authResp, httpHeaders, HttpStatus.OK);
     }
 
