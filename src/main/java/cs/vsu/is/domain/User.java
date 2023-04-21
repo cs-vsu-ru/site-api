@@ -85,7 +85,7 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
   private Instant resetDate = null;
 
   @JsonIgnore
-  @ManyToMany
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "jhi_user_authority", joinColumns = {
       @JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = {
           @JoinColumn(name = "authority_name", referencedColumnName = "name") })
