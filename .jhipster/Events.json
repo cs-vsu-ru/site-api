@@ -24,6 +24,10 @@
     {
       "fieldName": "endTime",
       "fieldType": "Instant"
+    },
+    {
+      "fieldName": "title",
+      "fieldType": "String"
     }
   ],
   "fluentMethods": true,

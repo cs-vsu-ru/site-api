@@ -40,7 +40,7 @@ application {
     withAdminUi true
   }
 
-  entities AccessModes, Articles, EduSchedulePlace, Employee, Events, Lesson, Pages, Role, Schedule, ScientificLeaderships, ScientificWorkType, Specialities, Students, Subject, Teaching
+  entities AccessModes, Articles, EduSchedulePlace, Employee, Events, Lesson, Pages, Schedule, ScientificLeaderships, ScientificWorkType, Specialities, Students, Subject, Teaching
 }
 
 entity AccessModes {
@@ -75,9 +75,6 @@ entity Lesson {
 entity Pages {
   content String
 }
-entity Role {
-  name String
-}
 entity Schedule {
   name String
   uploadingTime Instant
@@ -89,7 +86,10 @@ entity ScientificLeaderships {
 entity ScientificWorkType {
   name String
 }
-entity Specialities
+entity Specialities{
+  code String
+  name String
+}
 entity Students {
   name String
   surname String
@@ -121,9 +121,6 @@ relationship ManyToOne {
   ScientificLeaderships{scientificWorkType} to ScientificWorkType
   Teaching{subject} to Subject
   Teaching{specialities} to Specialities
-}
-relationship ManyToMany {
-  Employee{role} to Role{employee}
 }
 
 service AccessModes, ScientificLeaderships, Specialities, Teaching with serviceClass

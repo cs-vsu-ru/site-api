@@ -3,7 +3,6 @@ package cs.vsu.is.service;
 import cs.vsu.is.domain.Specialities;
 import cs.vsu.is.repository.SpecialitiesRepository;
 import cs.vsu.is.service.dto.SpecialitiesDTO;
-import lombok.AllArgsConstructor;
 import cs.vsu.is.service.convertor.SpecialitiesConverter;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-@AllArgsConstructor
 public class SpecialitiesService {
 
   private final Logger log = LoggerFactory.getLogger(SpecialitiesService.class);
@@ -27,6 +25,11 @@ public class SpecialitiesService {
   private final SpecialitiesRepository specialitiesRepository;
 
   private final SpecialitiesConverter specialitiesMapper;
+
+  public SpecialitiesService(SpecialitiesRepository specialitiesRepository, SpecialitiesConverter specialitiesMapper) {
+    this.specialitiesRepository = specialitiesRepository;
+    this.specialitiesMapper = specialitiesMapper;
+  }
 
   /**
    * Save a specialities.
@@ -50,7 +53,7 @@ public class SpecialitiesService {
   public SpecialitiesDTO update(SpecialitiesDTO specialitiesDTO) {
     log.debug("Request to update Specialities : {}", specialitiesDTO);
     Specialities specialities = specialitiesMapper.toEntity(specialitiesDTO);
-    // no save call needed as we have no fields that can be updated
+    specialities = specialitiesRepository.save(specialities);
     return specialitiesMapper.toDto(specialities);
   }
 
@@ -71,7 +74,7 @@ public class SpecialitiesService {
 
   // return existingSpecialities;
   // })
-  // // .map(specialitiesRepository::save)
+  // .map(specialitiesRepository::save)
   // .map(specialitiesMapper::toDto);
   // }
 

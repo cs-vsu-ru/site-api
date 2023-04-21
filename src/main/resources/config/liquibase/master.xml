@@ -21,11 +21,11 @@
     <include file="config/liquibase/changelog/20230321105213_added_entity_Articles.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230321105214_added_entity_Pages.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230408144338_added_entity_Employee.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20230408144339_added_entity_Role.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230409103909_added_entity_Teaching.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230409134112_added_entity_Specialities.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230409135053_added_entity_ScientificLeaderships.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230409140654_added_entity_AccessModes.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20230420121943_added_entity_Slider.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20230408144338_added_entity_constraints_Employee.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230321105213_added_entity_constraints_Articles.xml" relativeToChangelogFile="false"/>

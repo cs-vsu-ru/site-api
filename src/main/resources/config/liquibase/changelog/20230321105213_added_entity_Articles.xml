@@ -14,16 +14,25 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="publication_date" type="${datetimeType}">
+            <column name="publication_date" type="varchar(25)">
                 <constraints nullable="true" />
             </column>
-            <column name="content" type="varchar(255)">
+            <column name="publication_time" type="varchar(25)">
+                <constraints nullable="true" />
+            </column>
+            <column name="content" type="text">
                 <constraints nullable="true" />
             </column>
             <column name="employee_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <column name="access_modes_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="image_url" type="text">
+                <constraints nullable="true" />
+            </column>
+            <column name="title" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
@@ -48,9 +57,12 @@
                   tableName="articles"
                   usePreparedStatements="true">
             <column name="id" type="numeric"/>
-            <column name="publication_date" type="date"/>
+            <column name="publication_date" type="string"/>
+            <column name="publication_time" type="string"/>
             <column name="content" type="string"/>
             <column name="access_modes_id" type="numeric"/>
+            <column name="image_url" type="string"/>
+            <column name="title" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

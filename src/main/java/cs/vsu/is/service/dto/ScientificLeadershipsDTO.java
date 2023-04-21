@@ -3,14 +3,15 @@ package cs.vsu.is.service.dto;
 import java.io.Serializable;
 import java.util.Objects;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-/**
- * A DTO for the {@link cs.vsu.is.domain.ScientificLeaderships} entity.
- */
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class ScientificLeadershipsDTO implements Serializable {
+public class ScientificLeadershipsDTO {
 
   private Long id;
 

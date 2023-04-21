@@ -5,9 +5,14 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.Instant;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-public class UserDTO implements Serializable {
+@Getter
+@Setter
+@NoArgsConstructor
+public class UserDTO {
   private Long id;
   private String login;
   private String password;

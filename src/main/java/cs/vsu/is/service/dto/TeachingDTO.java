@@ -5,9 +5,15 @@ import java.util.Objects;
 
 import lombok.Data;
 
-@Data
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class TeachingDTO implements Serializable {
+public class TeachingDTO {
 
   private Long id;
   private SubjectDTO subject;
