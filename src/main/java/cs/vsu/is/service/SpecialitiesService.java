@@ -2,8 +2,13 @@ package cs.vsu.is.service;
 
 import cs.vsu.is.domain.Specialities;
 import cs.vsu.is.repository.SpecialitiesRepository;
+import cs.vsu.is.service.dto.SpecialitiesDTO;
+import lombok.AllArgsConstructor;
+import cs.vsu.is.service.convertor.SpecialitiesConverter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,86 +19,93 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
+@AllArgsConstructor
 public class SpecialitiesService {
 
-    private final Logger log = LoggerFactory.getLogger(SpecialitiesService.class);
+  private final Logger log = LoggerFactory.getLogger(SpecialitiesService.class);
 
-    private final SpecialitiesRepository specialitiesRepository;
+  private final SpecialitiesRepository specialitiesRepository;
 
-    public SpecialitiesService(SpecialitiesRepository specialitiesRepository) {
-        this.specialitiesRepository = specialitiesRepository;
-    }
+  private final SpecialitiesConverter specialitiesMapper;
 
-    /**
-     * Save a specialities.
-     *
-     * @param specialities the entity to save.
-     * @return the persisted entity.
-     */
-    public Specialities save(Specialities specialities) {
-        log.debug("Request to save Specialities : {}", specialities);
-        return specialitiesRepository.save(specialities);
-    }
+  /**
+   * Save a specialities.
+   *
+   * @param specialitiesDTO the entity to save.
+   * @return the persisted entity.
+   */
+  public SpecialitiesDTO save(SpecialitiesDTO specialitiesDTO) {
+    log.debug("Request to save Specialities : {}", specialitiesDTO);
+    Specialities specialities = specialitiesMapper.toEntity(specialitiesDTO);
+    specialities = specialitiesRepository.save(specialities);
+    return specialitiesMapper.toDto(specialities);
+  }
 
-    /**
-     * Update a specialities.
-     *
-     * @param specialities the entity to save.
-     * @return the persisted entity.
-     */
-    public Specialities update(Specialities specialities) {
-        log.debug("Request to update Specialities : {}", specialities);
-        // no save call needed as we have no fields that can be updated
-        return specialities;
-    }
+  /**
+   * Update a specialities.
+   *
+   * @param specialitiesDTO the entity to save.
+   * @return the persisted entity.
+   */
+  public SpecialitiesDTO update(SpecialitiesDTO specialitiesDTO) {
+    log.debug("Request to update Specialities : {}", specialitiesDTO);
+    Specialities specialities = specialitiesMapper.toEntity(specialitiesDTO);
+    // no save call needed as we have no fields that can be updated
+    return specialitiesMapper.toDto(specialities);
+  }
 
-    /**
-     * Partially update a specialities.
-     *
-     * @param specialities the entity to update partially.
-     * @return the persisted entity.
-     */
-    public Optional<Specialities> partialUpdate(Specialities specialities) {
-        log.debug("Request to partially update Specialities : {}", specialities);
+  /**
+   * Partially update a specialities.
+   *
+   * @param specialitiesDTO the entity to update partially.
+   * @return the persisted entity.
+   */
+  // public Optional<SpecialitiesDTO> partialUpdate(SpecialitiesDTO
+  // specialitiesDTO) {
+  // log.debug("Request to partially update Specialities : {}", specialitiesDTO);
 
-        return specialitiesRepository
-            .findById(specialities.getId())
-            .map(existingSpecialities -> {
-                return existingSpecialities;
-            })// .map(specialitiesRepository::save)
-        ;
-    }
+  // return specialitiesRepository
+  // .findById(specialitiesDTO.getId())
+  // .map(existingSpecialities -> {
+  // specialitiesMapper.partialUpdate(existingSpecialities, specialitiesDTO);
 
-    /**
-     * Get all the specialities.
-     *
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public List<Specialities> findAll() {
-        log.debug("Request to get all Specialities");
-        return specialitiesRepository.findAll();
-    }
+  // return existingSpecialities;
+  // })
+  // // .map(specialitiesRepository::save)
+  // .map(specialitiesMapper::toDto);
+  // }
 
-    /**
-     * Get one specialities by id.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
-    @Transactional(readOnly = true)
-    public Optional<Specialities> findOne(Long id) {
-        log.debug("Request to get Specialities : {}", id);
-        return specialitiesRepository.findById(id);
-    }
+  /**
+   * Get all the specialities.
+   *
+   * @return the list of entities.
+   */
+  @Transactional(readOnly = true)
+  public List<SpecialitiesDTO> findAll() {
+    log.debug("Request to get all Specialities");
+    return specialitiesRepository.findAll().stream().map(specialitiesMapper::toDto)
+        .collect(Collectors.toCollection(LinkedList::new));
+  }
 
-    /**
-     * Delete the specialities by id.
-     *
-     * @param id the id of the entity.
-     */
-    public void delete(Long id) {
-        log.debug("Request to delete Specialities : {}", id);
-        specialitiesRepository.deleteById(id);
-    }
+  /**
+   * Get one specialities by id.
+   *
+   * @param id the id of the entity.
+   * @return the entity.
+   */
+  @Transactional(readOnly = true)
+  public Optional<SpecialitiesDTO> findOne(Long id) {
+    log.debug("Request to get Specialities : {}", id);
+    return specialitiesRepository.findById(id).map(specialitiesMapper::toDto);
+  }
+
+  /**
+   * Delete the specialities by id.
+   *
+   * @param id the id of the entity.
+   */
+  public void delete(Long id) {
+    log.debug("Request to delete Specialities : {}", id);
+    specialitiesRepository.deleteById(id);
+  }
 }

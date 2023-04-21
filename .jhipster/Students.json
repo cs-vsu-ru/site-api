@@ -1,7 +1,7 @@
 {
-  "applications": "*",
+  "applications": ["siteApi"],
   "changelogDate": "20230321105211",
-  "dto": "no",
+  "dto": "mapstruct",
   "embedded": false,
   "entityTableName": "students",
   "fields": [
@@ -19,14 +19,6 @@
   "name": "Students",
   "pagination": "no",
   "readOnly": false,
-  "relationships": [
-    {
-      "otherEntityName": "scientificLeadeship",
-      "otherEntityRelationshipName": "students",
-      "ownerSide": true,
-      "relationshipName": "scientificLeadeship",
-      "relationshipType": "many-to-many"
-    }
-  ],
-  "service": "no"
+  "relationships": [],
+  "service": "serviceClass"
 }

@@ -2,8 +2,13 @@ package cs.vsu.is.service;
 
 import cs.vsu.is.domain.Teaching;
 import cs.vsu.is.repository.TeachingRepository;
+import cs.vsu.is.service.dto.TeachingDTO;
+import lombok.AllArgsConstructor;
+import cs.vsu.is.service.convertor.TeachingConverter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,85 +19,92 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
+@AllArgsConstructor
 public class TeachingService {
 
-    private final Logger log = LoggerFactory.getLogger(TeachingService.class);
+  private final Logger log = LoggerFactory.getLogger(TeachingService.class);
 
-    private final TeachingRepository teachingRepository;
+  private final TeachingRepository teachingRepository;
 
-    public TeachingService(TeachingRepository teachingRepository) {
-        this.teachingRepository = teachingRepository;
-    }
+  private final TeachingConverter teachingMapper;
 
-    /**
-     * Save a teaching.
-     *
-     * @param teaching the entity to save.
-     * @return the persisted entity.
-     */
-    public Teaching save(Teaching teaching) {
-        log.debug("Request to save Teaching : {}", teaching);
-        return teachingRepository.save(teaching);
-    }
+  /**
+   * Save a teaching.
+   *
+   * @param teachingDTO the entity to save.
+   * @return the persisted entity.
+   */
+  public TeachingDTO save(TeachingDTO teachingDTO) {
+    log.debug("Request to save Teaching : {}", teachingDTO);
+    Teaching teaching = teachingMapper.toEntity(teachingDTO);
+    teaching = teachingRepository.save(teaching);
+    return teachingMapper.toDto(teaching);
+  }
 
-    /**
-     * Update a teaching.
-     *
-     * @param teaching the entity to save.
-     * @return the persisted entity.
-     */
-    public Teaching update(Teaching teaching) {
-        log.debug("Request to update Teaching : {}", teaching);
-        return teachingRepository.save(teaching);
-    }
+  /**
+   * Update a teaching.
+   *
+   * @param teachingDTO the entity to save.
+   * @return the persisted entity.
+   */
+  public TeachingDTO update(TeachingDTO teachingDTO) {
+    log.debug("Request to update Teaching : {}", teachingDTO);
+    Teaching teaching = teachingMapper.toEntity(teachingDTO);
+    teaching = teachingRepository.save(teaching);
+    return teachingMapper.toDto(teaching);
+  }
 
-    /**
-     * Partially update a teaching.
-     *
-     * @param teaching the entity to update partially.
-     * @return the persisted entity.
-     */
-    public Optional<Teaching> partialUpdate(Teaching teaching) {
-        log.debug("Request to partially update Teaching : {}", teaching);
+  /**
+   * Partially update a teaching.
+   *
+   * @param teachingDTO the entity to update partially.
+   * @return the persisted entity.
+   */
+  // public Optional<TeachingDTO> partialUpdate(TeachingDTO teachingDTO) {
+  // log.debug("Request to partially update Teaching : {}", teachingDTO);
 
-        return teachingRepository
-            .findById(teaching.getId())
-            .map(existingTeaching -> {
-                return existingTeaching;
-            })
-            .map(teachingRepository::save);
-    }
+  // return teachingRepository
+  // .findById(teachingDTO.getId())
+  // .map(existingTeaching -> {
+  // teachingMapper.partialUpdate(existingTeaching, teachingDTO);
 
-    /**
-     * Get all the teachings.
-     *
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public List<Teaching> findAll() {
-        log.debug("Request to get all Teachings");
-        return teachingRepository.findAll();
-    }
+  // return existingTeaching;
+  // })
+  // .map(teachingRepository::save)
+  // .map(teachingMapper::toDto);
+  // }
 
-    /**
-     * Get one teaching by id.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
-    @Transactional(readOnly = true)
-    public Optional<Teaching> findOne(Long id) {
-        log.debug("Request to get Teaching : {}", id);
-        return teachingRepository.findById(id);
-    }
+  /**
+   * Get all the teachings.
+   *
+   * @return the list of entities.
+   */
+  @Transactional(readOnly = true)
+  public List<TeachingDTO> findAll() {
+    log.debug("Request to get all Teachings");
+    return teachingRepository.findAll().stream().map(teachingMapper::toDto)
+        .collect(Collectors.toCollection(LinkedList::new));
+  }
 
-    /**
-     * Delete the teaching by id.
-     *
-     * @param id the id of the entity.
-     */
-    public void delete(Long id) {
-        log.debug("Request to delete Teaching : {}", id);
-        teachingRepository.deleteById(id);
-    }
+  /**
+   * Get one teaching by id.
+   *
+   * @param id the id of the entity.
+   * @return the entity.
+   */
+  @Transactional(readOnly = true)
+  public Optional<TeachingDTO> findOne(Long id) {
+    log.debug("Request to get Teaching : {}", id);
+    return teachingRepository.findById(id).map(teachingMapper::toDto);
+  }
+
+  /**
+   * Delete the teaching by id.
+   *
+   * @param id the id of the entity.
+   */
+  public void delete(Long id) {
+    log.debug("Request to delete Teaching : {}", id);
+    teachingRepository.deleteById(id);
+  }
 }

@@ -1,7 +1,7 @@
 {
-  "applications": "*",
+  "applications": ["siteApi"],
   "changelogDate": "20230321105207",
-  "dto": "no",
+  "dto": "mapstruct",
   "embedded": false,
   "entityTableName": "edu_schedule_place",
   "fields": [
@@ -28,5 +28,5 @@
   "pagination": "no",
   "readOnly": false,
   "relationships": [],
-  "service": "no"
+  "service": "serviceClass"
 }

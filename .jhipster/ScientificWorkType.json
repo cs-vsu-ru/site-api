@@ -1,7 +1,7 @@
 {
-  "applications": "*",
+  "applications": ["siteApi"],
   "changelogDate": "20230321105210",
-  "dto": "no",
+  "dto": "mapstruct",
   "embedded": false,
   "entityTableName": "scientific_work_type",
   "fields": [
@@ -15,14 +15,6 @@
   "name": "ScientificWorkType",
   "pagination": "no",
   "readOnly": false,
-  "relationships": [
-    {
-      "otherEntityName": "scientificLeadeship",
-      "otherEntityRelationshipName": "scientificWorkType",
-      "ownerSide": true,
-      "relationshipName": "scientificLeadeship",
-      "relationshipType": "many-to-many"
-    }
-  ],
-  "service": "no"
+  "relationships": [],
+  "service": "serviceClass"
 }

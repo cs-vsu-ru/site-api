@@ -20,18 +20,17 @@ public class Teaching implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JsonIgnoreProperties(
-        value = { "roles", "articles", "lessons", "events", "scientificLeaderships", "teachings", "user", "pages" },
-        allowSetters = true
-    )
-    private Employee employee;
-
-    @ManyToOne
-    @JsonIgnoreProperties(value = { "lessons" }, allowSetters = true)
     private Subject subject;
 
     @ManyToOne
     private Specialities specialities;
+
+    @ManyToOne
+    @JsonIgnoreProperties(
+        value = { "user", "articles", "events", "lessons", "pages", "scientificLeaderships", "teachings", "roles" },
+        allowSetters = true
+    )
+    private Employee employee;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -46,19 +45,6 @@ public class Teaching implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Employee getEmployee() {
-        return this.employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
-    }
-
-    public Teaching employee(Employee employee) {
-        this.setEmployee(employee);
-        return this;
     }
 
     public Subject getSubject() {
@@ -84,6 +70,19 @@ public class Teaching implements Serializable {
 
     public Teaching specialities(Specialities specialities) {
         this.setSpecialities(specialities);
+        return this;
+    }
+
+    public Employee getEmployee() {
+        return this.employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    public Teaching employee(Employee employee) {
+        this.setEmployee(employee);
         return this;
     }
 

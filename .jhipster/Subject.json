@@ -1,7 +1,7 @@
 {
-  "applications": "*",
+  "applications": ["siteApi"],
   "changelogDate": "20230321105206",
-  "dto": "no",
+  "dto": "mapstruct",
   "embedded": false,
   "entityTableName": "subject",
   "fields": [
@@ -20,5 +20,5 @@
   "pagination": "no",
   "readOnly": false,
   "relationships": [],
-  "service": "no"
+  "service": "serviceClass"
 }
