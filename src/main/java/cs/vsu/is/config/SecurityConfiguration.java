@@ -66,6 +66,7 @@ public class SecurityConfiguration {
             .antMatchers("/test/**").permitAll()
             .antMatchers("/api/authenticate").permitAll()
             .antMatchers("/api/employess").permitAll()
+            .antMatchers("/api/uploadFile").permitAll()
             .antMatchers("/api/register").permitAll()
             .antMatchers("/api/activate").permitAll()
             .antMatchers("/api/account/reset-password/init").permitAll()
