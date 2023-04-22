@@ -8,7 +8,8 @@ on:
 
 jobs:
   cd:
-    uses: ./.github/workflows/call-deploy_dev.yml
-    environment:
-      name: dev
-    secrets: inherit
+    runs-on: ubuntu-22.04
+    environ: dev
+    steps:
+      - uses: ./.github/workflows/call-deploy_dev.yml
+        secrets: inherit
