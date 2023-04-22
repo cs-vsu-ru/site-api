@@ -8,6 +8,5 @@ on:
 
 jobs:
   cd:
-    runs-on: ubuntu-22.04
     uses: ./.github/workflows/call-deploy_dev.yml
     secrets: inherit
