@@ -1,6 +1,10 @@
 FROM maven:3.8.3-jdk-11-slim AS build
-COPY . /app
+COPY pom.xml /app/
 WORKDIR /app
+
+RUN mvn dependency:resolve
+
+COPY . /app
 
 RUN mvn clean package
 
