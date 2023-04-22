@@ -3,9 +3,12 @@ name: "Push: dev"
 on:
   push:
     branches:    
-      - 'dev'
+      # - 'dev'  FIXME: temp
+      - 'devops'
 
 jobs:
   cd:
     uses: ./.github/workflows/call-deploy_dev.yml
+    environment:
+      name: dev
     secrets: inherit

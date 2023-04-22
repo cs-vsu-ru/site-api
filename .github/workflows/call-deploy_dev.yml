@@ -14,5 +14,9 @@ jobs:
       - uses: actions/checkout@v3.5.2
         with:
           clean: false
+      - name: Set up environment
+        run: |
+          echo "API_DOMAIN=${{ vars.API_DOMAIN }}" > .env
       - name: Deploy dev environment
-        run: docker-compose up --build -d
+        # run: docker-compose up --build -d  FIXME: temp
+        run: cat .env
