@@ -9,7 +9,8 @@ on:
 jobs:
   cd:
     runs-on: ubuntu-22.04
-    environ: dev
+    environment:
+      name: dev
     steps:
       - uses: ./.github/workflows/call-deploy_dev.yml
         secrets: inherit
