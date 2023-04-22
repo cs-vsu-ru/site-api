@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.*;
@@ -137,6 +138,62 @@ public class ParserService {
         return null;
     }
 
+    private static Integer findCourse(Map<String, List<Integer[]>> coursesIndexRange, Integer columnIndex) {
+        int course = -1;
+        for (var entry : coursesIndexRange.entrySet()) {
+            for (var pair : entry.getValue()) {
+                if (columnIndex <= pair[1] &&
+                    columnIndex >= pair[0]) {
+                    course = Integer.parseInt(entry.getKey().split(" ")[0]);
+                    return course;
+                }
+            }
+        }
+        return course;
+    }
+
+    private static Integer[] findGroupAndSubgroup(Map<String, List<Integer[]>> groupsIndexRange, Integer columnIndex) {
+        for (var entry : groupsIndexRange.entrySet()) {
+            for (var pair : entry.getValue()) {
+                if (columnIndex <= pair[1] &&
+                    columnIndex >= pair[0]) {
+                    if (entry.getKey().length() >= 6) {
+                        int group = Integer.parseInt(entry.getKey().split(" ")[0]);
+                        int subgroup = columnIndex % 2 + 1;
+                        return new Integer[]{group, subgroup};
+                    } else {
+                        return new Integer[]{0, 0};
+                    }
+                }
+            }
+        }
+        return new Integer[]{-1, -1};
+    }
+
+    private static String[] findTimes(Map<String, List<Integer[]>>timesIndexRange, Integer rowIndex){
+        for (var timesList : timesIndexRange.entrySet()) {
+            for (var pair : timesList.getValue()) {
+                if (rowIndex <= pair[1] && rowIndex >= pair[0]) {
+                    String startTime = timesList.getKey().split("-")[0].trim();
+                    String endTime = timesList.getKey().split("-")[1].trim();
+                    return new String[]{startTime, endTime};
+                }
+            }
+        }
+        return new String[]{"", ""};
+    }
+
+    private static String findWeekdayNum(Map<String, List<Integer[]>> weekdaysIndexRange, Integer rowIndex){
+        for (var weekdaysList : weekdaysIndexRange.entrySet()) {
+            for (var pair : weekdaysList.getValue()) {
+                if (rowIndex <= pair[1] && rowIndex >= pair[0]) {
+                    return weekdaysList.getKey();
+                }
+            }
+        }
+        return "";
+    }
+
     private Lesson parseCompletedSlot(Cell currentCell,
                                       Map<String, List<Integer[]>> timesIndexRange,
                                       Map<String, List<Integer[]>> weekdaysIndexRange,
@@ -148,96 +205,26 @@ public class ParserService {
         int rowIndex = currentCell.getRowIndex();
         int columnIndex = currentCell.getColumnIndex();
 
-        String startTime = null;
-        String endTime = null;
-
-        boolean flag = false;
-
-        for (var timesList : timesIndexRange.entrySet()) {
-            for (var pair : timesList.getValue()) {
-                if (rowIndex <= pair[1] && rowIndex >= pair[0]) {
-                    startTime = timesList.getKey().split("-")[0].trim();
-                    endTime = timesList.getKey().split("-")[1].trim();
-                    flag = true;
-                    break;
-                }
-            }
-            if (flag) {
-                flag = false;
-                break;
-            }
-        }
-
-//        String weekdayName = "";
-        Integer weekdayNum = -1;
-        for (var weekdaysList : weekdaysIndexRange.entrySet()) {
-            ++weekdayNum;
-            for (var pair : weekdaysList.getValue()) {
-                if (rowIndex <= pair[1] && rowIndex >= pair[0]) {
-//                    weekdayName = weekdaysList.getKey();
-                    flag = true;
-                    break;
-                }
-            }
-            if (flag) {
-                flag = false;
-                break;
-            }
-        }
+        String[] startEndTimes = findTimes(timesIndexRange, rowIndex);
+        String weekdayName = findWeekdayNum(weekdaysIndexRange, rowIndex);
 
         EduSchedulePlace emptySlot = new EduSchedulePlace();
-        emptySlot.setStartTime(startTime);
-        emptySlot.setEndTime(endTime);
-        emptySlot.setDayOfWeak(weekdayNum);
+        emptySlot.setStartTime(startEndTimes[0]);
+        emptySlot.setEndTime(startEndTimes[1]);
+        //todo: maybe enum to convert names to numbers
+        emptySlot.setDayOfWeak(-1);
         emptySlot.setIsDenominator(denominator);
 
         emptySlot = emptySlotRepository.save(emptySlot);
 
-        Integer course = null;
-        Integer group = null;
-        Integer subgroup = null;
+        Integer course = findCourse(coursesIndexRange, columnIndex);
+        Integer[] groupAndSubgroup = findGroupAndSubgroup(groupsIndexRange, columnIndex);
 
-        for (var entry : coursesIndexRange.entrySet()) {
-            for (var pair : entry.getValue()) {
-                if (columnIndex <= pair[1] &&
-                    columnIndex >= pair[0]) {
-                    course = Integer.parseInt(entry.getKey().split(" ")[0]);
-                    flag = true;
-                    break;
-                }
-            }
-            if (flag) {
-                flag = false;
-                break;
-            }
-        }
-
-        for (var entry : groupsIndexRange.entrySet()) {
-            for (var pair : entry.getValue()) {
-                if (columnIndex <= pair[1] &&
-                    columnIndex >= pair[0]) {
-                    if (entry.getKey().length() >= 6) {
-                        group = Integer.parseInt(entry.getKey().split(" ")[0]);
-                        subgroup = columnIndex % 2 + 1;
-                        flag = true;
-                        break;
-                    } else {
-                        group = 0;
-                        subgroup = 0;
-                        flag = true;
-                        break;
-                    }
-                }
-            }
-            if (flag) {
-                break;
-            }
-        }
 
         Lesson completedSlot = new Lesson();
         completedSlot.setCourse(course);
-        completedSlot.setGroup(group);
-        completedSlot.setSubgroup(subgroup);
+        completedSlot.setGroup(groupAndSubgroup[0]);
+        completedSlot.setSubgroup(groupAndSubgroup[1]);
         completedSlot.setEduSchedulePlace(emptySlot);
 //      todo: completedSlot.setSchedule();
 
@@ -249,6 +236,7 @@ public class ParserService {
 
             String teacherName;
             if (params.length > 2) {
+                //todo: make query for initials and surname
                 Employee employee = employeeRepository.findByUserLastName(params[params.length - 3]);
                 completedSlot.setEmployee(employee);
 
@@ -290,9 +278,6 @@ public class ParserService {
                 if (addressInvolved != null) {
                     if (currentCell.getColumnIndex() == addressInvolved.getFirstColumn() &&
                         currentCell.getRowIndex() == addressInvolved.getFirstRow()) {
-                        Lesson slot = parseCompletedSlot(currentCell, timesIndexRange, weekdaysIndexRange, coursesIndexRange, groupsIndexRange);
-                        result.add(slot);
-
                         for (int cellIndex = addressInvolved.getFirstColumn(); cellIndex <= addressInvolved.getLastColumn(); cellIndex++) {
                             for (int rowInde = addressInvolved.getFirstRow(); rowInde <= addressInvolved.getLastRow(); rowInde++) {
                                 Lesson duplicatedSlot = parseCompletedSlot(currentSheet.getRow(rowInde).getCell(cellIndex),
@@ -300,9 +285,7 @@ public class ParserService {
                                     weekdaysIndexRange,
                                     coursesIndexRange,
                                     groupsIndexRange);
-                                // todo: create parsing the string value itself
-                                // todo: set all slot params, except course, group, subgroup
-                                result.add(slot);
+                                result.add(duplicatedSlot);
                             }
                         }
                     }
