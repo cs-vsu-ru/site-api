@@ -23,10 +23,10 @@ public class EduSchedulePlace implements Serializable {
     private Boolean isDenominator;
 
     @Column(name = "start_time")
-    private Instant startTime;
+    private String startTime;
 
     @Column(name = "end_time")
-    private Instant endTime;
+    private String endTime;
 
     @Column(name = "day_of_weak")
     private Integer dayOfWeak;
@@ -59,29 +59,29 @@ public class EduSchedulePlace implements Serializable {
         this.isDenominator = isDenominator;
     }
 
-    public Instant getStartTime() {
+    public String getStartTime() {
         return this.startTime;
     }
 
-    public EduSchedulePlace startTime(Instant startTime) {
+    public EduSchedulePlace startTime(String startTime) {
         this.setStartTime(startTime);
         return this;
     }
 
-    public void setStartTime(Instant startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public Instant getEndTime() {
+    public String getEndTime() {
         return this.endTime;
     }
 
-    public EduSchedulePlace endTime(Instant endTime) {
+    public EduSchedulePlace endTime(String endTime) {
         this.setEndTime(endTime);
         return this;
     }
 
-    public void setEndTime(Instant endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 

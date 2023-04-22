@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.Size;
+
 /**
  * Spring Data JPA repository for the Employee entity.
  *
@@ -19,5 +21,6 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+    Employee findByUserLastName(@Size(max = 50) String user_lastName);
 
 }

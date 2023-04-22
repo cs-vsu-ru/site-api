@@ -102,6 +102,17 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Dependencies for parsing XLSX files -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.0</version>
+        </dependency>
         <dependency>
             <groupId>tech.jhipster</groupId>
             <artifactId>jhipster-framework</artifactId>
@@ -340,7 +351,7 @@
                                     <groupId>org.projectlombok</groupId>
                                     <artifactId>lombok</artifactId>
                                     <version>1.18.26</version>
-                              </path>                              
+                              </path>
                         </annotationProcessorPaths>
                   </configuration>
             </plugin>
