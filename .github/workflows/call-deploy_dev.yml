@@ -18,5 +18,4 @@ jobs:
         run: |
           echo "API_DOMAIN=${{ vars.DEV_API_DOMAIN }}" > .env
       - name: Deploy dev environment
-        # run: docker-compose up --build -d  FIXME: temp
-        run: cat .env
+        run: docker-compose up --build -d

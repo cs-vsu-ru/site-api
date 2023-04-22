@@ -3,8 +3,7 @@ name: "Push: dev"
 on:
   push:
     branches:    
-      # - 'dev'  FIXME: temp
-      - 'devops'
+      - 'dev'
 
 jobs:
   cd:
