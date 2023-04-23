@@ -34,7 +34,7 @@ public class UtilResource {
             Path path = Path.of("files/"+uuid + file.getOriginalFilename());
             log.debug("path {}", path);
             Path write = Files.write(path, bytes);
-            return ResponseEntity.ok().body(domain + write);
+            return ResponseEntity.ok().body(domain+"api/" + write);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(null);
