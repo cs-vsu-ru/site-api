@@ -4,5 +4,5 @@ FROM nginx:1.24.0 as nginx
 
 WORKDIR /etc/nginx
 
-COPY ./nginx.stage.conf.conf ./templates/nginx.conf.conf
+COPY ./src/main/docker/config/nginx/nginx.conf.conf ./templates/nginx.conf.conf
 COPY --from=web /web ./html
