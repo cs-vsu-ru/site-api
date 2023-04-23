@@ -23,12 +23,11 @@ public class UtilResource {
 
     @PostMapping("/uploadFile")
     public ResponseEntity<Path> uploadFile(
-        @RequestParam("file") MultipartFile file,
-        @RequestParam("extension") String extension) {
+        @RequestParam("file") MultipartFile file) {
         try {
             byte[] bytes = file.getBytes();
             UUID uuid = UUID.randomUUID();
-            Path path = Path.of("files/"+uuid + extension);
+            Path path = Path.of("files/"+uuid + file.getOriginalFilename());
             Files.write(path, bytes);
             return ResponseEntity.ok().body(path);
         } catch (IOException e) {
