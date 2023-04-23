@@ -28,6 +28,7 @@ public class UtilResource {
             byte[] bytes = file.getBytes();
             UUID uuid = UUID.randomUUID();
             Path path = Path.of("files/"+uuid + file.getOriginalFilename());
+            log.debug("path {}", path);
             Files.write(path, bytes);
             return ResponseEntity.ok().body(path);
         } catch (IOException e) {
