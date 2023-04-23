@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -150,6 +151,7 @@ public class ArticlesResource {
    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
    *         of articles in body.
    */
+
   @GetMapping("/articles")
   public List<ArticleDTO> getAllArticles() {
     log.debug("REST request to get all Articles");
@@ -163,6 +165,7 @@ public class ArticlesResource {
    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
    *         the articlesDTO, or with status {@code 404 (Not Found)}.
    */
+  @PreAuthorize("permitAll()")
   @GetMapping("/articles/{id}")
   public ResponseEntity<ArticleDTO> getArticles(@PathVariable Long id) {
     log.debug("REST request to get Articles : {}", id);
