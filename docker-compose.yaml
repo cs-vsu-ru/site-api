@@ -36,6 +36,7 @@ services:
   nginx:
     image: nginx:1.20.2
     volumes:
+      - files_volume:/etc/nginx/html/api/files
       - ./src/main/docker/config/nginx:/etc/nginx/templates:ro
     env_file: [ .env ]
     environment:
