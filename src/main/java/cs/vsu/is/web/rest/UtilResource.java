@@ -5,6 +5,7 @@ import cs.vsu.is.service.dto.UploadFileDTO;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -21,16 +22,19 @@ import java.util.UUID;
 public class UtilResource {
     private final Logger log = LoggerFactory.getLogger(UtilResource.class);
 
+    @Value("${domain}")
+    private String domain;
+
     @PostMapping("/uploadFile")
-    public ResponseEntity<Path> uploadFile(
+    public ResponseEntity<String> uploadFile(
         @RequestParam("file") MultipartFile file) {
         try {
             byte[] bytes = file.getBytes();
             UUID uuid = UUID.randomUUID();
             Path path = Path.of("files/"+uuid + file.getOriginalFilename());
             log.debug("path {}", path);
-            Files.write(path, bytes);
-            return ResponseEntity.ok().body(path);
+            Path write = Files.write(path, bytes);
+            return ResponseEntity.ok().body(domain + write);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(null);
