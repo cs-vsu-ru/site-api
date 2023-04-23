@@ -4,6 +4,8 @@ services:
   api:
     build:
       context: .
+    volumes:
+      - files_volume:/api/files
     environment:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
       - SPRING_PROFILES_ACTIVE=dev,api-docs
@@ -15,7 +17,7 @@ services:
       - JHIPSTER_SLEEP=30
     networks: [ db_network, redis_network, nginx_network ]
     depends_on: [ db, redis ]
-    command: java -jar /app.jar
+    command: java -jar api.jar
     restart: unless-stopped
   db:
     image: mysql:8.0.30
@@ -43,6 +45,7 @@ services:
     restart: unless-stopped
 
 volumes:
+  files_volume:
   db_volume:
 
 networks:
