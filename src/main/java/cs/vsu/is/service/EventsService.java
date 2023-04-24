@@ -63,19 +63,20 @@ public class EventsService {
    * @param eventsDTO the entity to update partially.
    * @return the persisted entity.
    */
-  // public Optional<EventDTO> partialUpdate(EventDTO eventsDTO) {
-  // log.debug("Request to partially update Events : {}", eventsDTO);
-
-  // return eventsRepository
-  // .findById(eventsDTO.getId())
-  // .map(existingEvents -> {
-  // eventsMapper.partialUpdate(existingEvents, eventsDTO);
-
-  // return existingEvents;
-  // })
-  // .map(eventsRepository::save)
-  // .map(eventsMapper::toDto);
-  // }
+//   public Optional<EventDTO> partialUpdate(EventDTO eventsDTO) {
+//       log.debug("Request to partially update Events : {}", eventsDTO);
+//
+//       return eventsRepository
+//           .findById(eventsDTO.getId())
+//           .map(existingEvents -> {
+//               eventsMapper.
+//               eventsMapper.partialUpdate(existingEvents, eventsDTO);
+//
+//               return existingEvents;
+//           })
+//           .map(eventsRepository::save)
+//           .map(eventsMapper::toDto);
+//   }
 
   /**
    * Get all the events.
