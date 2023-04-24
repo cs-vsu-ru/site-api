@@ -34,7 +34,8 @@ services:
     networks: [ redis_network ]
     restart: unless-stopped
   nginx:
-    image: nginx:1.20.2
+    build:
+      dockerfile: src/main/docker/nginx.dev.dockerfile
     volumes:
       - files_volume:/etc/nginx/html/api/files
       - ./src/main/docker/config/nginx:/etc/nginx/templates:ro
