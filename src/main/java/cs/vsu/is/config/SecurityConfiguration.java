@@ -17,6 +17,8 @@ import org.springframework.web.filter.CorsFilter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 import tech.jhipster.config.JHipsterProperties;
 
+import java.lang.reflect.Method;
+
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Import(SecurityProblemSupport.class)
@@ -62,9 +64,19 @@ public class SecurityConfiguration {
         .and()
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .antMatchers("/swagger-ui/**").permitAll()
+            .antMatchers("/api/swagger-ui/**").permitAll()
+            .antMatchers("/api/swagger-ui.html").permitAll()
             .antMatchers("/test/**").permitAll()
             .antMatchers("/api/authenticate").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/sliders").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/sliders/*").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/events").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/events/*").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/articles").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/articles/*").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/employees").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/employees/*").permitAll()
             .antMatchers("/api/employess").permitAll()
             .antMatchers("/api/uploadFile").permitAll()
             .antMatchers("/api/register").permitAll()

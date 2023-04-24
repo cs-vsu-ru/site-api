@@ -91,6 +91,10 @@ management:
             enabled: true
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
   application:
     name: siteApi
   profiles:
@@ -162,8 +166,10 @@ server:
 
 springdoc:
   show-actuator: true
-
-# Properties to be exposed on the /info management endpoint
+  swagger-ui:
+    path: /api/swagger-ui.html
+#  api-docs:
+#    path: /api
 info:
   # Comma separated list of profiles that will trigger the ribbon to show
   display-ribbon-on-profiles: 'dev'
@@ -211,3 +217,4 @@ jhipster:
 # ===================================================================
 
 # application:
+

@@ -5,6 +5,11 @@
 /src/test/javascript/coverage/
 
 ######################
+# Envs
+######################
+.env
+
+######################
 # Node
 ######################
 /node/
@@ -156,3 +161,4 @@ Desktop.ini
 ######################
 /coverage/
 /.nyc_output/
+/files/
