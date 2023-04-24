@@ -170,7 +170,7 @@ public class ParserService {
         return new Integer[]{-1, -1};
     }
 
-    private static String[] findTimes(Map<String, List<Integer[]>>timesIndexRange, Integer rowIndex){
+    private static String[] findTimes(Map<String, List<Integer[]>> timesIndexRange, Integer rowIndex) {
         for (var timesList : timesIndexRange.entrySet()) {
             for (var pair : timesList.getValue()) {
                 if (rowIndex <= pair[1] && rowIndex >= pair[0]) {
@@ -183,7 +183,7 @@ public class ParserService {
         return new String[]{"", ""};
     }
 
-    private static String findWeekdayNum(Map<String, List<Integer[]>> weekdaysIndexRange, Integer rowIndex){
+    private static String findWeekdayNum(Map<String, List<Integer[]>> weekdaysIndexRange, Integer rowIndex) {
         for (var weekdaysList : weekdaysIndexRange.entrySet()) {
             for (var pair : weekdaysList.getValue()) {
                 if (rowIndex <= pair[1] && rowIndex >= pair[0]) {
@@ -273,7 +273,13 @@ public class ParserService {
 
             for (int j = 2; j < currRowLen; j++) {
                 Cell currentCell = currentSheet.getRow(i).getCell(j);
-                var addressInvolved = includedInMergedRegion(currentCell, mergedRegions);
+                CellRangeAddress addressInvolved;
+                try {
+                    addressInvolved = includedInMergedRegion(currentCell, mergedRegions);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    addressInvolved = null;
+                }
 
                 if (addressInvolved != null) {
                     if (currentCell.getColumnIndex() == addressInvolved.getFirstColumn() &&
@@ -290,9 +296,13 @@ public class ParserService {
                         }
                     }
                 } else {
-                    if (!currentCell.getStringCellValue().equals("")) {
-                        Lesson slot = this.parseCompletedSlot(currentCell, timesIndexRange, weekdaysIndexRange, coursesIndexRange, groupsIndexRange);
-                        result.add(slot);
+                    try {
+                        if (!currentCell.getStringCellValue().equals("")) {
+                            Lesson slot = this.parseCompletedSlot(currentCell, timesIndexRange, weekdaysIndexRange, coursesIndexRange, groupsIndexRange);
+                            result.add(slot);
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
                 }
             }

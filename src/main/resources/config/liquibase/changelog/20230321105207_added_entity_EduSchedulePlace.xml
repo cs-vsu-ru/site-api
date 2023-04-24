@@ -17,10 +17,10 @@
             <column name="is_denominator" type="boolean">
                 <constraints nullable="true" />
             </column>
-            <column name="start_time" type="${datetimeType}">
+            <column name="start_time" type="varchar(20)">
                 <constraints nullable="true" />
             </column>
-            <column name="end_time" type="${datetimeType}">
+            <column name="end_time" type="varchar(20)">
                 <constraints nullable="true" />
             </column>
             <column name="day_of_weak" type="integer">
@@ -50,8 +50,8 @@
                   usePreparedStatements="true">
             <column name="id" type="numeric"/>
             <column name="is_denominator" type="boolean"/>
-            <column name="start_time" type="date"/>
-            <column name="end_time" type="date"/>
+            <column name="start_time" type="varchar(20)"/>
+            <column name="end_time" type="varchar(20)"/>
             <column name="day_of_weak" type="numeric"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>

@@ -25,9 +25,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UtilResource {
     private final Logger log = LoggerFactory.getLogger(UtilResource.class);
-    private final String timetableExtension = ".xlsx";
-    private final ParserService parserService;
-
     @Value("${domain}")
     private String domain;
 
@@ -40,13 +37,6 @@ public class UtilResource {
             Path path = Path.of("files/" + uuid + file.getOriginalFilename());
             log.debug("path {}", path);
             Path write = Files.write(path, bytes);
-
-            if (file.getName().endsWith(timetableExtension)) {
-                Workbook workbook = new XSSFWorkbook(path.toString());
-                parserService.parseXLSXToSlots(workbook, 0);
-                parserService.parseXLSXToSlots(workbook, 1);
-            }
-
             return ResponseEntity.ok().body(domain + "api/" + write);
         } catch (IOException e) {
             e.printStackTrace();
