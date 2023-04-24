@@ -20,9 +20,9 @@ public class EduSchedulePlaceDTO {
 
   private Boolean isDenominator;
 
-  private Instant startTime;
+  private String startTime;
 
-  private Instant endTime;
+  private String endTime;
 
   private Integer dayOfWeak;
 

@@ -256,7 +256,7 @@ public class ParserService {
 
 
     public List<Lesson> parseXLSXToSlots(Workbook workbook, Integer sheetNumber) {
-        logger.info("Request to parse XLSX document: {}", workbook.getSheetName(sheetNumber));
+        logger.info("Request to parse XLSX document: {}, sheet: {}", workbook.getSheetName(sheetNumber), sheetNumber);
 
         Sheet currentSheet = workbook.getSheetAt(sheetNumber);
         List<Lesson> result = new LinkedList<>();
