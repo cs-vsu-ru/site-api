@@ -113,34 +113,34 @@ public class EventsResource {
    *         couldn't be updated.
    * @throws URISyntaxException if the Location URI syntax is incorrect.
    */
-  // @PatchMapping(value = "/events/{id}", consumes = { "application/json",
-  // "application/merge-patch+json" })
-  // public ResponseEntity<EventDTO> partialUpdateEvents(
-  // @PathVariable(value = "id", required = false) final Long id,
-  // @RequestBody EventDTO eventsDTO
-  // ) throws URISyntaxException {
-  // log.debug("REST request to partial update Events partially : {}, {}", id,
-  // eventsDTO);
-  // if (eventsDTO.getId() == null) {
-  // throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-  // }
-  // if (!Objects.equals(id, eventsDTO.getId())) {
-  // throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-  // }
-
-  // if (!eventsRepository.existsById(id)) {
-  // throw new BadRequestAlertException("Entity not found", ENTITY_NAME,
-  // "idnotfound");
-  // }
-
-  // Optional<EventDTO> result = eventsService.partialUpdate(eventsDTO);
-
-  // return ResponseUtil.wrapOrNotFound(
-  // result,
-  // HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME,
-  // eventsDTO.getId().toString())
-  // );
-  // }
+//   @PatchMapping(value = "/events/{id}", consumes = { "application/json",
+//   "application/merge-patch+json" })
+//   public ResponseEntity<EventDTO> partialUpdateEvents(
+//   @PathVariable(value = "id", required = false) final Long id,
+//   @RequestBody EventDTO eventsDTO
+//   ) throws URISyntaxException {
+//       log.debug("REST request to partial update Events partially : {}, {}", id,
+//           eventsDTO);
+//       if (eventsDTO.getId() == null) {
+//           throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+//       }
+//       if (!Objects.equals(id, eventsDTO.getId())) {
+//           throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+//       }
+//
+//       if (!eventsRepository.existsById(id)) {
+//           throw new BadRequestAlertException("Entity not found", ENTITY_NAME,
+//               "idnotfound");
+//       }
+//
+//       Optional<EventDTO> result = eventsService.partialUpdate(eventsDTO);
+//
+//       return ResponseUtil.wrapOrNotFound(
+//           result,
+//           HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME,
+//               eventsDTO.getId().toString())
+//       );
+//   }
 
   /**
    * {@code GET  /events} : get all the events.

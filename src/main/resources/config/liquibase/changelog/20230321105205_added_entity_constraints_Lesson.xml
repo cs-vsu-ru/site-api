@@ -22,7 +22,7 @@
 
         <addForeignKeyConstraint baseColumnNames="edu_schedule_place_id"
                                  baseTableName="lesson"
-                                 constraintName="fk_lesson__edu_schedule_place_id"
+                                 constraintName="fk_lesson__edu_schedule_place_id__edu_schedule_place"
                                  referencedColumnNames="id"
                                  referencedTableName="edu_schedule_place"/>
 

@@ -27,8 +27,8 @@ public class ParsingResource {
     public ResponseEntity<String> parseFile(
         @RequestParam("filepath") String filepath) {
         try {
-//            Workbook workbook = new XSSFWorkbook("C:\\Users\\Рабочая\\IdeaProjects\\site-api\\files\\120d0925-4064-4fa9-aa25-82bc28c82647Saspisanie.xlsx");
-            Workbook workbook = new XSSFWorkbook(filepath);
+            String path = filepath.substring(filepath.lastIndexOf('/'));
+            Workbook workbook = new XSSFWorkbook("files" + path);
             parserService.parseXLSXToSlots(workbook, 0);
             parserService.parseXLSXToSlots(workbook, 1);
             return ResponseEntity.ok().body(domain + "api/parseTimetable" + filepath);
