@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -255,58 +256,68 @@ public class ParserService {
     }
 
 
-    public List<Lesson> parseXLSXToSlots(Workbook workbook, Integer sheetNumber) {
+    public ResponseEntity<String> parseXLSXToSlots(Workbook workbook, Integer sheetNumber) {
         logger.info("Request to parse XLSX document: {}, sheet: {}", workbook.getSheetName(sheetNumber), sheetNumber);
 
         Sheet currentSheet = workbook.getSheetAt(sheetNumber);
         List<Lesson> result = new LinkedList<>();
 
-        this.coursesIndexRange = countRowIndexRange(currentSheet.getRow(0));
-        this.groupsIndexRange = countRowIndexRange(currentSheet.getRow(1));
-        this.weekdaysIndexRange = countCellIndexRange(currentSheet, 0, 4);
-        this.timesIndexRange = countCellIndexRange(currentSheet, 1, 4);
+        try {
+            this.coursesIndexRange = countRowIndexRange(currentSheet.getRow(0));
+            this.groupsIndexRange = countRowIndexRange(currentSheet.getRow(1));
+            this.weekdaysIndexRange = countCellIndexRange(currentSheet, 0, 4);
+            this.timesIndexRange = countCellIndexRange(currentSheet, 1, 4);
 
-        this.mergedRegions = processMergedRegions(currentSheet);
+            this.mergedRegions = processMergedRegions(currentSheet);
+        } catch (Exception e) {
+            e.printStackTrace();
+//            return ResponseEntity.badRequest().body("Parsing failed on the stage of parsing courses, groups, weekdays and times cell ranges");
+        }
 
         for (int i = 4; i < currentSheet.getPhysicalNumberOfRows(); i++) {
-            int currRowLen = currentSheet.getRow(i).getLastCellNum();
+            try {
+                int currRowLen = currentSheet.getRow(i).getLastCellNum();
 
-            for (int j = 2; j < currRowLen; j++) {
-                Cell currentCell = currentSheet.getRow(i).getCell(j);
-                CellRangeAddress addressInvolved;
-                try {
-                    addressInvolved = includedInMergedRegion(currentCell, mergedRegions);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    addressInvolved = null;
-                }
+                for (int j = 2; j < currRowLen; j++) {
+                    Cell currentCell = currentSheet.getRow(i).getCell(j);
+                    CellRangeAddress addressInvolved;
+                    try {
+                        addressInvolved = includedInMergedRegion(currentCell, mergedRegions);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        addressInvolved = null;
+                    }
 
-                if (addressInvolved != null) {
-                    if (currentCell.getColumnIndex() == addressInvolved.getFirstColumn() &&
-                        currentCell.getRowIndex() == addressInvolved.getFirstRow()) {
-                        for (int cellIndex = addressInvolved.getFirstColumn(); cellIndex <= addressInvolved.getLastColumn(); cellIndex++) {
-                            for (int rowInde = addressInvolved.getFirstRow(); rowInde <= addressInvolved.getLastRow(); rowInde++) {
-                                Lesson duplicatedSlot = parseCompletedSlot(currentSheet.getRow(rowInde).getCell(cellIndex),
-                                    timesIndexRange,
-                                    weekdaysIndexRange,
-                                    coursesIndexRange,
-                                    groupsIndexRange);
-                                result.add(duplicatedSlot);
+                    if (addressInvolved != null) {
+                        if (currentCell.getColumnIndex() == addressInvolved.getFirstColumn() &&
+                            currentCell.getRowIndex() == addressInvolved.getFirstRow()) {
+                            for (int cellIndex = addressInvolved.getFirstColumn(); cellIndex <= addressInvolved.getLastColumn(); cellIndex++) {
+                                for (int rowInde = addressInvolved.getFirstRow(); rowInde <= addressInvolved.getLastRow(); rowInde++) {
+                                    Lesson duplicatedSlot = parseCompletedSlot(currentSheet.getRow(rowInde).getCell(cellIndex),
+                                        timesIndexRange,
+                                        weekdaysIndexRange,
+                                        coursesIndexRange,
+                                        groupsIndexRange);
+                                    result.add(duplicatedSlot);
+                                }
                             }
                         }
-                    }
-                } else {
-                    try {
-                        if (!currentCell.getStringCellValue().equals("")) {
-                            Lesson slot = this.parseCompletedSlot(currentCell, timesIndexRange, weekdaysIndexRange, coursesIndexRange, groupsIndexRange);
-                            result.add(slot);
+                    } else {
+                        try {
+                            if (!currentCell.getStringCellValue().equals("")) {
+                                Lesson slot = this.parseCompletedSlot(currentCell, timesIndexRange, weekdaysIndexRange, coursesIndexRange, groupsIndexRange);
+                                result.add(slot);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    }catch (Exception e){
-                        e.printStackTrace();
                     }
                 }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+//                return ResponseEntity.badRequest().body("Parsing failed on the stage of parsing nullable cell");
             }
         }
-        return result;
+        return ResponseEntity.ok().body("Parsing succeeded");
     }
 }

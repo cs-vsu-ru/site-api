@@ -33,9 +33,8 @@ public class ParsingResource {
             parserService.parseXLSXToSlots(workbook, 1);
             return ResponseEntity.ok().body(domain + "api/parseTimetable" + filepath);
         } catch (Exception e) {
-
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("Parsing failed");
+            return ResponseEntity.badRequest().body("Parsing failed with reason: " + e.getMessage());
         }
     }
 }
