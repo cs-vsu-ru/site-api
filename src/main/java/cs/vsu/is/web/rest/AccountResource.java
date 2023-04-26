@@ -11,6 +11,7 @@ import cs.vsu.is.service.UserService;
 import cs.vsu.is.service.dto.AdminUserDTO;
 import cs.vsu.is.service.dto.EmployeeDTO;
 import cs.vsu.is.service.dto.PasswordChangeDTO;
+import cs.vsu.is.service.dto.ResponseEmployeeDTO;
 import cs.vsu.is.web.rest.errors.*;
 import cs.vsu.is.web.rest.vm.KeyAndPasswordVM;
 import cs.vsu.is.web.rest.vm.ManagedUserVM;
@@ -106,16 +107,12 @@ public class AccountResource {
      *                          couldn't be returned.
      */
     @GetMapping("/account")
-    public ResponseEntity<EmployeeDTO> getAccount() {
+    public ResponseEntity<ResponseEmployeeDTO> getAccount() {
         AdminUserDTO user = userService
             .getUserWithAuthorities()
             .map(AdminUserDTO::new)
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
-        Optional<EmployeeDTO> one = employeeService.findOne(user.getId());
-        if (one.isEmpty()) {
-            return ResponseUtil.wrapOrNotFound(one);
-        }
-        EmployeeDTO employeeDTO = one.get();
+        ResponseEmployeeDTO employeeDTO = employeeService.findOne(user.getId());
         for(String authority:user.getAuthorities()) {
             if (authority.equals("ROLE_ADMIN")) {
                 employeeDTO.setMainRole("ROLE_ADMIN");

@@ -3,6 +3,7 @@ package cs.vsu.is.web.rest;
 import cs.vsu.is.repository.EmployeeRepository;
 import cs.vsu.is.service.EmployeeService;
 import cs.vsu.is.service.dto.EmployeeDTO;
+import cs.vsu.is.service.dto.ResponseEmployeeDTO;
 import cs.vsu.is.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -170,10 +171,10 @@ public class EmployeeResource {
    *         the employeeDTO, or with status {@code 404 (Not Found)}.
    */
   @GetMapping("/employees/{id}")
-  public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable Long id) {
+  public ResponseEntity<ResponseEmployeeDTO> getEmployee(@PathVariable Long id) {
     log.debug("REST request to get Employee : {}", id);
-    Optional<EmployeeDTO> employeeDTO = employeeService.findOne(id);
-    return ResponseUtil.wrapOrNotFound(employeeDTO);
+    ResponseEmployeeDTO employeeDTO = employeeService.findOne(id);
+    return ResponseEntity.ok(employeeDTO);
   }
 
   /**
