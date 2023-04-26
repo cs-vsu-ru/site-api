@@ -17,5 +17,8 @@ jobs:
       - name: Set up environment
         run: |
           echo "API_DOMAIN=${{ vars.DEV_API_DOMAIN }}" > .env
+      - name: Pull images
+        run: |
+          docker pull ghcr.io/cs-vsu-ru/site-web/web:latest
       - name: Deploy dev environment
         run: docker-compose up --force-recreate --build -d
