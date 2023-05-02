@@ -22,7 +22,6 @@ public class ParsingResource {
     @Value("${domain}")
     private String domain;
     private final ParserService parserService;
-
     @PostMapping("/parseTimetable")
     public ResponseEntity<String> parseFile(
         @RequestParam("filepath") String filepath) {
@@ -46,13 +45,8 @@ public class ParsingResource {
 //            Workbook workbook = new XSSFWorkbook();
 //            Sheet sheet = new XSSFSheet();
 //            html = sheet.toString();
-
-            //todo: algorithm of sorting timetable
-            // 1. search for teacher name
-            // 2. search for all lessons with id of previously found teacher
-            // 3. sort timetables by weekdays and by time
-            // 4. form a new Workbook and fill it with content
-            // 5. solve problem with parsing XSSFWorkbook to html
+            int timetableIndex = 0;
+            Workbook workbook = parserService.filterTimetableByTeacher(teacherName, timetableIndex);
 
             return ResponseEntity.ok().body(domain + "api/filterTimetable\n" + html);
         } catch (Exception e) {

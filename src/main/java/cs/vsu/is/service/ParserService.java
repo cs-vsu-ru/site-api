@@ -320,4 +320,24 @@ public class ParserService {
         }
         return ResponseEntity.ok().body("Parsing succeeded");
     }
+
+    public Workbook filterTimetableByTeacher(String teacherName, Integer timetableIndex){
+        //todo: algorithm of sorting timetable
+        // 1. search for teacher name (don't forget to specify the timetable id)
+        // 2. search for all lessons with id of previously found teacher
+        // 3. sort timetables by weekdays and by time
+        // 4. form a new Workbook and fill it with content
+        // 5. solve problem with parsing XSSFWorkbook to html
+
+        Employee employee = employeeRepository.findByUserLastName(teacherName); //todo: use an initials too and timetable id
+        List<Lesson> lessons = lessonRepository.findAllByEmployeeId(employee.getId());
+
+        lessons = lessons.stream()
+            .filter(lesson -> lesson.getSchedule().getIsActual())
+            .sorted(Comparator.comparing(lesson -> lesson.getEduSchedulePlace().getDayOfWeak()))
+            .sorted(Comparator.comparing(lesson -> lesson.getEduSchedulePlace().getStartTime()))
+            .collect(Collectors.toList());
+
+        return null;
+    }
 }
