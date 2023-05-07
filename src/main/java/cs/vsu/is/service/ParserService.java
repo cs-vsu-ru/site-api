@@ -226,10 +226,10 @@ public class ParserService {
         emptySlot.setStartTime(startEndTimes[0]);
         emptySlot.setEndTime(startEndTimes[1]);
 
-        for (int i = 0; i<WeekDays.values().length; i++){
-            if (WeekDays.values()[i].toString().equals(weekdayName.strip())){
+        for (int i = 0; i < WeekDays.values().length; i++) {
+            if (WeekDays.values()[i].toString().equals(weekdayName.strip())) {
                 emptySlot.setDayOfWeak(i);
-            }else emptySlot.setDayOfWeak(-1);
+            } else emptySlot.setDayOfWeak(-1);
         }
 
         emptySlot.setIsDenominator(denominator);
@@ -254,6 +254,7 @@ public class ParserService {
             //todo: don't forget about classname
 
             String teacherName;
+
             if (params.length > 2) {
                 //todo: make query for initials and surname
                 Employee employee = employeeRepository.findByUserLastName(params[params.length - 3]);
@@ -346,7 +347,7 @@ public class ParserService {
         RegionUtil.setBorderTop(BorderStyle.MEDIUM, new CellRangeAddress(i, i, j, j), sheet);
     }
 
-    private static String toHtmlFromHssfWorkbook() {
+    private static Workbook createHFFSSchemaForTeacher(List<Lesson> lessons) {
         HSSFWorkbook workbook = new HSSFWorkbook();
 
         String safeSheetName = WorkbookUtil.createSafeSheetName("");
@@ -369,13 +370,13 @@ public class ParserService {
             row.createCell(0);
             for (int j = 1; j < 7; j++) {
                 setBordersOnCell(i, j, sheet);
-
+                //todo: there goes lessons
                 if (i % 2 == 0) {
                     sheet.addMergedRegion(new CellRangeAddress(
-                        i - 1, //first row (0-based)
-                        i, //last row  (0-based)
-                        j, //first column (0-based)
-                        j  //last column  (0-based)
+                        i - 1,
+                        i,
+                        j,
+                        j
                     ));
                 }
             }
@@ -398,19 +399,10 @@ public class ParserService {
                 }
             }
         }
-
-        try (OutputStream fileOut = new FileOutputStream("htmlToDoc.xls")) {
-            workbook.write(fileOut);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        try {
-            return convertXlsxToHtml2(workbook);
-        } catch (ParserConfigurationException | TransformerException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        return workbook;
     }
-    private static String convertXlsxToHtml2(HSSFWorkbook excelDoc) throws ParserConfigurationException, TransformerException, IOException {
+
+    private static String convertHSSFToHtmlSchema(HSSFWorkbook excelDoc) throws ParserConfigurationException, TransformerException, IOException {
         ExcelToHtmlConverter converter = new ExcelToHtmlConverter(
             DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()
         );
@@ -434,13 +426,13 @@ public class ParserService {
         return out.toString();
     }
 
-    public Workbook filterTimetableByTeacher(String teacherName, Integer timetableIndex){
+    public Workbook filterTimetableByTeacher(String teacherName, Integer timetableIndex) {
         //todo: algorithm of sorting timetable
-        // 1. search for teacher name (don't forget to specify the timetable id)
-        // 2. search for all lessons with id of previously found teacher
-        // 3. sort timetables by weekdays and by time
-        // 4. form a new Workbook and fill it with content
-        // 5. solve problem with parsing XSSFWorkbook to html
+        // 1. search for teacher name + (don't forget to specify the timetable id)
+        // 2. search for all lessons with id of previously found teacher +
+        // 3. sort timetables by weekdays and by time +
+        // 4. form a new Workbook + and fill it with content
+        // 5. solve problem with parsing XSSFWorkbook to html +
 
         Employee employee = employeeRepository.findByUserLastName(teacherName); //todo: use an initials too and timetable id
         List<Lesson> lessons = lessonRepository.findAllByEmployeeId(employee.getId());
@@ -451,9 +443,21 @@ public class ParserService {
             .sorted(Comparator.comparing(lesson -> lesson.getEduSchedulePlace().getStartTime()))
             .collect(Collectors.toList());
 
+        Workbook workbook = createHFFSSchemaForTeacher(lessons);
 
+        try (OutputStream file = new FileOutputStream(resultFilename)) {
+            workbook.write(file);
+            return workbook;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
-
+        try {
+            return convertHSSFToHtmlSchema(workbook);
+        } catch (ParserConfigurationException | TransformerException | IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return null;
     }
