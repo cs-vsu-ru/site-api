@@ -33,9 +33,7 @@ public class ParsingResource {
         @RequestParam("filepath") String filepath) {
         try {
             String path = filepath.substring(filepath.lastIndexOf('\\'));
-            Workbook workbook = new XSSFWorkbook("files" + path);
-            parserService.parseXLSXToSlots(workbook, 0);
-            parserService.parseXLSXToSlots(workbook, 1);
+            parserService.parseTimetable(path);
             return ResponseEntity.ok().body(domain + "api/parseTimetable" + filepath);
         } catch (Exception e) {
             e.printStackTrace();

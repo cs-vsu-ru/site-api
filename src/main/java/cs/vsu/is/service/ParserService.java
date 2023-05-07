@@ -1,9 +1,6 @@
 package cs.vsu.is.service;
 
-import cs.vsu.is.domain.EduSchedulePlace;
-import cs.vsu.is.domain.Employee;
-import cs.vsu.is.domain.Lesson;
-import cs.vsu.is.domain.Subject;
+import cs.vsu.is.domain.*;
 import cs.vsu.is.repository.*;
 import cs.vsu.is.service.utils.WeekDays;
 import lombok.AllArgsConstructor;
@@ -13,8 +10,10 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.ss.util.WorkbookUtil;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +29,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,6 +55,8 @@ public class ParserService {
     private Map<String, List<Integer[]>> weekdaysIndexRange;
     private Map<String, List<Integer[]>> timesIndexRange;
     private List<List<CellRangeAddress>> mergedRegions;
+
+    private final ScheduleRepository scheduleRepository;
 
     private static Map<String, List<Integer[]>> countRowIndexRange(Row row) {
         Map<String, List<Integer[]>> indexMap = new HashMap<>();
@@ -457,5 +459,21 @@ public class ParserService {
             e.printStackTrace();
         }
         return workbook;
+    }
+
+    public void parseTimetable(String path) throws IOException {
+        Workbook workbook = new XSSFWorkbook("files" + path);
+
+        this.parseXLSXToSlots(workbook, 0);
+        this.parseXLSXToSlots(workbook, 1);
+
+        Schedule previous = scheduleRepository.findByIsActual(true);
+        previous.setIsActual(false);
+
+        //todo: убрать костыль
+        scheduleRepository.deleteById(previous.getId());
+        scheduleRepository.save(previous);
+
+        scheduleRepository.save(new Schedule(path, Instant.now(), true));
     }
 }
