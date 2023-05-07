@@ -28,6 +28,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -402,7 +404,7 @@ public class ParserService {
         return workbook;
     }
 
-    private static String convertHSSFToHtmlSchema(HSSFWorkbook excelDoc) throws ParserConfigurationException, TransformerException, IOException {
+    public static String convertHSSFToHtmlSchema(HSSFWorkbook excelDoc) throws ParserConfigurationException, TransformerException, IOException {
         ExcelToHtmlConverter converter = new ExcelToHtmlConverter(
             DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()
         );
@@ -445,20 +447,15 @@ public class ParserService {
 
         Workbook workbook = createHFFSSchemaForTeacher(lessons);
 
-        try (OutputStream file = new FileOutputStream(resultFilename)) {
+        UUID uuid = UUID.randomUUID();
+        Path path = Path.of("files/" + uuid + teacherName + timetableIndex);
+        logger.debug("path {}", path);
+
+        try (OutputStream file = new FileOutputStream(path.toString())) {
             workbook.write(file);
-            return workbook;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
-
-        try {
-            return convertHSSFToHtmlSchema(workbook);
-        } catch (ParserConfigurationException | TransformerException | IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return null;
+        return workbook;
     }
 }

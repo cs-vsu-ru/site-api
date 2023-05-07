@@ -2,6 +2,7 @@ package cs.vsu.is.web.rest;
 
 import cs.vsu.is.service.ParserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -13,6 +14,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -22,6 +27,7 @@ public class ParsingResource {
     @Value("${domain}")
     private String domain;
     private final ParserService parserService;
+
     @PostMapping("/parseTimetable")
     public ResponseEntity<String> parseFile(
         @RequestParam("filepath") String filepath) {
@@ -42,13 +48,13 @@ public class ParsingResource {
         try {
             String html = "";
 
-//            Workbook workbook = new XSSFWorkbook();
-//            Sheet sheet = new XSSFSheet();
-//            html = sheet.toString();
             int timetableIndex = 0;
             Workbook workbook = parserService.filterTimetableByTeacher(teacherName, timetableIndex);
 
+            html = ParserService.convertHSSFToHtmlSchema((HSSFWorkbook) workbook);
+            //todo: make two arguments for return
             return ResponseEntity.ok().body(domain + "api/filterTimetable\n" + html);
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body("Filtering timetable failed. Reason: " + e.getMessage());
