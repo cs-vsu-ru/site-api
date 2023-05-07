@@ -54,6 +54,4 @@ public class ParsingResource {
             return ResponseEntity.badRequest().body("Filtering timetable failed. Reason: " + e.getMessage());
         }
     }
-
-
 }

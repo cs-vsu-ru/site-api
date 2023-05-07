@@ -5,21 +5,29 @@ import cs.vsu.is.domain.Employee;
 import cs.vsu.is.domain.Lesson;
 import cs.vsu.is.domain.Subject;
 import cs.vsu.is.repository.*;
-import cs.vsu.is.service.convertor.TeachingConverter;
+import cs.vsu.is.service.utils.WeekDays;
 import lombok.AllArgsConstructor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.hssf.converter.ExcelToHtmlConverter;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
+import org.apache.poi.ss.util.WorkbookUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.apache.poi.ss.usermodel.Workbook;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
-import java.time.Instant;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,14 +35,19 @@ import java.util.stream.Collectors;
 @Transactional
 @AllArgsConstructor
 public class ParserService {
-    private final Logger logger = LoggerFactory.getLogger(ParserService.class);
+    private static final String[] timesArray = {"8:00 - 9:30",
+        "9:45 - 11:20",
+        "11:30 - 13:05",
+        "13:25 - 15:00",
+        "15:10 - 16:45",
+        "16:55 - 18:30",
+        "18:45 - 20:00"};
 
+    private final Logger logger = LoggerFactory.getLogger(ParserService.class);
     private final EmployeeRepository employeeRepository;
     private final EduSchedulePlaceRepository emptySlotRepository;
     private final LessonRepository lessonRepository;
     private final SubjectRepository subjectRepository;
-
-
     private Map<String, List<Integer[]>> coursesIndexRange;
     private Map<String, List<Integer[]>> groupsIndexRange;
     private Map<String, List<Integer[]>> weekdaysIndexRange;
@@ -212,8 +225,13 @@ public class ParserService {
         EduSchedulePlace emptySlot = new EduSchedulePlace();
         emptySlot.setStartTime(startEndTimes[0]);
         emptySlot.setEndTime(startEndTimes[1]);
-        //todo: maybe enum to convert names to numbers
-        emptySlot.setDayOfWeak(-1);
+
+        for (int i = 0; i<WeekDays.values().length; i++){
+            if (WeekDays.values()[i].toString().equals(weekdayName.strip())){
+                emptySlot.setDayOfWeak(i);
+            }else emptySlot.setDayOfWeak(-1);
+        }
+
         emptySlot.setIsDenominator(denominator);
 
         emptySlot = emptySlotRepository.save(emptySlot);
@@ -321,6 +339,101 @@ public class ParserService {
         return ResponseEntity.ok().body("Parsing succeeded");
     }
 
+    private static void setBordersOnCell(Integer i, Integer j, Sheet sheet) {
+        RegionUtil.setBorderBottom(BorderStyle.MEDIUM, new CellRangeAddress(i, i, j, j), sheet);
+        RegionUtil.setBorderLeft(BorderStyle.MEDIUM, new CellRangeAddress(i, i, j, j), sheet);
+        RegionUtil.setBorderRight(BorderStyle.MEDIUM, new CellRangeAddress(i, i, j, j), sheet);
+        RegionUtil.setBorderTop(BorderStyle.MEDIUM, new CellRangeAddress(i, i, j, j), sheet);
+    }
+
+    private static String toHtmlFromHssfWorkbook() {
+        HSSFWorkbook workbook = new HSSFWorkbook();
+
+        String safeSheetName = WorkbookUtil.createSafeSheetName("");
+        Sheet sheet = workbook.createSheet(safeSheetName);
+
+        sheet.createRow(0).setHeight((short) 500);
+        sheet.setColumnWidth(0, 5000);
+
+        CreationHelper helper = workbook.getCreationHelper();
+
+        for (int i = 1; i < 7; i++) {
+            sheet.getRow(0).createCell(i).setCellValue(helper.createRichTextString(String.valueOf(WeekDays.values()[i])));
+            setBordersOnCell(0, i, sheet);
+        }
+
+        for (int i = 1; i < 15; i++) {
+            Row row = sheet.createRow(i);
+            sheet.setColumnWidth(i, 5000);
+
+            row.createCell(0);
+            for (int j = 1; j < 7; j++) {
+                setBordersOnCell(i, j, sheet);
+
+                if (i % 2 == 0) {
+                    sheet.addMergedRegion(new CellRangeAddress(
+                        i - 1, //first row (0-based)
+                        i, //last row  (0-based)
+                        j, //first column (0-based)
+                        j  //last column  (0-based)
+                    ));
+                }
+            }
+        }
+
+        int counter = 0;
+        for (int i = 1; i < 15; i++) {
+            setBordersOnCell(i, 0, sheet);
+            if (i % 2 == 0) {
+                sheet.addMergedRegion(new CellRangeAddress(
+                    i - 1, //first row (0-based)
+                    i, //last row  (0-based)
+                    0, //first column (0-based)
+                    0  //last column  (0-based)
+                ));
+            } else {
+                if (counter < timesArray.length) {
+                    sheet.getRow(i).getCell(0).setCellValue(helper.createRichTextString(timesArray[counter]));
+                    ++counter;
+                }
+            }
+        }
+
+        try (OutputStream fileOut = new FileOutputStream("htmlToDoc.xls")) {
+            workbook.write(fileOut);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            return convertXlsxToHtml2(workbook);
+        } catch (ParserConfigurationException | TransformerException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private static String convertXlsxToHtml2(HSSFWorkbook excelDoc) throws ParserConfigurationException, TransformerException, IOException {
+        ExcelToHtmlConverter converter = new ExcelToHtmlConverter(
+            DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()
+        );
+
+        converter.processWorkbook(excelDoc);
+
+        org.w3c.dom.Document htmlDoc = converter.getDocument();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        DOMSource domSource = new DOMSource(htmlDoc);
+        StreamResult streamResult = new StreamResult(out);
+        TransformerFactory transfFactory = TransformerFactory.newInstance();
+        Transformer serializer = transfFactory.newTransformer();
+
+        serializer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+        serializer.setOutputProperty(OutputKeys.METHOD, "html");
+        serializer.transform(domSource, streamResult);
+
+        out.close();
+
+        return out.toString();
+    }
+
     public Workbook filterTimetableByTeacher(String teacherName, Integer timetableIndex){
         //todo: algorithm of sorting timetable
         // 1. search for teacher name (don't forget to specify the timetable id)
@@ -337,6 +450,10 @@ public class ParserService {
             .sorted(Comparator.comparing(lesson -> lesson.getEduSchedulePlace().getDayOfWeak()))
             .sorted(Comparator.comparing(lesson -> lesson.getEduSchedulePlace().getStartTime()))
             .collect(Collectors.toList());
+
+
+
+
 
         return null;
     }
