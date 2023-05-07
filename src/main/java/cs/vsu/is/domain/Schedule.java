@@ -30,12 +30,20 @@ public class Schedule implements Serializable {
   private Boolean isActual;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here
-
-
+    public Schedule(Long id, String name, Instant uploadingTime, Boolean isActual) {
+        this.id = id;
+        this.name = name;
+        this.uploadingTime = uploadingTime;
+        this.isActual = isActual;
+    }
     public Schedule(String name, Instant uploadingTime, Boolean isActual) {
         this.name = name;
         this.uploadingTime = uploadingTime;
         this.isActual = isActual;
+    }
+
+    public Schedule() {
+
     }
 
     public Long getId() {

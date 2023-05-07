@@ -249,7 +249,7 @@ public class ParserService {
         completedSlot.setGroup(groupAndSubgroup[0]);
         completedSlot.setSubgroup(groupAndSubgroup[1]);
         completedSlot.setEduSchedulePlace(emptySlot);
-//      todo: completedSlot.setSchedule();
+        completedSlot.setSchedule(scheduleRepository.findByIsActual(true));
 
         if (!currentCell.getStringCellValue().equals("")) {
             String[] params = currentCell.getStringCellValue().split(" ");
@@ -467,12 +467,9 @@ public class ParserService {
         this.parseXLSXToSlots(workbook, 0);
         this.parseXLSXToSlots(workbook, 1);
 
-        Schedule previous = scheduleRepository.findByIsActual(true);
+        //todo
+        Schedule previous = scheduleRepository.findFirstByIsActual(true);
         previous.setIsActual(false);
-
-        //todo: убрать костыль
-        scheduleRepository.deleteById(previous.getId());
-        scheduleRepository.save(previous);
 
         scheduleRepository.save(new Schedule(path, Instant.now(), true));
     }
