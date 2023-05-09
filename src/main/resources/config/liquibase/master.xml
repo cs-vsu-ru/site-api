@@ -10,6 +10,7 @@
     <property name="uuidType" value="varchar(36)" dbms="mysql"/>
     <property name="datetimeType" value="datetime(6)" dbms="mysql"/>
 
+    <include file="config/liquibase/changelog/20230509_add_static_pages_table.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230321105205_added_entity_Lesson.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230321105206_added_entity_Subject.xml" relativeToChangelogFile="false"/>

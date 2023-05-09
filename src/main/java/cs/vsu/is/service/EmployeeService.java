@@ -1,19 +1,16 @@
 package cs.vsu.is.service;
 
 import cs.vsu.is.domain.Employee;
-import cs.vsu.is.domain.Lesson;
+import cs.vsu.is.domain.User;
 import cs.vsu.is.repository.EmployeeRepository;
+import cs.vsu.is.repository.UserRepository;
 import cs.vsu.is.service.convertor.EmployeeConverter;
-import cs.vsu.is.service.convertor.LessonConverter;
 import cs.vsu.is.service.dto.EmployeeDTO;
-import cs.vsu.is.service.dto.ResponseEmployeeDTO;
-import cs.vsu.is.service.dto.ResponseLessonsDTO;
 import lombok.AllArgsConstructor;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +31,9 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
+    private final UserRepository userRepository;
+
     private final EmployeeConverter employeeMapper;
-    private final LessonConverter lessonMapper;
     private final EmployeeConverter employeeConvertor;
 
     /**
@@ -46,7 +44,10 @@ public class EmployeeService {
      */
     public EmployeeDTO save(EmployeeDTO employeeDTO) {
         log.debug("Request to save Employee : {}", employeeDTO);
+        Long userId = employeeDTO.getUser().getId();
+        User byId = userRepository.findById(userId).get();
         Employee employee = employeeMapper.toEntity(employeeDTO);
+        employee.setUser(byId);
         employee = employeeRepository.save(employee);
         return employeeMapper.toDto(employee);
     }
@@ -112,43 +113,9 @@ public class EmployeeService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public ResponseEmployeeDTO findOne(Long id) {
+    public Optional<EmployeeDTO> findOne(Long id) {
         log.debug("Request to get Employee : {}", id);
-        Optional<Employee> employeeOpt = employeeRepository.findById(id);
-        Employee employee = employeeOpt.get();
-        EmployeeDTO employeeDTO = employeeMapper.toDto(employee);
-        ResponseEmployeeDTO responseEmployeeDTO = map(employeeDTO);
-        ResponseLessonsDTO responseLessonsDTO = new ResponseLessonsDTO();
-        Set<Lesson> lessons = employee.getLessons();
-        responseLessonsDTO.setDay1(lessons.stream().filter(item -> item.getEduSchedulePlace().getDayOfWeak() == 1).map(lessonMapper::toDto).collect(Collectors.toList()));
-        responseLessonsDTO.setDay2(lessons.stream().filter(item -> item.getEduSchedulePlace().getDayOfWeak() == 2).map(lessonMapper::toDto).collect(Collectors.toList()));
-        responseLessonsDTO.setDay3(lessons.stream().filter(item -> item.getEduSchedulePlace().getDayOfWeak() == 3).map(lessonMapper::toDto).collect(Collectors.toList()));
-        responseLessonsDTO.setDay4(lessons.stream().filter(item -> item.getEduSchedulePlace().getDayOfWeak() == 4).map(lessonMapper::toDto).collect(Collectors.toList()));
-        responseLessonsDTO.setDay5(lessons.stream().filter(item -> item.getEduSchedulePlace().getDayOfWeak() == 5).map(lessonMapper::toDto).collect(Collectors.toList()));
-        responseLessonsDTO.setDay6(lessons.stream().filter(item -> item.getEduSchedulePlace().getDayOfWeak() == 6).map(lessonMapper::toDto).collect(Collectors.toList()));
-        responseLessonsDTO.setDay7(lessons.stream().filter(item -> item.getEduSchedulePlace().getDayOfWeak() == 7).map(lessonMapper::toDto).collect(Collectors.toList()));
-        responseEmployeeDTO.setLessons(responseLessonsDTO);
-        return responseEmployeeDTO;
-    }
-
-    private ResponseEmployeeDTO map(EmployeeDTO employeeDTO) {
-        ResponseEmployeeDTO responseEmployeeDTO = new ResponseEmployeeDTO();
-        responseEmployeeDTO.setId(employeeDTO.getId());
-        responseEmployeeDTO.setPatronymic(employeeDTO.getPatronymic());
-        responseEmployeeDTO.setPost(employeeDTO.getPost());
-        responseEmployeeDTO.setAcademicTitle(employeeDTO.getAcademicTitle());
-        responseEmployeeDTO.setAcademicDegree(employeeDTO.getAcademicDegree());
-        responseEmployeeDTO.setExperience(employeeDTO.getExperience());
-        responseEmployeeDTO.setProfessionalExperience(employeeDTO.getProfessionalExperience());
-        responseEmployeeDTO.setDateOfBirth(employeeDTO.getDateOfBirth());
-        responseEmployeeDTO.setUser(employeeDTO.getUser());
-        responseEmployeeDTO.setArticles(employeeDTO.getArticles());
-        responseEmployeeDTO.setEvents(employeeDTO.getEvents());
-        responseEmployeeDTO.setPages(employeeDTO.getPages());
-        responseEmployeeDTO.setScientificLeaderships(employeeDTO.getScientificLeaderships());
-        responseEmployeeDTO.setTeachings(employeeDTO.getTeachings());
-        responseEmployeeDTO.setMainRole(employeeDTO.getMainRole());
-        return responseEmployeeDTO;
+        return employeeRepository.findById(id).map(employeeMapper::toDto);
     }
 
     /**
