@@ -94,7 +94,6 @@ public class EmployeeResource {
     if (!employeeRepository.existsById(id)) {
       throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
     }
-
     EmployeeDTO result = employeeService.update(employeeDTO);
     return ResponseEntity
         .ok()
