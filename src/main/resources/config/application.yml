@@ -167,7 +167,7 @@ server:
 springdoc:
   show-actuator: true
   swagger-ui:
-    path: /api/swagger-ui.html
+    path: swagger-ui.html
 #  api-docs:
 #    path: /api
 info:
@@ -217,4 +217,13 @@ jhipster:
 # ===================================================================
 
 # application:
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql: TRACE
 
