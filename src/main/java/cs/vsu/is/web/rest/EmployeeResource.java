@@ -170,10 +170,10 @@ public class EmployeeResource {
    *         the employeeDTO, or with status {@code 404 (Not Found)}.
    */
   @GetMapping("/employees/{id}")
-  public ResponseEntity<ResponseEmployeeDTO> getEmployee(@PathVariable Long id) {
+  public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable Long id) {
     log.debug("REST request to get Employee : {}", id);
-    ResponseEmployeeDTO employeeDTO = employeeService.findOne(id);
-    return ResponseEntity.ok(employeeDTO);
+    Optional<EmployeeDTO> employeeDTO = employeeService.findOne(id);
+    return ResponseEntity.ok(employeeDTO.get());
   }
 
   /**
