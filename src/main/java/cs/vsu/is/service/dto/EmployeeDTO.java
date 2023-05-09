@@ -30,7 +30,7 @@ public class EmployeeDTO {
     private AdminUserDTO user;
     private Set<ArticleDTO> articles = new HashSet<>();
     private Set<EventDTO> events = new HashSet<>();
-    private Set<LessonDTO> lessons = new HashSet<>();
+//    private Set<LessonDTO> lessons = new HashSet<>();
     private Set<PageDTO> pages = new HashSet<>();
     private Set<ScientificLeadershipsDTO> scientificLeaderships = new HashSet<>();
     private Set<TeachingDTO> teachings = new HashSet<>();
