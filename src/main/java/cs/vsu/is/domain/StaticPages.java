@@ -37,4 +37,8 @@ public class StaticPages {
 
     @Column(name = "content_confidential")
     private String contentConfidential;
+
+
+    @Column(name = "content_contacts")
+    private String contentContacts;
 }

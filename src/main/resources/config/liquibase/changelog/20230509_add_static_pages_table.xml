@@ -16,6 +16,7 @@
             <column name="content_students" type="text"/>
             <column name="content_partners" type="text"/>
             <column name="content_confidential" type="text"/>
+            <column name="content_contacts" type="text"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>
