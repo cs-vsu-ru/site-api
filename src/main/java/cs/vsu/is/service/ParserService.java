@@ -49,14 +49,13 @@ public class ParserService {
     private final EmployeeRepository employeeRepository;
     private final EduSchedulePlaceRepository emptySlotRepository;
     private final LessonRepository lessonRepository;
-    private final SubjectRepository subjectRepository;
+    private final ScheduleRepository scheduleRepository;
+
     private Map<String, List<Integer[]>> coursesIndexRange;
     private Map<String, List<Integer[]>> groupsIndexRange;
     private Map<String, List<Integer[]>> weekdaysIndexRange;
     private Map<String, List<Integer[]>> timesIndexRange;
     private List<List<CellRangeAddress>> mergedRegions;
-
-    private final ScheduleRepository scheduleRepository;
 
     private static Map<String, List<Integer[]>> countRowIndexRange(Row row) {
         Map<String, List<Integer[]>> indexMap = new HashMap<>();
@@ -243,21 +242,20 @@ public class ParserService {
         Integer course = findCourse(coursesIndexRange, columnIndex);
         Integer[] groupAndSubgroup = findGroupAndSubgroup(groupsIndexRange, columnIndex);
 
-
         Lesson completedSlot = new Lesson();
         completedSlot.setCourse(course);
         completedSlot.setGroup(groupAndSubgroup[0]);
         completedSlot.setSubgroup(groupAndSubgroup[1]);
         completedSlot.setEduSchedulePlace(emptySlot);
-        completedSlot.setSchedule(scheduleRepository.findByIsActual(true));
+        completedSlot.setSchedule(scheduleRepository.findFirstByIsActual(true));
 
         if (!currentCell.getStringCellValue().equals("")) {
             String[] params = currentCell.getStringCellValue().split(" ");
 
             String classNum = params[params.length - 1];
-            //todo: don't forget about classname
+            completedSlot.setClassroom(classNum);
 
-            String teacherName;
+//            String teacherName;
 
             if (params.length > 2) {
                 //todo: make query for initials and surname
@@ -268,8 +266,10 @@ public class ParserService {
                 for (int k = 0; k < params.length - 4; k++) {
                     subjectName.append(params[k]).append(" ");
                 }
-                Subject subject = subjectRepository.findByName(String.valueOf(subjectName));
-                completedSlot.setSubject(subject);
+//                Subject subject = subjectRepository.findByName(String.valueOf(subjectName));
+//                completedSlot.setSubject(subject);
+                completedSlot.setSubjectName(String.valueOf(subjectName));
+
             }
         }
 
@@ -344,14 +344,14 @@ public class ParserService {
         return ResponseEntity.ok().body("Parsing succeeded");
     }
 
-    private static void setBordersOnCell(Integer i, Integer j, Sheet sheet) {
+    private void setBordersOnCell(Integer i, Integer j, Sheet sheet) {
         RegionUtil.setBorderBottom(BorderStyle.MEDIUM, new CellRangeAddress(i, i, j, j), sheet);
         RegionUtil.setBorderLeft(BorderStyle.MEDIUM, new CellRangeAddress(i, i, j, j), sheet);
         RegionUtil.setBorderRight(BorderStyle.MEDIUM, new CellRangeAddress(i, i, j, j), sheet);
         RegionUtil.setBorderTop(BorderStyle.MEDIUM, new CellRangeAddress(i, i, j, j), sheet);
     }
 
-    private static Workbook createHFFSSchemaForTeacher(List<Lesson> lessons) {
+    private Workbook createHFFSSchemaForTeacher(List<Lesson> lessons) {
         HSSFWorkbook workbook = new HSSFWorkbook();
 
         String safeSheetName = WorkbookUtil.createSafeSheetName("");
@@ -374,15 +374,6 @@ public class ParserService {
             row.createCell(0);
             for (int j = 1; j < 7; j++) {
                 setBordersOnCell(i, j, sheet);
-                //todo: there goes lessons
-                if (i % 2 == 0) {
-                    sheet.addMergedRegion(new CellRangeAddress(
-                        i - 1,
-                        i,
-                        j,
-                        j
-                    ));
-                }
             }
         }
 
@@ -390,12 +381,7 @@ public class ParserService {
         for (int i = 1; i < 15; i++) {
             setBordersOnCell(i, 0, sheet);
             if (i % 2 == 0) {
-                sheet.addMergedRegion(new CellRangeAddress(
-                    i - 1, //first row (0-based)
-                    i, //last row  (0-based)
-                    0, //first column (0-based)
-                    0  //last column  (0-based)
-                ));
+                sheet.addMergedRegion(new CellRangeAddress(i - 1, i, 0, 0));
             } else {
                 if (counter < timesArray.length) {
                     sheet.getRow(i).getCell(0).setCellValue(helper.createRichTextString(timesArray[counter]));
@@ -403,6 +389,38 @@ public class ParserService {
                 }
             }
         }
+
+        for (int i = 1; i < 7; i++) {
+            String currentWeekdayValue = String.valueOf(WeekDays.values()[i]);
+
+            List<Lesson> weekdayLessons = lessons.stream()
+                .filter(lesson -> WeekDays.values()[lesson.getEduSchedulePlace().getDayOfWeak()].equals(currentWeekdayValue))
+                .collect(Collectors.toList());
+
+            for (Lesson slot : weekdayLessons) {
+                String timeGap = slot.getEduSchedulePlace().getStartTime() + " - " + slot.getEduSchedulePlace().getEndTime();
+                boolean isDemoninator = slot.getEduSchedulePlace().getIsDenominator();
+                int rowTimeIndex = this.findTimeRowIndex(timeGap, timesArray);
+                rowTimeIndex = rowTimeIndex * 2 + 1;
+
+                if (isDemoninator) {
+                    ++rowTimeIndex;
+                }
+                sheet.getRow(rowTimeIndex).getCell(i).setCellValue(
+                    helper.createRichTextString(slot.getClassroom())
+                );
+            }
+        }
+
+        for (int i = 1; i < 14; i += 2) {
+            for (int j = 1; j < 7; j++) {
+                if (sheet.getRow(i).getCell(j).getStringCellValue().equals("") &&
+                    (sheet.getRow(i + 1).getCell(j).getStringCellValue().equals(""))) {
+                    sheet.addMergedRegion(new CellRangeAddress(i, i + 1, j, j));
+                }
+            }
+        }
+
         return workbook;
     }
 
@@ -430,12 +448,24 @@ public class ParserService {
         return out.toString();
     }
 
+    public Workbook createHSSFSchemaForChair() {
+        return null;
+    }
+
+    private Integer findTimeRowIndex(String s, String[] array) {
+        for (int i = 0; i < array.length; i++) {
+            if (s.equals(array[i]))
+                return i;
+        }
+        return -1;
+    }
+
     public Workbook filterTimetableByTeacher(String teacherName, Integer timetableIndex) {
         //todo: algorithm of sorting timetable
         // 1. search for teacher name + (don't forget to specify the timetable id)
         // 2. search for all lessons with id of previously found teacher +
         // 3. sort timetables by weekdays and by time +
-        // 4. form a new Workbook + and fill it with content
+        // 4. form a new Workbook + and fill it with content +
         // 5. solve problem with parsing XSSFWorkbook to html +
 
         Employee employee = employeeRepository.findByUserLastName(teacherName); //todo: use an initials too and timetable id
@@ -451,13 +481,13 @@ public class ParserService {
 
         UUID uuid = UUID.randomUUID();
         Path path = Path.of("files/" + uuid + teacherName + timetableIndex);
-        logger.debug("path {}", path);
+        logger.debug("Personal timetable saved to path {}", path);
 
-        try (OutputStream file = new FileOutputStream(path.toString())) {
-            workbook.write(file);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try (OutputStream file = new FileOutputStream(path.toString())) {
+//            workbook.write(file);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         return workbook;
     }
 
@@ -467,10 +497,16 @@ public class ParserService {
         this.parseXLSXToSlots(workbook, 0);
         this.parseXLSXToSlots(workbook, 1);
 
-        //todo
+        //todo: merge function and selection of last timetable
         Schedule previous = scheduleRepository.findFirstByIsActual(true);
         previous.setIsActual(false);
 
         scheduleRepository.save(new Schedule(path, Instant.now(), true));
+    }
+
+    public Workbook filterTimetableByChair(List<String> employeeNames) {
+
+
+        return null;
     }
 }
