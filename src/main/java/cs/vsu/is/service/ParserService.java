@@ -355,7 +355,7 @@ public class ParserService {
     private Workbook createHFFSSchemaForTeacher(List<Lesson> lessons) {
         HSSFWorkbook workbook = new HSSFWorkbook();
 
-        String safeSheetName = WorkbookUtil.createSafeSheetName("");
+        String safeSheetName = WorkbookUtil.createSafeSheetName(" ");
         Sheet sheet = workbook.createSheet(safeSheetName);
 
         sheet.createRow(0).setHeight((short) 500);
@@ -394,11 +394,8 @@ public class ParserService {
         for (int i = 1; i < 7; i++) {
             String currentWeekdayValue = String.valueOf(WeekDays.values()[i]);
 
-            var s = WeekDays.values()[lessons.get(2).getEduSchedulePlace().getDayOfWeak()].equals(currentWeekdayValue);
-
             List<Lesson> weekdayLessons = lessons.stream()
-                //todo: check always false
-                .filter(lesson -> WeekDays.values()[lesson.getEduSchedulePlace().getDayOfWeak()].equals(currentWeekdayValue))
+                .filter(lesson -> String.valueOf(WeekDays.values()[lesson.getEduSchedulePlace().getDayOfWeak()]).equals(currentWeekdayValue))
                 .collect(Collectors.toList());
 
             for (Lesson slot : weekdayLessons) {
@@ -412,8 +409,8 @@ public class ParserService {
                 }
                 sheet.getRow(rowTimeIndex).getCell(i).setCellValue(
                     helper.createRichTextString(slot.getSubjectName() + " "
-                        + slot.getClassroom()) + " "
-                        + slot.getCourse() + " "
+                        + slot.getClassroom()) + " к."
+                        + slot.getCourse() + " гр. "
                         + slot.getGroup() + "."
                         + slot.getSubgroup()
                 );
@@ -469,13 +466,6 @@ public class ParserService {
     }
 
     public Workbook filterTimetableByTeacher(String teacherName, Integer timetableIndex) {
-        //todo: algorithm of sorting timetable
-        // 1. search for teacher name + (don't forget to specify the timetable id)
-        // 2. search for all lessons with id of previously found teacher +
-        // 3. sort timetables by weekdays and by time +
-        // 4. form a new Workbook + and fill it with content +
-        // 5. solve problem with parsing XSSFWorkbook to html +
-
         Employee employee = employeeRepository.findByUserLastName(teacherName); //todo: use an initials too and timetable id
         List<Lesson> lessons = lessonRepository.findAllByEmployeeId(employee.getId());
 
