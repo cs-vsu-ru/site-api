@@ -107,22 +107,22 @@ public class AccountResource {
      *                          couldn't be returned.
      */
     @GetMapping("/account")
-    public ResponseEntity<ResponseEmployeeDTO> getAccount() {
+    public ResponseEntity<EmployeeDTO> getAccount() {
         AdminUserDTO user = userService
             .getUserWithAuthorities()
             .map(AdminUserDTO::new)
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
-        ResponseEmployeeDTO employeeDTO = employeeService.findOne(user.getId());
+        Optional<EmployeeDTO> employeeDTO = employeeService.findOne(user.getId());
         for(String authority:user.getAuthorities()) {
             if (authority.equals("ROLE_ADMIN")) {
-                employeeDTO.setMainRole("ROLE_ADMIN");
+                employeeDTO.get().setMainRole("ROLE_ADMIN");
                 break;
             }
         }
-        if(employeeDTO.getMainRole() == null) {
-            employeeDTO.setMainRole(user.getAuthorities().iterator().next());
+        if(employeeDTO.get().getMainRole() == null) {
+            employeeDTO.get().setMainRole(user.getAuthorities().iterator().next());
         }
-        return ResponseEntity.ok(employeeDTO);
+        return ResponseEntity.ok(employeeDTO.get());
     }
 
     /**
