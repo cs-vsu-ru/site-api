@@ -230,7 +230,8 @@ public class ParserService {
         emptySlot.setEndTime(startEndTimes[1]);
 
         for (int i = 0; i < WeekDays.values().length; i++) {
-            if (WeekDays.values()[i].toString().equals(weekdayName.strip())) {
+            String buff = WeekDays.values()[i].toString();
+            if (buff.equals(weekdayName)) {
                 emptySlot.setDayOfWeak(i);
             } else emptySlot.setDayOfWeak(-1);
         }
@@ -393,7 +394,10 @@ public class ParserService {
         for (int i = 1; i < 7; i++) {
             String currentWeekdayValue = String.valueOf(WeekDays.values()[i]);
 
+            var s = WeekDays.values()[lessons.get(2).getEduSchedulePlace().getDayOfWeak()].equals(currentWeekdayValue);
+
             List<Lesson> weekdayLessons = lessons.stream()
+                //todo: check always false
                 .filter(lesson -> WeekDays.values()[lesson.getEduSchedulePlace().getDayOfWeak()].equals(currentWeekdayValue))
                 .collect(Collectors.toList());
 
@@ -407,7 +411,11 @@ public class ParserService {
                     ++rowTimeIndex;
                 }
                 sheet.getRow(rowTimeIndex).getCell(i).setCellValue(
-                    helper.createRichTextString(slot.getClassroom())
+                    helper.createRichTextString(slot.getSubjectName() + " "
+                        + slot.getClassroom()) + " "
+                        + slot.getCourse() + " "
+                        + slot.getGroup() + "."
+                        + slot.getSubgroup()
                 );
             }
         }
