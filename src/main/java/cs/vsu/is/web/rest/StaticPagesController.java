@@ -51,12 +51,22 @@ public class StaticPagesController {
         return ResponseUtil.wrapOrNotFound(staticPages);
     }
 
-    @PutMapping("/static-page")
-    public ResponseEntity<StaticPages> editStaticPage(@RequestBody StaticPages staticPages) throws URISyntaxException {
+    @PutMapping("/static-page/{id}")
+    public ResponseEntity<StaticPages> editStaticPage(
+        @PathVariable(value = "id", required = false) final Long id,
+        @RequestBody StaticPages staticPages
+    ) throws URISyntaxException {
         log.debug("REST request to save Static page : {}", staticPages);
         staticPages = staticPagesRepository.save(staticPages);
         return ResponseEntity
             .created(new URI("/api/students/" + staticPages.getId()))
             .body(staticPages);
+    }
+
+    @DeleteMapping("/static-page/{id}")
+    public ResponseEntity<Void> deleteStaticPage(@PathVariable Long id) {
+        log.debug("REST request to delete Static page : {}", id);
+        staticPagesRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
