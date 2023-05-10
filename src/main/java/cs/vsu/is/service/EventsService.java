@@ -4,6 +4,9 @@ import cs.vsu.is.domain.Events;
 import cs.vsu.is.repository.EventsRepository;
 import cs.vsu.is.service.dto.EventDTO;
 import cs.vsu.is.service.convertor.EventConverter;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +43,8 @@ public class EventsService {
   public EventDTO save(EventDTO eventsDTO) {
     log.debug("Request to save Events : {}", eventsDTO);
     Events events = eventsMapper.toEntity(eventsDTO);
+    events.setPublicationDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("y-M-d")));
+    events.setPublicationTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m")));
     events = eventsRepository.save(events);
     return eventsMapper.toDto(events);
   }
@@ -53,6 +58,8 @@ public class EventsService {
   public EventDTO update(EventDTO eventsDTO) {
     log.debug("Request to update Events : {}", eventsDTO);
     Events events = eventsMapper.toEntity(eventsDTO);
+    events.setLastModifiedDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("y-M-d")));
+    events.setLastModifiedTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m")));
     events = eventsRepository.save(events);
     return eventsMapper.toDto(events);
   }
@@ -63,20 +70,20 @@ public class EventsService {
    * @param eventsDTO the entity to update partially.
    * @return the persisted entity.
    */
-//   public Optional<EventDTO> partialUpdate(EventDTO eventsDTO) {
-//       log.debug("Request to partially update Events : {}", eventsDTO);
-//
-//       return eventsRepository
-//           .findById(eventsDTO.getId())
-//           .map(existingEvents -> {
-//               eventsMapper.
-//               eventsMapper.partialUpdate(existingEvents, eventsDTO);
-//
-//               return existingEvents;
-//           })
-//           .map(eventsRepository::save)
-//           .map(eventsMapper::toDto);
-//   }
+  // public Optional<EventDTO> partialUpdate(EventDTO eventsDTO) {
+  // log.debug("Request to partially update Events : {}", eventsDTO);
+  //
+  // return eventsRepository
+  // .findById(eventsDTO.getId())
+  // .map(existingEvents -> {
+  // eventsMapper.
+  // eventsMapper.partialUpdate(existingEvents, eventsDTO);
+  //
+  // return existingEvents;
+  // })
+  // .map(eventsRepository::save)
+  // .map(eventsMapper::toDto);
+  // }
 
   /**
    * Get all the events.

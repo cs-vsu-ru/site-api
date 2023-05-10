@@ -144,8 +144,14 @@ public class UserService {
     return true;
   }
 
-  public User createUser(AdminUserDTO userDTO) {
+  public User createUser(AdminUserDTO userDTO) throws Exception {
     User user = new User();
+    if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail().toLowerCase()).isPresent()) {
+      throw new Exception("Пользователь с таким email уже зарегистрирован.");
+    }
+    if (userRepository.findOneByLogin(userDTO.getLogin()).isPresent()) {
+      throw new Exception("Пользователь с таким login уже зарегистрирован.");
+    }
     user.setLogin(userDTO.getLogin().toLowerCase());
     user.setFirstName(userDTO.getFirstName());
     user.setLastName(userDTO.getLastName());
@@ -158,7 +164,8 @@ public class UserService {
     } else {
       user.setLangKey(userDTO.getLangKey());
     }
-    String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
+    String encryptedPassword = passwordEncoder.encode(RandomUtil
+        .generatePassword());
     user.setPassword(encryptedPassword);
     user.setResetKey(RandomUtil.generateResetKey());
     user.setResetDate(Instant.now());
@@ -211,6 +218,7 @@ public class UserService {
               .map(Optional::get)
               .forEach(managedAuthorities::add);
           this.clearUserCaches(user);
+          userRepository.save(user);
           log.debug("Changed Information for User: {}", user);
           return user;
         })

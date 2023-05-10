@@ -4,8 +4,13 @@ import cs.vsu.is.domain.Employee;
 import cs.vsu.is.domain.User;
 import cs.vsu.is.repository.EmployeeRepository;
 import cs.vsu.is.repository.UserRepository;
+import cs.vsu.is.service.convertor.AdminUserConverter;
 import cs.vsu.is.service.convertor.EmployeeConverter;
+import cs.vsu.is.service.convertor.store.EmployeeConverterStore;
+import cs.vsu.is.service.convertor.update.EmployeeConverterUpdate;
+import cs.vsu.is.service.dto.AdminUserDTO;
 import cs.vsu.is.service.dto.EmployeeDTO;
+import cs.vsu.is.service.dto.store.EmployeeDTOStore;
 import lombok.AllArgsConstructor;
 
 import java.util.LinkedList;
@@ -27,104 +32,114 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class EmployeeService {
 
-    private final Logger log = LoggerFactory.getLogger(EmployeeService.class);
+  private final Logger log = LoggerFactory.getLogger(EmployeeService.class);
 
-    private final EmployeeRepository employeeRepository;
+  private final EmployeeRepository employeeRepository;
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
+  private final UserService userService;
+  private final AdminUserConverter adminUserConverter;
 
-    private final EmployeeConverter employeeMapper;
-    private final EmployeeConverter employeeConvertor;
+  private final EmployeeConverter employeeMapper;
+  private final EmployeeConverterStore employeeMapperStore;
 
-    /**
-     * Save a employee.
-     *
-     * @param employeeDTO the entity to save.
-     * @return the persisted entity.
-     */
-    public EmployeeDTO save(EmployeeDTO employeeDTO) {
-        log.debug("Request to save Employee : {}", employeeDTO);
-        Long userId = employeeDTO.getUser().getId();
-        User byId = userRepository.findById(userId).get();
-        Employee employee = employeeMapper.toEntity(employeeDTO);
-        employee.setUser(byId);
-        employee = employeeRepository.save(employee);
-        return employeeMapper.toDto(employee);
-    }
+  private final EmployeeConverterUpdate employeeMapperUpdate;
 
-    /**
-     * Update a employee.
-     *
-     * @param employeeDTO the entity to save.
-     * @return the persisted entity.
-     */
-    public EmployeeDTO update(EmployeeDTO employeeDTO) {
-        log.debug("Request to update Employee : {}", employeeDTO);
-        Employee employee = employeeMapper.toEntity(employeeDTO);
-        employee = employeeRepository.save(employee);
-        return employeeMapper.toDto(employee);
-    }
+  /**
+   * Save a employee.
+   *
+   * @param employeeDTO the entity to save.
+   * @return the persisted entity.
+   * @throws Exception
+   */
+  public EmployeeDTO save(EmployeeDTOStore employeeDTO) throws Exception {
+    log.debug("Request to save Employee : {}", employeeDTO);
+    AdminUserDTO userDTO = employeeMapperStore.toAdminUserDTO(employeeDTO);
+    User user = userService.createUser(userDTO);
+    Employee employee = employeeMapperStore.toEmployeeEntity(employeeDTO);
+    employee.setUser(user);
+    employee = employeeRepository.save(employee);
 
-    /**
-     * Partially update a employee.
-     *
-     * @param employeeDTO the entity to update partially.
-     * @return the persisted entity.
-     */
-    // public Optional<EmployeeDTO> partialUpdate(EmployeeDTO employeeDTO) {
-    // log.debug("Request to partially update Employee : {}", employeeDTO);
+    return employeeMapper.toDto(employee);
+  }
 
-    // return employeeRepository
-    // .findById(employeeDTO.getId())
-    // .map(existingEmployee -> {
-    // employeeMapper.partialUpdate(existingEmployee, employeeDTO);
+  /**
+   * Update a employee.
+   *
+   * @param employeeDTO the entity to save.
+   * @return the persisted entity.
+   */
+  public EmployeeDTO update(EmployeeDTOStore employeeDTO) {
+    log.debug("Request to update Employee : {}", employeeDTO);
+    Employee employee = employeeRepository.findById(employeeDTO.getId()).get();
+    User user = userRepository.findById(employeeDTO.getId()).get();
+    employeeMapperUpdate.toEmployeeEntity(employeeDTO, employee);
+    employeeMapperUpdate.toUserEntity(employeeDTO, user);
+    employeeRepository.save(employee);
+    userRepository.save(user);
+    return employeeMapper.toDto(employee);
+  }
 
-    // return existingEmployee;
-    // })
-    // .map(employeeRepository::save)
-    // .map(employeeMapper::toDto);
-    // }
+  /**
+   * Partially update a employee.
+   *
+   * @param employeeDTO the entity to update partially.
+   * @return the persisted entity.
+   */
+  // public Optional<EmployeeDTO> partialUpdate(EmployeeDTO employeeDTO) {
+  // log.debug("Request to partially update Employee : {}", employeeDTO);
 
-    /**
-     * Get all the employees.
-     *
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public List<EmployeeDTO> findAll() {
-        log.debug("Request to get all Employees");
-        return employeeRepository.findAll().stream().map(employeeConvertor::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
-    }
+  // return employeeRepository
+  // .findById(employeeDTO.getId())
+  // .map(existingEmployee -> {
+  // employeeMapper.partialUpdate(existingEmployee, employeeDTO);
 
-    /**
-     * Get all the employees with eager load of many-to-many relationships.
-     *
-     * @return the list of entities.
-     */
-    public Page<EmployeeDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return employeeRepository.findAll(pageable).map(employeeMapper::toDto);
-    }
+  // return existingEmployee;
+  // })
+  // .map(employeeRepository::save)
+  // .map(employeeMapper::toDto);
+  // }
 
-    /**
-     * Get one employee by id.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
-    @Transactional(readOnly = true)
-    public Optional<EmployeeDTO> findOne(Long id) {
-        log.debug("Request to get Employee : {}", id);
-        return employeeRepository.findById(id).map(employeeMapper::toDto);
-    }
+  /**
+   * Get all the employees.
+   *
+   * @return the list of entities.
+   */
+  @Transactional(readOnly = true)
+  public List<EmployeeDTO> findAll() {
+    log.debug("Request to get all Employees");
+    return employeeRepository.findAll().stream().map(employeeMapper::toDto)
+        .collect(Collectors.toCollection(LinkedList::new));
+  }
 
-    /**
-     * Delete the employee by id.
-     *
-     * @param id the id of the entity.
-     */
-    public void delete(Long id) {
-        log.debug("Request to delete Employee : {}", id);
-        employeeRepository.deleteById(id);
-    }
+  /**
+   * Get all the employees with eager load of many-to-many relationships.
+   *
+   * @return the list of entities.
+   */
+  public Page<EmployeeDTO> findAllWithEagerRelationships(Pageable pageable) {
+    return employeeRepository.findAll(pageable).map(employeeMapper::toDto);
+  }
+
+  /**
+   * Get one employee by id.
+   *
+   * @param id the id of the entity.
+   * @return the entity.
+   */
+  @Transactional(readOnly = true)
+  public Optional<EmployeeDTO> findOne(Long id) {
+    log.debug("Request to get Employee : {}", id);
+    return employeeRepository.findById(id).map(employeeMapper::toDto);
+  }
+
+  /**
+   * Delete the employee by id.
+   *
+   * @param id the id of the entity.
+   */
+  public void delete(Long id) {
+    log.debug("Request to delete Employee : {}", id);
+    employeeRepository.deleteById(id);
+  }
 }
