@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet id="00000000000003" author="jhipster">
+        
+        <loadData
+                  file="config/liquibase/data/static_pages.csv"
+                  separator=";"
+                  tableName="static_pages"
+                  usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="content_about" type="string"/>
+            <column name="content_education" type="string"/>
+            <column name="content_students" type="string"/>
+            <column name="content_partners" type="string"/>
+            <column name="content_confidential" type="string"/>
+            <column name="content_contacts" type="string"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

@@ -35,6 +35,8 @@
     <include file="config/liquibase/changelog/20230321105212_added_entity_constraints_Events.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230409103909_added_entity_constraints_Teaching.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230409135053_added_entity_constraints_ScientificLeaderships.xml" relativeToChangelogFile="false"/>
+
+    <include file="config/liquibase/changelog/add_static_pages_content.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

@@ -24,33 +24,32 @@ import java.lang.reflect.Method;
 @Import(SecurityProblemSupport.class)
 public class SecurityConfiguration {
 
-    private final JHipsterProperties jHipsterProperties;
+  private final JHipsterProperties jHipsterProperties;
 
-    private final TokenProvider tokenProvider;
+  private final TokenProvider tokenProvider;
 
-    private final CorsFilter corsFilter;
-    private final SecurityProblemSupport problemSupport;
+  private final CorsFilter corsFilter;
+  private final SecurityProblemSupport problemSupport;
 
-    public SecurityConfiguration(
-        TokenProvider tokenProvider,
-        CorsFilter corsFilter,
-        JHipsterProperties jHipsterProperties,
-        SecurityProblemSupport problemSupport
-    ) {
-        this.tokenProvider = tokenProvider;
-        this.corsFilter = corsFilter;
-        this.problemSupport = problemSupport;
-        this.jHipsterProperties = jHipsterProperties;
-    }
+  public SecurityConfiguration(
+      TokenProvider tokenProvider,
+      CorsFilter corsFilter,
+      JHipsterProperties jHipsterProperties,
+      SecurityProblemSupport problemSupport) {
+    this.tokenProvider = tokenProvider;
+    this.corsFilter = corsFilter;
+    this.problemSupport = problemSupport;
+    this.jHipsterProperties = jHipsterProperties;
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // @formatter:off
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    // @formatter:off
         http
             .csrf()
             .disable()
@@ -79,6 +78,8 @@ public class SecurityConfiguration {
             .antMatchers(HttpMethod.GET, "/api/articles/*").permitAll()
             .antMatchers(HttpMethod.GET, "/api/employees").permitAll()
             .antMatchers(HttpMethod.GET, "/api/employees/*").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/static-pages").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/static-page/*").permitAll()
             .antMatchers("/api/employess").permitAll()
             .antMatchers("/api/uploadFile").permitAll()
             .antMatchers("/api/register").permitAll()
@@ -98,9 +99,9 @@ public class SecurityConfiguration {
             .apply(securityConfigurerAdapter());
         return http.build();
         // @formatter:on
-    }
+  }
 
-    private JWTConfigurer securityConfigurerAdapter() {
-        return new JWTConfigurer(tokenProvider);
-    }
+  private JWTConfigurer securityConfigurerAdapter() {
+    return new JWTConfigurer(tokenProvider);
+  }
 }
