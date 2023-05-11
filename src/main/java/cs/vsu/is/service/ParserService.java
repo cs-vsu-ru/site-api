@@ -13,7 +13,6 @@ import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +26,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -256,8 +253,6 @@ public class ParserService {
             String classNum = params[params.length - 1];
             completedSlot.setClassroom(classNum);
 
-//            String teacherName;
-
             if (params.length > 2) {
                 //todo: make query for initials and surname
                 Employee employee = employeeRepository.findByUserLastName(params[params.length - 3]);
@@ -267,8 +262,7 @@ public class ParserService {
                 for (int k = 0; k < params.length - 4; k++) {
                     subjectName.append(params[k]).append(" ");
                 }
-//                Subject subject = subjectRepository.findByName(String.valueOf(subjectName));
-//                completedSlot.setSubject(subject);
+
                 completedSlot.setSubjectName(String.valueOf(subjectName));
 
             }
@@ -295,7 +289,6 @@ public class ParserService {
             this.mergedRegions = processMergedRegions(currentSheet);
         } catch (Exception e) {
             e.printStackTrace();
-//            return ResponseEntity.badRequest().body("Parsing failed on the stage of parsing courses, groups, weekdays and times cell ranges");
         }
 
         for (int i = 4; i < currentSheet.getPhysicalNumberOfRows(); i++) {
@@ -339,7 +332,6 @@ public class ParserService {
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-//                return ResponseEntity.badRequest().body("Parsing failed on the stage of parsing nullable cell");
             }
         }
         return ResponseEntity.ok().body("Parsing succeeded");
@@ -407,13 +399,14 @@ public class ParserService {
                 if (isDemoninator) {
                     ++rowTimeIndex;
                 }
+
+                String value = slot.getSubjectName() + " "
+                    + slot.getClassroom() + " к."
+                    + slot.getCourse() + " гр. "
+                    + slot.getGroup() + "."
+                    + slot.getSubgroup();
                 sheet.getRow(rowTimeIndex).getCell(i).setCellValue(
-                    helper.createRichTextString(slot.getSubjectName() + " "
-                        + slot.getClassroom()) + " к."
-                        + slot.getCourse() + " гр. "
-                        + slot.getGroup() + "."
-                        + slot.getSubgroup()
-                );
+                    helper.createRichTextString(value));
             }
         }
 
@@ -465,7 +458,7 @@ public class ParserService {
         return -1;
     }
 
-    public Workbook filterTimetableByTeacher(String teacherName, Integer timetableIndex) {
+    public Workbook filterTimetableByTeacher(String teacherName) {
         Employee employee = employeeRepository.findByUserLastName(teacherName); //todo: use an initials too and timetable id
         List<Lesson> lessons = lessonRepository.findAllByEmployeeId(employee.getId());
 
@@ -476,16 +469,7 @@ public class ParserService {
             .collect(Collectors.toList());
 
         Workbook workbook = createHFFSSchemaForTeacher(lessons);
-
-        UUID uuid = UUID.randomUUID();
-        Path path = Path.of("files/" + uuid + teacherName + timetableIndex);
-        logger.debug("Personal timetable saved to path {}", path);
-
-//        try (OutputStream file = new FileOutputStream(path.toString())) {
-//            workbook.write(file);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        logger.debug("Personal timetable filtered for teacher {}", teacherName);
         return workbook;
     }
 
@@ -503,8 +487,128 @@ public class ParserService {
     }
 
     public Workbook filterTimetableByChair(List<String> employeeNames) {
+        HSSFWorkbook workbook = new HSSFWorkbook();
 
+        String safeSheetName = WorkbookUtil.createSafeSheetName(" ");
+        Sheet sheet = workbook.createSheet(safeSheetName);
 
-        return null;
+        CellStyle styleVertical = workbook.createCellStyle();
+        styleVertical.setRotation((short) 90);
+        styleVertical.setAlignment(HorizontalAlignment.CENTER);
+        styleVertical.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        CellStyle styleHorizontal = workbook.createCellStyle();
+        styleHorizontal.setAlignment(HorizontalAlignment.CENTER);
+        styleHorizontal.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        sheet.setDefaultColumnWidth(17);
+        CreationHelper helper = workbook.getCreationHelper();
+
+        sheet.createRow(0).setHeight((short) 2500);
+        sheet.setColumnWidth(0, 2300);
+        sheet.getRow(0).createCell(0).setCellValue(helper.createRichTextString("День недели:"));
+        sheet.getRow(0).getCell(0).setCellStyle(styleHorizontal);
+        setBordersOnCell(0, 0, sheet);
+        sheet.getRow(0).createCell(1).setCellValue(helper.createRichTextString("Время:"));
+        sheet.getRow(0).getCell(1).setCellStyle(styleHorizontal);
+        setBordersOnCell(0, 1, sheet);
+
+        for (int i = 2; i < employeeNames.size() + 2; i++) {
+            Employee employee = employeeRepository.findByUserLastName(employeeNames.get(i - 2));
+            var value = employee.getUser().getLastName() + " " + employee.getUser().getLastName().charAt(0) +
+                "." + employee.getPatronymic().charAt(0) + ".";
+
+            sheet.getRow(0).createCell(i).setCellValue(helper.createRichTextString(value));
+            sheet.getRow(0).getCell(i).setCellStyle(styleVertical);
+            setBordersOnCell(0, i, sheet);
+        }
+
+        int count = (WeekDays.values().length * timesArray.length - timesArray.length) * 2;
+        for (int i = 1; i < count; i += timesArray.length * 2) {
+            var weekDay = String.valueOf(WeekDays.values()[(i / timesArray.length) / 2 + 1]);
+            sheet.createRow(i).createCell(0).setCellValue(helper.createRichTextString(weekDay));
+            sheet.getRow(i).getCell(0).setCellStyle(styleVertical);
+            sheet.getRow(i).setHeight((short) 400);
+            setBordersOnCell(i, 0, sheet);
+
+            int timeCount = 0;
+            for (int j = i + 1; j < i + timesArray.length * 2; j++) {
+                sheet.createRow(j).createCell(0);
+                sheet.getRow(j).setHeight((short) 400);
+                setBordersOnCell(j, 0, sheet);
+
+                if (j % 2 == 0) {
+                    var time = timesArray[timeCount];
+                    sheet.getRow(j - 1).createCell(1).setCellValue(helper.createRichTextString(time));
+                    sheet.getRow(j).createCell(1);
+                    sheet.getRow(j - 1).getCell(1).setCellStyle(styleHorizontal);
+                    setBordersOnCell(j, 1, sheet);
+                    setBordersOnCell(j - 1, 1, sheet);
+                    sheet.addMergedRegion(new CellRangeAddress(j - 1, j, 1, 1));
+                    ++timeCount;
+                }
+            }
+            sheet.addMergedRegion(new CellRangeAddress(i, i + timesArray.length * 2 - 1, 0, 0));
+        }
+
+        for (int i = 1; i <= count; i++) {
+            for (int j = 2; j < employeeNames.size() + 2; j++) {
+                sheet.getRow(i).createCell(j);
+                setBordersOnCell(i, j, sheet);
+            }
+        }
+
+        for (int t = 0; t < employeeNames.size(); t++) {
+            Employee employee = employeeRepository.findByUserLastName(employeeNames.get(t));
+            Long teacherId = employee.getId();
+
+            List<Lesson> teacherLessons = lessonRepository.findAllByEmployeeId(teacherId);
+            teacherLessons = teacherLessons.stream()
+                .filter(lesson -> lesson.getSchedule().getIsActual().equals(Boolean.TRUE))
+                .collect(Collectors.toList());
+
+            for (int i = 1; i < count; i += timesArray.length * 2) {
+                var weekDay = (i / timesArray.length) / 2 + 1;
+
+                List<Lesson> weekdayLessons = teacherLessons.stream()
+                    .filter(lesson -> lesson.getEduSchedulePlace().getDayOfWeak().equals(weekDay))
+                    .collect(Collectors.toList());
+
+                for (Lesson slot : weekdayLessons) {
+                    String timeGap = slot.getEduSchedulePlace().getStartTime() + " - " + slot.getEduSchedulePlace().getEndTime();
+                    boolean isDemoninator = slot.getEduSchedulePlace().getIsDenominator();
+                    int rowTimeIndex = findTimeRowIndex(timeGap, timesArray);
+                    rowTimeIndex = i + rowTimeIndex * 2;
+
+                    if (isDemoninator) {
+                        ++rowTimeIndex;
+                    }
+
+                    String value = slot.getSubjectName() + " "
+                        + slot.getClassroom() + " к."
+                        + slot.getCourse() + " гр. "
+                        + slot.getGroup() + "."
+                        + slot.getSubgroup();
+                    sheet.getRow(rowTimeIndex).createCell(t + 2).setCellValue(helper.createRichTextString(value));
+                    setBordersOnCell(rowTimeIndex, t + 2, sheet);
+                }
+            }
+        }
+
+        for (int i = 1; i < count; i += 2) {
+            for (int j = 2; j < employeeNames.size() + 2; j++) {
+                if (sheet.getRow(i).getCell(j).getStringCellValue().equals("") &&
+                    (sheet.getRow(i + 1).getCell(j).getStringCellValue().equals(""))) {
+                    sheet.addMergedRegion(new CellRangeAddress(
+                        i,
+                        i + 1,
+                        j,
+                        j
+                    ));
+                    setBordersOnCell(i, j, sheet);
+                }
+            }
+        }
+        return workbook;
     }
 }
