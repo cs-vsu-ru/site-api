@@ -1,6 +1,7 @@
 package cs.vsu.is.web.rest;
 
 import cs.vsu.is.service.ParserService;
+import io.undertow.server.handlers.form.FormData;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -10,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.persistence.Tuple;
 import java.io.File;
@@ -47,8 +50,7 @@ public class ParsingResource {
         try {
             Workbook workbook = parserService.filterTimetableByTeacher(teacherName);
 
-            String html = ParserService.convertHSSFToHtmlSchema((HSSFWorkbook) workbook);
-            Pair<String, File> responseBodyArgs = new Pair<>(html, new File(workbook.toString()));
+            String responseBodyArgs = ParserService.convertHSSFToHtmlSchema((HSSFWorkbook) workbook);
 
             return ResponseEntity.ok().body(domain + "api/filterTimetable\n" + responseBodyArgs);
 
@@ -58,12 +60,12 @@ public class ParsingResource {
         }
     }
 
+    @GetMapping("/filterTimetableForChair")
     public ResponseEntity<String> filterTimetable(@RequestParam List<String> employeeNames) { //todo: or introduce chair index
         try {
             Workbook workbook = parserService.filterTimetableByChair(employeeNames);
 
-            String html = ParserService.convertHSSFToHtmlSchema((HSSFWorkbook) workbook);
-            Pair<String, File> responseBodyArgs = new Pair<>(html, new File(workbook.toString()));
+            String responseBodyArgs = ParserService.convertHSSFToHtmlSchema((HSSFWorkbook) workbook);
 
             return ResponseEntity.ok().body(domain + "api/filterTimetable\n" + responseBodyArgs);
         } catch (Exception e) {

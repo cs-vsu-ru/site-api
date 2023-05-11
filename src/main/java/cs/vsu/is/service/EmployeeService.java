@@ -10,7 +10,6 @@ import cs.vsu.is.service.convertor.store.EmployeeConverterStore;
 import cs.vsu.is.service.convertor.update.EmployeeConverterUpdate;
 import cs.vsu.is.service.dto.AdminUserDTO;
 import cs.vsu.is.service.dto.EmployeeDTO;
-import cs.vsu.is.service.dto.store.EmployeeDTOStore;
 import lombok.AllArgsConstructor;
 
 import java.util.LinkedList;
@@ -23,6 +22,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.validation.Valid;
 
 /**
  * Service Implementation for managing {@link Employee}.
@@ -52,7 +53,7 @@ public class EmployeeService {
    * @return the persisted entity.
    * @throws Exception
    */
-  public EmployeeDTO save(EmployeeDTOStore employeeDTO) throws Exception {
+  public EmployeeDTO save(@Valid EmployeeDTO employeeDTO) throws Exception {
     log.debug("Request to save Employee : {}", employeeDTO);
     AdminUserDTO userDTO = employeeMapperStore.toAdminUserDTO(employeeDTO);
     User user = userService.createUser(userDTO);
@@ -69,7 +70,7 @@ public class EmployeeService {
    * @param employeeDTO the entity to save.
    * @return the persisted entity.
    */
-  public EmployeeDTO update(EmployeeDTOStore employeeDTO) {
+  public EmployeeDTO update(@Valid EmployeeDTO employeeDTO) {
     log.debug("Request to update Employee : {}", employeeDTO);
     Employee employee = employeeRepository.findById(employeeDTO.getId()).get();
     User user = userRepository.findById(employeeDTO.getId()).get();
