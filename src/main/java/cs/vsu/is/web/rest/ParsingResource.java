@@ -47,14 +47,6 @@ public class ParsingResource {
         try {
             Workbook workbook = parserService.filterTimetableByTeacher(teacherName);
 
-//            UUID uuid = UUID.randomUUID();
-//            Path path = Path.of("files/" + uuid + teacherName);
-//            try (OutputStream fileOut = new FileOutputStream(path.toString() + ".xls")) {
-//                workbook.write(fileOut);
-//            } catch (Exception e) {
-//                System.out.println(e.getMessage());
-//            }
-
             String html = ParserService.convertHSSFToHtmlSchema((HSSFWorkbook) workbook);
             Pair<String, File> responseBodyArgs = new Pair<>(html, new File(workbook.toString()));
 

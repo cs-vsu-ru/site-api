@@ -459,8 +459,12 @@ public class ParserService {
     }
 
     public Workbook filterTimetableByTeacher(String teacherName) {
-        Employee employee = employeeRepository.findByUserLastName(teacherName); //todo: use an initials too and timetable id
+        Employee employee = employeeRepository.findByUserLastName(teacherName);
         List<Lesson> lessons = lessonRepository.findAllByEmployeeId(employee.getId());
+        lessons = lessons.stream()
+            .filter(lesson -> (lesson.getEmployee().getPatronymic().charAt(0) == employee.getPatronymic().charAt(0))
+                && (lesson.getEmployee().getUser().getFirstName().charAt(0) == employee.getUser().getFirstName().charAt(0)))
+            .collect(Collectors.toList());
 
         lessons = lessons.stream()
             .filter(lesson -> lesson.getSchedule().getIsActual())
@@ -563,6 +567,12 @@ public class ParserService {
             Long teacherId = employee.getId();
 
             List<Lesson> teacherLessons = lessonRepository.findAllByEmployeeId(teacherId);
+
+            teacherLessons = teacherLessons.stream()
+                .filter(lesson -> (lesson.getEmployee().getPatronymic().charAt(0) == employee.getPatronymic().charAt(0))
+                    && (lesson.getEmployee().getUser().getFirstName().charAt(0) == employee.getUser().getFirstName().charAt(0)))
+                .collect(Collectors.toList());
+
             teacherLessons = teacherLessons.stream()
                 .filter(lesson -> lesson.getSchedule().getIsActual().equals(Boolean.TRUE))
                 .collect(Collectors.toList());
