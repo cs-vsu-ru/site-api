@@ -1,14 +1,14 @@
 package cs.vsu.is.service.convertor.update;
 
-import cs.vsu.is.service.dto.EmployeeDTO;
+import org.modelmapper.Condition;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import cs.vsu.is.domain.Employee;
 import cs.vsu.is.domain.User;
-
-import javax.validation.Valid;
+import cs.vsu.is.service.dto.AdminUserDTO;
+import cs.vsu.is.service.dto.store.EmployeeDTOStore;
 
 // @AllArgsConstructor
 @Component
@@ -20,11 +20,11 @@ public class EmployeeConverterUpdate {
     this.modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
   }
 
-  public void toEmployeeEntity(@Valid EmployeeDTO dto, Employee employee) {
+  public void toEmployeeEntity(EmployeeDTOStore dto, Employee employee) {
     modelMapper.map(dto, employee);
   }
 
-  public void toUserEntity(@Valid EmployeeDTO dto, User user) {
+  public void toUserEntity(EmployeeDTOStore dto, User user) {
     modelMapper.map(dto, user);
   }
 }

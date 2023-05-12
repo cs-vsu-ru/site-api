@@ -83,7 +83,7 @@
             <column name="employee_id" type="numeric"/>
             <column name="access_modes_id" type="numeric"/>
             <column name="title" type="string"/>
-            
+
             <column name="publication_time" type="string"/>
             <column name="last_modified_time" type="string"/>
             <column name="start_date" type="string"/>

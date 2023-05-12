@@ -1,72 +1,26 @@
 package cs.vsu.is.service.dto;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
-/**
- * A DTO for the {@link cs.vsu.is.domain.Specialities} entity.
- */
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class SpecialitiesDTO implements Serializable {
 
-    private Long id;
+  private Long id;
+  private String code;
+  private String name;
+  @JsonIgnoreProperties(value = { "description" })
+  private Set<SubjectDTO> subjects = new HashSet<>();
 
-    private String code;
-
-    private String name;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof SpecialitiesDTO)) {
-            return false;
-        }
-
-        SpecialitiesDTO specialitiesDTO = (SpecialitiesDTO) o;
-        if (this.id == null) {
-            return false;
-        }
-        return Objects.equals(this.id, specialitiesDTO.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id);
-    }
-
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "SpecialitiesDTO{" +
-            "id=" + getId() +
-            ", code='" + getCode() + "'" +
-            ", name='" + getName() + "'" +
-            "}";
-    }
 }

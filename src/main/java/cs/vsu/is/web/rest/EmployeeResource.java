@@ -4,6 +4,7 @@ import cs.vsu.is.repository.EmployeeRepository;
 import cs.vsu.is.service.EmployeeService;
 import cs.vsu.is.service.dto.EmployeeDTO;
 import cs.vsu.is.service.dto.ResponseEmployeeDTO;
+import cs.vsu.is.service.dto.store.EmployeeDTOStore;
 import cs.vsu.is.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -51,15 +52,12 @@ public class EmployeeResource {
    * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
    *         body the new employeeDTO, or with status {@code 400 (Bad Request)} if
    *         the employee has already an ID.
-   * @throws URISyntaxException if the Location URI syntax is incorrect.
+   * @throws Exception
    */
   @PostMapping("/employees")
-  public ResponseEntity<EmployeeDTO> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO)
+  public ResponseEntity<EmployeeDTO> createEmployee(@Valid @RequestBody EmployeeDTOStore employeeDTO)
       throws Exception {
     log.debug("REST request to save Employee : {}", employeeDTO);
-    if (employeeDTO.getId() != null) {
-      throw new BadRequestAlertException("A new employee cannot already have an ID", ENTITY_NAME, "idexists");
-    }
     EmployeeDTO result = employeeService.save(employeeDTO);
     return ResponseEntity
         .created(new URI("/api/employees/" + result.getId()))
@@ -83,7 +81,7 @@ public class EmployeeResource {
   @PutMapping("/employees/{id}")
   public ResponseEntity<EmployeeDTO> updateEmployee(
       @PathVariable(value = "id", required = false) final Long id,
-      @Valid @RequestBody EmployeeDTO employeeDTO) throws URISyntaxException {
+      @Valid @RequestBody EmployeeDTOStore employeeDTO) throws URISyntaxException {
     log.debug("REST request to update Employee : {}, {}", id, employeeDTO);
     if (employeeDTO.getId() == null) {
       throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");

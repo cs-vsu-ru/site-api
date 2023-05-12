@@ -10,6 +10,7 @@
     <property name="uuidType" value="varchar(36)" dbms="mysql"/>
     <property name="datetimeType" value="datetime(6)" dbms="mysql"/>
 
+    <include file="config/liquibase/changelog/create_newsletter.xml" relativeToChangelogFile="false"/>  
     <include file="config/liquibase/changelog/20230509_add_static_pages_table.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230321105205_added_entity_Lesson.xml" relativeToChangelogFile="false"/>
@@ -35,6 +36,10 @@
     <include file="config/liquibase/changelog/20230321105212_added_entity_constraints_Events.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230409103909_added_entity_constraints_Teaching.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230409135053_added_entity_constraints_ScientificLeaderships.xml" relativeToChangelogFile="false"/>
+
+    <include file="config/liquibase/changelog/add_static_pages_content.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/create_employee_specialities.xml" relativeToChangelogFile="false"/>
+    
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
     <include file="config/liquibase/changelog/20230512170300_add_column_Student.xml" relativeToChangelogFile="false"/>
