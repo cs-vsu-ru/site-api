@@ -31,7 +31,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @AllArgsConstructor
 public class ParserService {
     private static final String[] timesArray = {"8:00 - 9:30",
@@ -268,8 +267,6 @@ public class ParserService {
             }
         }
 
-        completedSlot = lessonRepository.save(completedSlot);
-
         return completedSlot;
     }
 
@@ -278,7 +275,7 @@ public class ParserService {
         logger.info("Request to parse XLSX document: {}, sheet: {}", workbook.getSheetName(sheetNumber), sheetNumber);
 
         Sheet currentSheet = workbook.getSheetAt(sheetNumber);
-        List<Lesson> result = new LinkedList<>();
+//        List<Lesson> result = new LinkedList<>();
 
         try {
             this.coursesIndexRange = countRowIndexRange(currentSheet.getRow(0));
@@ -308,14 +305,24 @@ public class ParserService {
                     if (addressInvolved != null) {
                         if (currentCell.getColumnIndex() == addressInvolved.getFirstColumn() &&
                             currentCell.getRowIndex() == addressInvolved.getFirstRow()) {
-                            for (int cellIndex = addressInvolved.getFirstColumn(); cellIndex <= addressInvolved.getLastColumn(); cellIndex++) {
-                                for (int rowInde = addressInvolved.getFirstRow(); rowInde <= addressInvolved.getLastRow(); rowInde++) {
-                                    Lesson duplicatedSlot = parseCompletedSlot(currentSheet.getRow(rowInde).getCell(cellIndex),
+                            Lesson slot = parseCompletedSlot(currentSheet.getRow(addressInvolved.getFirstRow()).getCell(addressInvolved.getFirstColumn()),
+                                timesIndexRange,
+                                weekdaysIndexRange,
+                                coursesIndexRange,
+                                groupsIndexRange);
+                            slot = lessonRepository.save(slot);
+                            for (int cellIndex = addressInvolved.getFirstColumn()+1; cellIndex <= addressInvolved.getLastColumn(); cellIndex++) {
+                                for (int rowInde = addressInvolved.getFirstRow()+1; rowInde <= addressInvolved.getLastRow(); rowInde++) {
+                                    Lesson duplicatedSlot = parseCompletedSlot(currentSheet.getRow(addressInvolved.getFirstRow()).getCell(addressInvolved.getFirstColumn()),
                                         timesIndexRange,
                                         weekdaysIndexRange,
                                         coursesIndexRange,
                                         groupsIndexRange);
-                                    result.add(duplicatedSlot);
+                                    duplicatedSlot.setClassroom(slot.getClassroom());
+                                    duplicatedSlot.setSubjectName(slot.getSubjectName());
+                                    duplicatedSlot.setEmployee(slot.getEmployee());
+                                    lessonRepository.save(duplicatedSlot);
+//                                    result.add(duplicatedSlot);
                                 }
                             }
                         }
@@ -323,7 +330,8 @@ public class ParserService {
                         try {
                             if (!currentCell.getStringCellValue().equals("")) {
                                 Lesson slot = this.parseCompletedSlot(currentCell, timesIndexRange, weekdaysIndexRange, coursesIndexRange, groupsIndexRange);
-                                result.add(slot);
+//                                result.add(slot);
+                                lessonRepository.save(slot);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
