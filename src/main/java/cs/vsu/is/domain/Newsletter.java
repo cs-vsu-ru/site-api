@@ -33,6 +33,10 @@ public class Newsletter implements Serializable {
   @Column(name = "content")
   private String content;
 
+  @Column(name = "status")
+  private String status;
+
   @OneToMany /* (mappedBy = "newsletter") */
   private Set<Emails> emails = new HashSet<>();
+
 }

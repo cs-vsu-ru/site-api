@@ -19,23 +19,24 @@ public class NewsScheduler {
     this.mailSender = mailSender;
   }
 
-  @Scheduled(fixedDelay = 5 * 60 * 1000, initialDelay = 3000)
+  @Scheduled(fixedDelay = 5 * 60 * 1000, initialDelay = 1000)
   public void makeNewsletter() {
     LocalDateTime currentTime = LocalDateTime.now();
     LocalDateTime tenMinutesAgo = currentTime.minusMinutes(10);
     System.out.println("scheduler start");
     newsletterRepository.findAllByNewsletterDateBetween(tenMinutesAgo, currentTime)
         .forEach(item -> {
-          System.out.println(item);
-          item.getEmails().forEach(email -> {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo();
-            message.setSubject(item.getSubject());
-            message.setText(item.getContent());
-            mailSender.send(message);
-            System.out.println("message send" + message);
-          });
-          newsletterRepository.delete(item);
+          if ("open".equals(item.getStatus())) {
+            item.getEmails().forEach(email -> {
+              SimpleMailMessage message = new SimpleMailMessage();
+              message.setTo(email);
+              message.setSubject(item.getSubject());
+              message.setText(item.getContent());
+              mailSender.send(message);
+            });
+            item.setStatus("close");
+            newsletterRepository.save(item);
+          }
         });
   }
 }
