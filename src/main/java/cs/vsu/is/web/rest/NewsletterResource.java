@@ -12,6 +12,7 @@ import tech.jhipster.web.util.ResponseUtil;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -29,6 +30,17 @@ public class NewsletterResource {
         return ResponseEntity
             .created(new URI("/api/newsletter/" + newsletter.getId()))
             .body(newsletter);
+    }
+
+    @PutMapping("/newsletter/{id}")
+    public ResponseEntity<Newsletter> updateNewsletter(
+        @PathVariable(value = "id", required = false) final Long id,
+        @RequestBody Newsletter newsletter) {
+        newsletter.setId(id);
+        Newsletter result = newsletterRepository.save(newsletter);
+        return ResponseEntity
+            .ok()
+            .body(result);
     }
 
     @GetMapping("/newsletter/{id}")

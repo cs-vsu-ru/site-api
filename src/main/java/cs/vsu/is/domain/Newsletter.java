@@ -31,6 +31,9 @@ public class Newsletter implements Serializable {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "status")
+    private String status;
+
     @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "emails", joinColumns = @JoinColumn(name = "email_id"))
     @Column(name = "emails", nullable = false)
