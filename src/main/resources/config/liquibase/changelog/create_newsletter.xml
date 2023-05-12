@@ -9,6 +9,7 @@
       <column name="newsletter_date" type="varchar(12)"/>
       <column name="subject" type="text"/>
       <column name="content" type="text"/>
+      <column name="status" type="text"/>
       <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
       </column>
