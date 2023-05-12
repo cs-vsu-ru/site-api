@@ -1,13 +1,11 @@
 package cs.vsu.is.service.convertor.update;
 
-import org.modelmapper.Condition;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import cs.vsu.is.domain.Employee;
 import cs.vsu.is.domain.User;
-import cs.vsu.is.service.dto.AdminUserDTO;
 import cs.vsu.is.service.dto.store.EmployeeDTOStore;
 
 // @AllArgsConstructor
