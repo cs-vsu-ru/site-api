@@ -15,7 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "newsletter")
-public class Newsletter implements Serializable {
+public class Emails implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -33,6 +33,6 @@ public class Newsletter implements Serializable {
   @Column(name = "content")
   private String content;
 
-  @OneToMany /* (mappedBy = "newsletter") */
-  private Set<Emails> emails = new HashSet<>();
+  // @ManyToOne
+  // private Emails newsletter;
 }

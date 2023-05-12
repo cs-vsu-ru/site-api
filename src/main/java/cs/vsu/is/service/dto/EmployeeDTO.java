@@ -26,8 +26,8 @@ public class EmployeeDTO {
   private String academicDegree;
   private String experience;
   private String professionalExperience;
-  private String dateOfBirth;
-  private String login;
+  // private String dateOfBirth;
+  // private String login;
   private String firstName;
   private String lastName;
   private String email;
