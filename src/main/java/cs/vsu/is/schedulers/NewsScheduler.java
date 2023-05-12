@@ -29,7 +29,7 @@ public class NewsScheduler {
           if ("open".equals(item.getStatus())) {
             item.getEmails().forEach(email -> {
               SimpleMailMessage message = new SimpleMailMessage();
-              message.setTo(email);
+              message.setTo(email.);
               message.setSubject(item.getSubject());
               message.setText(item.getContent());
               mailSender.send(message);

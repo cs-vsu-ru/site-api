@@ -24,15 +24,7 @@ public class Emails implements Serializable {
   @Column(name = "id")
   private Long id;
 
-  @Column(name = "newsletter_date")
-  private LocalDateTime newsletterDate;
+  @Column(name = "email")
+  private String email;
 
-  @Column(name = "subject")
-  private String subject;
-
-  @Column(name = "content")
-  private String content;
-
-  // @ManyToOne
-  // private Emails newsletter;
 }
