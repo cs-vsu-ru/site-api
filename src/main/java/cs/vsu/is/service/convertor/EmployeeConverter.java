@@ -1,5 +1,6 @@
 package cs.vsu.is.service.convertor;
 
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.convention.MatchingStrategies;
@@ -19,9 +20,10 @@ public class EmployeeConverter {
   }
 
   public EmployeeDTO toDto(Employee entity) {
-
-    return modelMapper.map(entity, EmployeeDTO.class);
-
+    this.modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
+    EmployeeDTO dto = modelMapper.map(entity, EmployeeDTO.class);
+    modelMapper.map(entity.getUser(), dto);
+    return dto;
   }
 
   public Employee toEntity(EmployeeDTO dto) {

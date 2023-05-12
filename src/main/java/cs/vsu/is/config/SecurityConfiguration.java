@@ -70,6 +70,8 @@ public class SecurityConfiguration {
             .antMatchers("/test/**").permitAll()
             .antMatchers("/api/authenticate").permitAll()
             .antMatchers(HttpMethod.GET, "/api/").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/specialities").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/specialities/*").permitAll()
             .antMatchers(HttpMethod.GET, "/api/sliders").permitAll()
             .antMatchers(HttpMethod.GET, "/api/sliders/*").permitAll()
             .antMatchers(HttpMethod.GET, "/api/events").permitAll()

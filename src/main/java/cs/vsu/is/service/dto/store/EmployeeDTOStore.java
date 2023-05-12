@@ -13,7 +13,6 @@ import cs.vsu.is.service.dto.EventDTO;
 import cs.vsu.is.service.dto.LessonDTO;
 import cs.vsu.is.service.dto.PageDTO;
 import cs.vsu.is.service.dto.ScientificLeadershipsDTO;
-import cs.vsu.is.service.dto.TeachingDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -48,11 +47,8 @@ public class EmployeeDTOStore {
   private String imageUrl;
   private String createdBy;
   private String createdDate;
-  private Set<String> authorities;
-  private Set<ArticleDTO> articles = new HashSet<>();
-  private Set<EventDTO> events = new HashSet<>();
+  private String mainRole;
   // private Set<LessonDTO> lessons = new HashSet<>();
-  private Set<PageDTO> pages = new HashSet<>();
-  private Set<ScientificLeadershipsDTO> scientificLeaderships = new HashSet<>();
-  private Set<TeachingDTO> teachings = new HashSet<>();
+  // private Set<TeachingDTO> teachings = new HashSet<>();
+
 }
