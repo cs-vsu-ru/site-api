@@ -34,7 +34,7 @@ public class ScientificLeaderships implements Serializable {
 
   @ManyToOne
   private ScientificWorkType scientificWorkType;
-
+    //todo: insert sciworkname
   @ManyToOne
   @JsonIgnoreProperties(value = { "user", "articles", "events", "lessons", "pages", "scientificLeaderships",
       "teachings", "roles" }, allowSetters = true)

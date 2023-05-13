@@ -4,16 +4,23 @@ import cs.vsu.is.repository.ScientificLeadershipsRepository;
 import cs.vsu.is.service.ScientificLeadershipsService;
 import cs.vsu.is.service.dto.ScientificLeadershipsDTO;
 import cs.vsu.is.web.rest.errors.BadRequestAlertException;
+
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.w3c.dom.ls.LSInput;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -59,6 +66,7 @@ public class ScientificLeadershipsResource {
             throw new BadRequestAlertException("A new scientificLeaderships cannot already have an ID", ENTITY_NAME, "idexists");
         }
         ScientificLeadershipsDTO result = scientificLeadershipsService.save(scientificLeadershipsDTO);
+
         return ResponseEntity
             .created(new URI("/api/scientific-leaderships/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -68,7 +76,7 @@ public class ScientificLeadershipsResource {
     /**
      * {@code PUT  /scientific-leaderships/:id} : Updates an existing scientificLeaderships.
      *
-     * @param id the id of the scientificLeadershipsDTO to save.
+     * @param id                       the id of the scientificLeadershipsDTO to save.
      * @param scientificLeadershipsDTO the scientificLeadershipsDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated scientificLeadershipsDTO,
      * or with status {@code 400 (Bad Request)} if the scientificLeadershipsDTO is not valid,
@@ -173,5 +181,19 @@ public class ScientificLeadershipsResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PostMapping("/scientific-leaderships/table")
+    public ResponseEntity<List<ScientificLeadershipsDTO>> createSciLeadsByTable(
+        @RequestParam("file") MultipartFile file
+    ) {
+        try {
+            Workbook workbook = new XSSFWorkbook(file.getInputStream());
+            List<ScientificLeadershipsDTO> responseArgs = scientificLeadershipsService.createSciLeadsFromTable(workbook.getSheetAt(0));
+            return ResponseEntity.ok().body(responseArgs);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 }

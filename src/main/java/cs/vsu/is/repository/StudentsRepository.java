@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface StudentsRepository extends JpaRepository<Students, Long> {}
+public interface StudentsRepository extends JpaRepository<Students, Long> {
+    Students findFirstByStudentPersonalNumber(String studentPersonalNumber);
+}
