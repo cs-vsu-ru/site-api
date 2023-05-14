@@ -141,17 +141,22 @@ public class ScientificLeadershipsService {
                 if (employee.getPatronymic().charAt(0) == employeeNameSurnameInitial[1] &&
                     employee.getUser().getFirstName().charAt(0) == employeeNameSurnameInitial[0]) {
 
+
                     //todo: relationship checker
 
                     ScientificWorkType workType = scientificWorkTypeRepository.findFirstByName(sheet.getRow(i).getCell(3).getStringCellValue());
+
                     ScientificLeaderships newSciLead = new ScientificLeaderships();
+                    newSciLead.setYear((int) sheet.getRow(i).getCell(5).getNumericCellValue());
+                    newSciLead.setStudent(student);
+                    newSciLead.setScientificWorkType(workType);
+                    newSciLead.setEmployee(employee);
+                    newSciLead.setSciWorkName(sheet.getRow(i).getCell(4).getStringCellValue());
+                    result.add(scientificLeadershipsMapper.toDto(scientificLeadershipsRepository.save(newSciLead)));
                 }
             }
-
-            ScientificLeaderships sciLead = new ScientificLeaderships();
-
         }
 
-        return null;
+        return result;
     }
 }
