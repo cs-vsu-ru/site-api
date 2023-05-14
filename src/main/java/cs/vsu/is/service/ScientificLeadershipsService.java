@@ -1,8 +1,10 @@
 package cs.vsu.is.service;
 
+import cs.vsu.is.domain.Employee;
 import cs.vsu.is.domain.ScientificLeaderships;
 import cs.vsu.is.domain.ScientificWorkType;
 import cs.vsu.is.domain.Students;
+import cs.vsu.is.repository.EmployeeRepository;
 import cs.vsu.is.repository.ScientificLeadershipsRepository;
 import cs.vsu.is.repository.ScientificWorkTypeRepository;
 import cs.vsu.is.repository.StudentsRepository;
@@ -38,6 +40,7 @@ public class ScientificLeadershipsService {
     private final ScientificLeadershipsConverter scientificLeadershipsMapper;
     private final ScientificWorkTypeRepository scientificWorkTypeRepository;
     private final StudentsRepository studentsRepository;
+    private final EmployeeRepository employeeRepository;
 
     /**
      * Save a scientificLeaderships.
@@ -124,14 +127,25 @@ public class ScientificLeadershipsService {
 
     public List<ScientificLeadershipsDTO> createSciLeadsFromTable(Sheet sheet) {
         List<ScientificLeadershipsDTO> result = new ArrayList<>();
+
         for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
             Students student = studentsRepository.findFirstByStudentPersonalNumber(sheet.getRow(i).getCell(0).getStringCellValue());
             char studentNameInitial = sheet.getRow(i).getCell(1).getStringCellValue().split(" ")[1].charAt(0);
+
             if (student.getSurname().equals(sheet.getRow(i).getCell(1).getStringCellValue()) &&
-                    student.getName().charAt(0) == studentNameInitial){
-                //todo: insert teacher checking
-                ScientificWorkType workType = scientificWorkTypeRepository.findFirstByName(sheet.getRow(i).getCell(3).getStringCellValue());
-                ScientificLeaderships newSciLead = new ScientificLeaderships();
+                student.getName().charAt(0) == studentNameInitial) {
+
+                String employeeInitials = sheet.getRow(i).getCell(2).getStringCellValue().split(" ")[1];
+                char[] employeeNameSurnameInitial = {employeeInitials.charAt(0), employeeInitials.charAt(2)};
+                Employee employee = employeeRepository.findByUserLastName(sheet.getRow(i).getCell(2).getStringCellValue().split(" ")[0]);
+                if (employee.getPatronymic().charAt(0) == employeeNameSurnameInitial[1] &&
+                    employee.getUser().getFirstName().charAt(0) == employeeNameSurnameInitial[0]) {
+
+                    //todo: relationship checker
+
+                    ScientificWorkType workType = scientificWorkTypeRepository.findFirstByName(sheet.getRow(i).getCell(3).getStringCellValue());
+                    ScientificLeaderships newSciLead = new ScientificLeaderships();
+                }
             }
 
             ScientificLeaderships sciLead = new ScientificLeaderships();
