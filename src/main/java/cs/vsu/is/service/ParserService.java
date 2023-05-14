@@ -358,10 +358,11 @@ public class ParserService {
         String safeSheetName = WorkbookUtil.createSafeSheetName(" ");
         Sheet sheet = workbook.createSheet(safeSheetName);
 
+        CreationHelper helper = workbook.getCreationHelper();
+
         sheet.createRow(0).setHeight((short) 500);
         sheet.setColumnWidth(0, 5000);
-
-        CreationHelper helper = workbook.getCreationHelper();
+        sheet.getRow(0).createCell(0).setCellValue("Время:");
 
         for (int i = 1; i < 7; i++) {
             sheet.getRow(0).createCell(i).setCellValue(helper.createRichTextString(String.valueOf(WeekDays.values()[i])));
