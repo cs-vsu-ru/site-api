@@ -52,7 +52,7 @@ public class ParsingResource {
 
             String responseBodyArgs = ParserService.convertHSSFToHtmlSchema((HSSFWorkbook) workbook);
 
-            return ResponseEntity.ok().body(domain + "api/filterTimetable\n" + responseBodyArgs);
+            return ResponseEntity.ok().body(responseBodyArgs);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,7 +67,7 @@ public class ParsingResource {
 
             String responseBodyArgs = ParserService.convertHSSFToHtmlSchema((HSSFWorkbook) workbook);
 
-            return ResponseEntity.ok().body(domain + "api/filterTimetable\n" + responseBodyArgs);
+            return ResponseEntity.ok().body(responseBodyArgs);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body("Filtering timetable failed. Reason: " + e.getMessage());
