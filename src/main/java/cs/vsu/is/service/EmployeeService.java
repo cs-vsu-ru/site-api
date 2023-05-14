@@ -10,6 +10,7 @@ import cs.vsu.is.service.convertor.store.EmployeeConverterStore;
 import cs.vsu.is.service.convertor.update.EmployeeConverterUpdate;
 import cs.vsu.is.service.dto.AdminUserDTO;
 import cs.vsu.is.service.dto.EmployeeDTO;
+import cs.vsu.is.service.dto.store.EmployeeDTOStore;
 import lombok.AllArgsConstructor;
 
 import java.util.LinkedList;
@@ -53,7 +54,7 @@ public class EmployeeService {
    * @return the persisted entity.
    * @throws Exception
    */
-  public EmployeeDTO save(@Valid EmployeeDTO employeeDTO) throws Exception {
+  public EmployeeDTO save(@Valid EmployeeDTOStore employeeDTO) throws Exception {
     log.debug("Request to save Employee : {}", employeeDTO);
     AdminUserDTO userDTO = employeeMapperStore.toAdminUserDTO(employeeDTO);
     User user = userService.createUser(userDTO);
@@ -70,7 +71,7 @@ public class EmployeeService {
    * @param employeeDTO the entity to save.
    * @return the persisted entity.
    */
-  public EmployeeDTO update(@Valid EmployeeDTO employeeDTO) {
+  public EmployeeDTO update(@Valid EmployeeDTOStore employeeDTO) {
     log.debug("Request to update Employee : {}", employeeDTO);
     Employee employee = employeeRepository.findById(employeeDTO.getId()).get();
     User user = userRepository.findById(employeeDTO.getId()).get();

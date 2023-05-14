@@ -1,6 +1,6 @@
 package cs.vsu.is.service.convertor.store;
 
-import cs.vsu.is.service.dto.EmployeeDTO;
+import cs.vsu.is.service.dto.store.EmployeeDTOStore;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +19,11 @@ public class EmployeeConverterStore {
     // this.modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
   }
 
-  public Employee toEmployeeEntity(@Valid EmployeeDTO dto) {
+  public Employee toEmployeeEntity(@Valid EmployeeDTOStore dto) {
     return modelMapper.map(dto, Employee.class);
   }
 
-  public AdminUserDTO toAdminUserDTO(@Valid EmployeeDTO dto) {
+  public AdminUserDTO toAdminUserDTO(@Valid EmployeeDTOStore dto) {
     return modelMapper.map(dto, AdminUserDTO.class);
   }
 }

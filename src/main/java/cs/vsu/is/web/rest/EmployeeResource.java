@@ -3,7 +3,6 @@ package cs.vsu.is.web.rest;
 import cs.vsu.is.repository.EmployeeRepository;
 import cs.vsu.is.service.EmployeeService;
 import cs.vsu.is.service.dto.EmployeeDTO;
-import cs.vsu.is.service.dto.ResponseEmployeeDTO;
 import cs.vsu.is.service.dto.store.EmployeeDTOStore;
 import cs.vsu.is.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -28,7 +27,6 @@ import tech.jhipster.web.util.ResponseUtil;
 @RestController
 @RequestMapping("/api")
 public class EmployeeResource {
-
   private final Logger log = LoggerFactory.getLogger(EmployeeResource.class);
 
   private static final String ENTITY_NAME = "employee";
