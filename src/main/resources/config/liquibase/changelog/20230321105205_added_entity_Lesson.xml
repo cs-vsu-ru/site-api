@@ -24,9 +24,6 @@
       <column name="employee_id" type="bigint">
         <constraints nullable="true" />
       </column>
-      <column name="subject_id" type="bigint">
-        <constraints nullable="true" />
-      </column>
       <column name="edu_schedule_place_id" type="bigint">
         <constraints nullable="true" />
       </column>
@@ -61,12 +58,9 @@
       <column name="course" type="numeric" />
       <column name="jhi_group" type="numeric" />
       <column name="subgroup" type="numeric" />
-
       <column name="employee_id" type="numeric" />
-      <column name="subject_id" type="numeric" />
       <column name="schedule_id" type="numeric" />
       <column name="edu_schedule_place_id" type="numeric" />
-
       <column name="classroom" type="string" />
       <column name="subject_name" type="string" />
 

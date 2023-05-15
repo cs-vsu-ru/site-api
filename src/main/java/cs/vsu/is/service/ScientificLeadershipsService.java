@@ -129,7 +129,8 @@ public class ScientificLeadershipsService {
         List<ScientificLeadershipsDTO> result = new ArrayList<>();
 
         for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
-            Students student = studentsRepository.findFirstByStudentPersonalNumber(sheet.getRow(i).getCell(0).getStringCellValue());
+            String studentPersNum = String.valueOf(sheet.getRow(i).getCell(0).getNumericCellValue());
+            Students student = studentsRepository.findFirstByStudentPersonalNumber(studentPersNum);
             char studentNameInitial = sheet.getRow(i).getCell(1).getStringCellValue().split(" ")[1].charAt(0);
 
             if (student.getSurname().equals(sheet.getRow(i).getCell(1).getStringCellValue()) &&

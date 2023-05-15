@@ -33,6 +33,9 @@
             <column name="students_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
+            <column name="student_pers_num" type="varchar(8)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <addPrimaryKey columnNames="students_id, scientific_leadeship_id" tableName="rel_students__scientific_leadeship"/>
@@ -48,16 +51,4 @@
           This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
           Spring Boot configuration key.
     -->
-    <changeSet id="20230321105211-1-data" author="jhipster" context="faker">
-        <loadData
-                  file="config/liquibase/fake-data/students.csv"
-                  separator=";"
-                  tableName="students"
-                  usePreparedStatements="true">
-            <column name="id" type="numeric"/>
-            <column name="name" type="string"/>
-            <column name="surname" type="string"/>
-            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
-        </loadData>
-    </changeSet>
 </databaseChangeLog>
