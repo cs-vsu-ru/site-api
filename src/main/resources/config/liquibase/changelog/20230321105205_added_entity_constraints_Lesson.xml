@@ -2,20 +2,16 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 	<!-- Added the constraints for entity Lesson. -->
 	<changeSet id="20230321105205-2" author="jhipster">
-		<addForeignKeyConstraint baseColumnNames="employee_id" 
-    baseTableName="lesson" constraintName="fk_lesson__employee_id" 
+		<addForeignKeyConstraint baseColumnNames="employee_id"
+    baseTableName="lesson" constraintName="fk_lesson__employee_id"
     referencedColumnNames="id" referencedTableName="employee" />
 
-		<addForeignKeyConstraint baseColumnNames="subject_id" 
-    baseTableName="lesson" constraintName="fk_lesson__subject_id" 
-    referencedColumnNames="id" referencedTableName="subject" />
-
 		<addForeignKeyConstraint baseColumnNames="edu_schedule_place_id"
-    baseTableName="lesson" constraintName="fk_lesson__edu_schedule_place_id" 
+    baseTableName="lesson" constraintName="fk_lesson__edu_schedule_place_id"
     referencedColumnNames="id" referencedTableName="edu_schedule_place" />
 
 		<addForeignKeyConstraint baseColumnNames="schedule_id"
-    baseTableName="lesson" constraintName="fk_lesson__schedule_id" 
+    baseTableName="lesson" constraintName="fk_lesson__schedule_id"
     referencedColumnNames="id" referencedTableName="schedule" />
 	</changeSet>
 </databaseChangeLog>
