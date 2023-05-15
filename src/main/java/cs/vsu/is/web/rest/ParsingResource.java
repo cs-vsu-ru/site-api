@@ -50,9 +50,16 @@ public class ParsingResource {
         try {
             Workbook workbook = parserService.filterTimetableByTeacher(teacherName);
 
-            String responseBodyArgs = ParserService.convertHSSFToHtmlSchema((HSSFWorkbook) workbook);
+            String html = ParserService.convertHSSFToHtmlSchema((HSSFWorkbook) workbook);
+            StringBuilder responseBodyArgs = new StringBuilder();
+            for (String line : html.split("\n")) {
+                if (!line.contains("<col") || !line.contains("</col")) {
+                    responseBodyArgs.append(line);
+                    responseBodyArgs.append("\n");
+                }
+            }
 
-            return ResponseEntity.ok().body(responseBodyArgs);
+            return ResponseEntity.ok().body(responseBodyArgs.toString());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,9 +72,16 @@ public class ParsingResource {
         try {
             Workbook workbook = parserService.filterTimetableByChair(employeeNames);
 
-            String responseBodyArgs = ParserService.convertHSSFToHtmlSchema((HSSFWorkbook) workbook);
+            String html = ParserService.convertHSSFToHtmlSchema((HSSFWorkbook) workbook);
+            StringBuilder responseBodyArgs = new StringBuilder();
+            for (String line : html.split("\n")) {
+                if (!line.contains("<col") || !line.contains("</col")) {
+                    responseBodyArgs.append(line);
+                    responseBodyArgs.append("\n");
+                }
+            }
 
-            return ResponseEntity.ok().body(responseBodyArgs);
+            return ResponseEntity.ok().body(responseBodyArgs.toString());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body("Filtering timetable failed. Reason: " + e.getMessage());
