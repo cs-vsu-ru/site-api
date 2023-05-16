@@ -53,7 +53,7 @@ public class ParsingResource {
             String html = ParserService.convertHSSFToHtmlSchema((HSSFWorkbook) workbook);
             StringBuilder responseBodyArgs = new StringBuilder();
             for (String line : html.split("\n")) {
-                if (!line.contains("<col") || !line.contains("</col")) {
+                if (!(line.contains("<col") || line.contains("</col"))) {
                     responseBodyArgs.append(line);
                     responseBodyArgs.append("\n");
                 }
@@ -75,7 +75,7 @@ public class ParsingResource {
             String html = ParserService.convertHSSFToHtmlSchema((HSSFWorkbook) workbook);
             StringBuilder responseBodyArgs = new StringBuilder();
             for (String line : html.split("\n")) {
-                if (!line.contains("<col") || !line.contains("</col")) {
+                if (!(line.contains("<col") || line.contains("</col"))) {
                     responseBodyArgs.append(line);
                     responseBodyArgs.append("\n");
                 }
