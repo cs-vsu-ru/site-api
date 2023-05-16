@@ -228,8 +228,8 @@ public class ParserService {
         emptySlot.setStartTime(startEndTimes[0]);
         emptySlot.setEndTime(startEndTimes[1]);
 
-        for (int i = 0; i < WeekDays.values().length-1; i++) {
-            String buff = WeekDays.values()[i+1].toString();
+        for (int i = 0; i < WeekDays.values().length - 1; i++) {
+            String buff = WeekDays.values()[i + 1].toString();
             if (buff.equals(weekdayName)) {
                 emptySlot.setDayOfWeak(i);
                 break;
@@ -315,8 +315,8 @@ public class ParserService {
                                 coursesIndexRange,
                                 groupsIndexRange);
                             slot = lessonRepository.save(slot);
-                            for (int cellIndex = addressInvolved.getFirstColumn()+1; cellIndex <= addressInvolved.getLastColumn(); cellIndex++) {
-                                for (int rowInde = addressInvolved.getFirstRow()+1; rowInde <= addressInvolved.getLastRow(); rowInde++) {
+                            for (int cellIndex = addressInvolved.getFirstColumn() + 1; cellIndex <= addressInvolved.getLastColumn(); cellIndex++) {
+                                for (int rowInde = addressInvolved.getFirstRow() + 1; rowInde <= addressInvolved.getLastRow(); rowInde++) {
                                     Lesson duplicatedSlot = parseCompletedSlot(currentSheet.getRow(addressInvolved.getFirstRow()).getCell(addressInvolved.getFirstColumn()),
                                         timesIndexRange,
                                         weekdaysIndexRange,
@@ -389,7 +389,7 @@ public class ParserService {
             if (i % 2 == 0) {
                 sheet.addMergedRegion(new CellRangeAddress(i - 1, i, 0, 0));
             } else {
-                if (counter < timesArray.length-1) {
+                if (counter < timesArray.length - 1) {
                     sheet.getRow(i).getCell(0).setCellValue(helper.createRichTextString(timesArray[counter]));
                     ++counter;
                 }
@@ -532,14 +532,18 @@ public class ParserService {
         sheet.getRow(0).getCell(1).setCellStyle(styleHorizontal);
         setBordersOnCell(0, 1, sheet);
 
-        for (int i = 2; i < employeeNames.size() + 2; i++) {
-            Employee employee = employeeRepository.findByUserLastName(employeeNames.get(i - 2));
-            var value = employee.getUser().getLastName() + " " + employee.getUser().getLastName().charAt(0) +
-                "." + employee.getPatronymic().charAt(0) + ".";
+        try {
+            for (int i = 2; i < employeeNames.size() + 2; i++) {
+                Employee employee = employeeRepository.findByUserLastName(employeeNames.get(i - 2));
+                var value = employee.getUser().getLastName() + " " + employee.getUser().getLastName().charAt(0) +
+                    "." + employee.getPatronymic().charAt(0) + ".";
 
-            sheet.getRow(0).createCell(i).setCellValue(helper.createRichTextString(value));
-            sheet.getRow(0).getCell(i).setCellStyle(styleVertical);
-            setBordersOnCell(0, i, sheet);
+                sheet.getRow(0).createCell(i).setCellValue(helper.createRichTextString(value));
+                sheet.getRow(0).getCell(i).setCellStyle(styleVertical);
+                setBordersOnCell(0, i, sheet);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         int count = (WeekDays.values().length * timesArray.length - timesArray.length) * 2;
@@ -577,47 +581,51 @@ public class ParserService {
             }
         }
 
-        for (int t = 0; t < employeeNames.size(); t++) {
-            Employee employee = employeeRepository.findByUserLastName(employeeNames.get(t));
-            Long teacherId = employee.getId();
+        try {
+            for (int t = 0; t < employeeNames.size(); t++) {
+                Employee employee = employeeRepository.findByUserLastName(employeeNames.get(t));
+                Long teacherId = employee.getId();
 
-            List<Lesson> teacherLessons = lessonRepository.findAllByEmployeeId(teacherId);
+                List<Lesson> teacherLessons = lessonRepository.findAllByEmployeeId(teacherId);
 
-            teacherLessons = teacherLessons.stream()
-                .filter(lesson -> (lesson.getEmployee().getPatronymic().charAt(0) == employee.getPatronymic().charAt(0))
-                    && (lesson.getEmployee().getUser().getFirstName().charAt(0) == employee.getUser().getFirstName().charAt(0)))
-                .collect(Collectors.toList());
-
-            teacherLessons = teacherLessons.stream()
-                .filter(lesson -> lesson.getSchedule().getIsActual().equals(Boolean.TRUE))
-                .collect(Collectors.toList());
-
-            for (int i = 1; i < count; i += timesArray.length * 2) {
-                var weekDay = (i / timesArray.length) / 2 + 1;
-
-                List<Lesson> weekdayLessons = teacherLessons.stream()
-                    .filter(lesson -> lesson.getEduSchedulePlace().getDayOfWeak().equals(weekDay))
+                teacherLessons = teacherLessons.stream()
+                    .filter(lesson -> (lesson.getEmployee().getPatronymic().charAt(0) == employee.getPatronymic().charAt(0))
+                        && (lesson.getEmployee().getUser().getFirstName().charAt(0) == employee.getUser().getFirstName().charAt(0)))
                     .collect(Collectors.toList());
 
-                for (Lesson slot : weekdayLessons) {
-                    String timeGap = slot.getEduSchedulePlace().getStartTime() + " - " + slot.getEduSchedulePlace().getEndTime();
-                    boolean isDemoninator = slot.getEduSchedulePlace().getIsDenominator();
-                    int rowTimeIndex = findTimeRowIndex(timeGap, timesArray);
-                    rowTimeIndex = i + rowTimeIndex * 2;
+                teacherLessons = teacherLessons.stream()
+                    .filter(lesson -> lesson.getSchedule().getIsActual().equals(Boolean.TRUE))
+                    .collect(Collectors.toList());
 
-                    if (isDemoninator) {
-                        ++rowTimeIndex;
+                for (int i = 1; i < count; i += timesArray.length * 2) {
+                    var weekDay = (i / timesArray.length) / 2 + 1;
+
+                    List<Lesson> weekdayLessons = teacherLessons.stream()
+                        .filter(lesson -> lesson.getEduSchedulePlace().getDayOfWeak().equals(weekDay))
+                        .collect(Collectors.toList());
+
+                    for (Lesson slot : weekdayLessons) {
+                        String timeGap = slot.getEduSchedulePlace().getStartTime() + " - " + slot.getEduSchedulePlace().getEndTime();
+                        boolean isDemoninator = slot.getEduSchedulePlace().getIsDenominator();
+                        int rowTimeIndex = findTimeRowIndex(timeGap, timesArray);
+                        rowTimeIndex = i + rowTimeIndex * 2;
+
+                        if (isDemoninator) {
+                            ++rowTimeIndex;
+                        }
+
+                        String value = slot.getSubjectName() + " "
+                            + slot.getClassroom() + " к."
+                            + slot.getCourse() + " гр. "
+                            + slot.getGroup() + "."
+                            + slot.getSubgroup();
+                        sheet.getRow(rowTimeIndex).createCell(t + 2).setCellValue(helper.createRichTextString(value));
+                        setBordersOnCell(rowTimeIndex, t + 2, sheet);
                     }
-
-                    String value = slot.getSubjectName() + " "
-                        + slot.getClassroom() + " к."
-                        + slot.getCourse() + " гр. "
-                        + slot.getGroup() + "."
-                        + slot.getSubgroup();
-                    sheet.getRow(rowTimeIndex).createCell(t + 2).setCellValue(helper.createRichTextString(value));
-                    setBordersOnCell(rowTimeIndex, t + 2, sheet);
                 }
             }
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
         }
 
         for (int i = 1; i < count; i += 2) {
