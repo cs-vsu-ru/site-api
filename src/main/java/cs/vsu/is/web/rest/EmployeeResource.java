@@ -2,8 +2,10 @@ package cs.vsu.is.web.rest;
 
 import cs.vsu.is.repository.EmployeeRepository;
 import cs.vsu.is.service.EmployeeService;
+import cs.vsu.is.service.dto.AdminEmployeeDTO;
 import cs.vsu.is.service.dto.EmployeeDTO;
 import cs.vsu.is.service.dto.store.EmployeeDTOStore;
+import cs.vsu.is.service.dto.update.EmployeeDTOUpdate;
 import cs.vsu.is.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -76,10 +78,10 @@ public class EmployeeResource {
    *         couldn't be updated.
    * @throws URISyntaxException if the Location URI syntax is incorrect.
    */
-  @PutMapping("/employees/{id}")
-  public ResponseEntity<EmployeeDTO> updateEmployee(
+  @PatchMapping("/employees/{id}")
+  public ResponseEntity<AdminEmployeeDTO> updateEmployee(
       @PathVariable(value = "id", required = false) final Long id,
-      @Valid @RequestBody EmployeeDTOStore employeeDTO) throws URISyntaxException {
+      @Valid @RequestBody EmployeeDTOUpdate employeeDTO) throws URISyntaxException {
     log.debug("REST request to update Employee : {}, {}", id, employeeDTO);
     if (employeeDTO.getId() == null) {
       throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -91,7 +93,7 @@ public class EmployeeResource {
     if (!employeeRepository.existsById(id)) {
       throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
     }
-    EmployeeDTO result = employeeService.update(employeeDTO);
+    AdminEmployeeDTO result = employeeService.update(employeeDTO);
     return ResponseEntity
         .ok()
         .headers(
@@ -169,6 +171,13 @@ public class EmployeeResource {
   public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable Long id) {
     log.debug("REST request to get Employee : {}", id);
     Optional<EmployeeDTO> employeeDTO = employeeService.findOne(id);
+    return ResponseEntity.ok(employeeDTO.get());
+  }
+
+  @GetMapping("/admin-employees/{id}")
+  public ResponseEntity<AdminEmployeeDTO> getAdminEmployee(@PathVariable Long id) {
+    log.debug("REST request to get Employee : {}", id);
+    Optional<AdminEmployeeDTO> employeeDTO = employeeService.findAdminOne(id);
     return ResponseEntity.ok(employeeDTO.get());
   }
 
