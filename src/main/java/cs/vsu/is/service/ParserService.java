@@ -129,6 +129,9 @@ public class ParserService {
                 prevIndex = i;
             }
         }
+        List<Integer[]> buff = new ArrayList<>();
+        buff.add(new Integer[]{prevIndex, sheet.getPhysicalNumberOfRows()});
+        indexMap.put(prevValue, buff);
 
         return indexMap;
     }
@@ -225,10 +228,11 @@ public class ParserService {
         emptySlot.setStartTime(startEndTimes[0]);
         emptySlot.setEndTime(startEndTimes[1]);
 
-        for (int i = 0; i < WeekDays.values().length; i++) {
-            String buff = WeekDays.values()[i].toString();
+        for (int i = 0; i < WeekDays.values().length-1; i++) {
+            String buff = WeekDays.values()[i+1].toString();
             if (buff.equals(weekdayName)) {
                 emptySlot.setDayOfWeak(i);
+                break;
             } else emptySlot.setDayOfWeak(-1);
         }
 
@@ -385,7 +389,7 @@ public class ParserService {
             if (i % 2 == 0) {
                 sheet.addMergedRegion(new CellRangeAddress(i - 1, i, 0, 0));
             } else {
-                if (counter < timesArray.length) {
+                if (counter < timesArray.length-1) {
                     sheet.getRow(i).getCell(0).setCellValue(helper.createRichTextString(timesArray[counter]));
                     ++counter;
                 }
@@ -475,11 +479,11 @@ public class ParserService {
                 && (lesson.getEmployee().getUser().getFirstName().charAt(0) == employee.getUser().getFirstName().charAt(0)))
             .collect(Collectors.toList());
 
-        lessons = lessons.stream()
-            .filter(lesson -> lesson.getSchedule().getIsActual())
-            .sorted(Comparator.comparing(lesson -> lesson.getEduSchedulePlace().getDayOfWeak()))
-            .sorted(Comparator.comparing(lesson -> lesson.getEduSchedulePlace().getStartTime()))
-            .collect(Collectors.toList());
+//        lessons = lessons.stream()
+//            .filter(lesson -> lesson.getSchedule().getIsActual())
+//            .sorted(Comparator.comparing(lesson -> lesson.getEduSchedulePlace().getDayOfWeak()))
+//            .sorted(Comparator.comparing(lesson -> lesson.getEduSchedulePlace().getStartTime()))
+//            .collect(Collectors.toList());
 
         Workbook workbook = createHFFSSchemaForTeacher(lessons);
         logger.debug("Personal timetable filtered for teacher {}", teacherName);
@@ -493,8 +497,10 @@ public class ParserService {
         this.parseXLSXToSlots(workbook, 1);
 
         //todo: merge function and selection of last timetable
-        Schedule previous = scheduleRepository.findFirstByIsActual(true);
-        previous.setIsActual(false);
+//        Schedule previous = scheduleRepository.findFirstByIsActual(true);
+//        previous.setIsActual(false);
+//        scheduleRepository.deleteById(previous.getId());
+//        scheduleRepository.save(previous);
 
         scheduleRepository.save(new Schedule(path, Instant.now(), true));
     }

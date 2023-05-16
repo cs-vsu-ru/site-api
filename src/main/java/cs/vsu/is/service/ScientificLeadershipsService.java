@@ -129,7 +129,8 @@ public class ScientificLeadershipsService {
         List<ScientificLeadershipsDTO> result = new ArrayList<>();
 
         for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
-            Students student = studentsRepository.findFirstByStudentPersonalNumber(sheet.getRow(i).getCell(0).getStringCellValue());
+            String studentPersNum = String.valueOf(sheet.getRow(i).getCell(0).getNumericCellValue());
+            Students student = studentsRepository.findFirstByStudentPersonalNumber(studentPersNum);
             char studentNameInitial = sheet.getRow(i).getCell(1).getStringCellValue().split(" ")[1].charAt(0);
 
             if (student.getSurname().equals(sheet.getRow(i).getCell(1).getStringCellValue()) &&
@@ -140,23 +141,33 @@ public class ScientificLeadershipsService {
                 Employee employee = employeeRepository.findByUserLastName(sheet.getRow(i).getCell(2).getStringCellValue().split(" ")[0]);
                 if (employee.getPatronymic().charAt(0) == employeeNameSurnameInitial[1] &&
                     employee.getUser().getFirstName().charAt(0) == employeeNameSurnameInitial[0]) {
-
-
-                    //todo: relationship checker
+                    int year = (int) sheet.getRow(i).getCell(5).getNumericCellValue();
 
                     ScientificWorkType workType = scientificWorkTypeRepository.findFirstByName(sheet.getRow(i).getCell(3).getStringCellValue());
-
-                    ScientificLeaderships newSciLead = new ScientificLeaderships();
-                    newSciLead.setYear((int) sheet.getRow(i).getCell(5).getNumericCellValue());
-                    newSciLead.setStudent(student);
-                    newSciLead.setScientificWorkType(workType);
-                    newSciLead.setEmployee(employee);
-                    newSciLead.setSciWorkName(sheet.getRow(i).getCell(4).getStringCellValue());
-                    result.add(scientificLeadershipsMapper.toDto(scientificLeadershipsRepository.save(newSciLead)));
+                    if (!workType.getName().contains("статья")) {
+                        List<ScientificLeaderships> previousLeadsByEmployee = scientificLeadershipsRepository.findAllByEmployeeAndScientificWorkTypeAndStudentAndYear(employee,
+                            workType,
+                            student,
+                            year);
+                        if (previousLeadsByEmployee.size() == 0) {
+                            saveSciLeadByRepo(sheet, result, i, student, employee, year, workType);
+                        }
+                    } else {
+                        saveSciLeadByRepo(sheet, result, i, student, employee, year, workType);
+                    }
                 }
             }
         }
-
         return result;
+    }
+
+    private void saveSciLeadByRepo(Sheet sheet, List<ScientificLeadershipsDTO> result, int i, Students student, Employee employee, int year, ScientificWorkType workType) {
+        ScientificLeaderships newSciLead = new ScientificLeaderships();
+        newSciLead.setYear(year);
+        newSciLead.setStudent(student);
+        newSciLead.setScientificWorkType(workType);
+        newSciLead.setEmployee(employee);
+        newSciLead.setSciWorkName(sheet.getRow(i).getCell(4).getStringCellValue());
+        result.add(scientificLeadershipsMapper.toDto(scientificLeadershipsRepository.save(newSciLead)));
     }
 }

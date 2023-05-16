@@ -30,16 +30,11 @@ import tech.jhipster.web.util.ResponseUtil;
 @RestController
 @RequestMapping("/api")
 public class ScientificLeadershipsResource {
-
     private final Logger log = LoggerFactory.getLogger(ScientificLeadershipsResource.class);
-
     private static final String ENTITY_NAME = "scientificLeaderships";
-
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
-
     private final ScientificLeadershipsService scientificLeadershipsService;
-
     private final ScientificLeadershipsRepository scientificLeadershipsRepository;
 
     public ScientificLeadershipsResource(

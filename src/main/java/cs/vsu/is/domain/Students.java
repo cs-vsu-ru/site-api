@@ -27,6 +27,10 @@ public class Students implements Serializable {
     @Column(name = "student_pers_num")
     private String studentPersonalNumber;
 
+    public Students() {
+
+    }
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
