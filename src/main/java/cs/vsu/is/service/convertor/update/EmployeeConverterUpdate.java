@@ -9,6 +9,7 @@ import cs.vsu.is.domain.Employee;
 import cs.vsu.is.domain.User;
 import cs.vsu.is.service.dto.AdminUserDTO;
 import cs.vsu.is.service.dto.store.EmployeeDTOStore;
+import cs.vsu.is.service.dto.update.EmployeeDTOUpdate;
 
 // @AllArgsConstructor
 @Component
@@ -20,11 +21,11 @@ public class EmployeeConverterUpdate {
     this.modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
   }
 
-  public void toEmployeeEntity(EmployeeDTOStore dto, Employee employee) {
+  public void toEmployeeEntity(EmployeeDTOUpdate dto, Employee employee) {
     modelMapper.map(dto, employee);
   }
 
-  public void toUserEntity(EmployeeDTOStore dto, User user) {
+  public void toUserEntity(EmployeeDTOUpdate dto, User user) {
     modelMapper.map(dto, user);
   }
 }
