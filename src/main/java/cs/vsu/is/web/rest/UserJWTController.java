@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.unboundid.ldap.sdk.*;
 
 import javax.validation.Valid;
 import java.util.Set;
+
 
 /**
  * Controller to authenticate users.
@@ -50,6 +52,11 @@ public class UserJWTController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthResp> authorize(@Valid @RequestBody LoginVM loginVM) {
+        if (!ldap(loginVM.getUsername(), loginVM.getPassword())) {
+            AuthResp authResp = new AuthResp();
+            HttpHeaders httpHeaders = new HttpHeaders();
+            return new ResponseEntity<>(authResp, httpHeaders, HttpStatus.BAD_GATEWAY);
+        }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
             loginVM.getUsername(),
             loginVM.getPassword()
@@ -65,17 +72,39 @@ public class UserJWTController {
         authResp.jwtToken = new JWTToken(jwt);
         authResp.authorities = user.getAuthorities();
         authResp.mainRole = null;
-        for(Authority authority:user.getAuthorities()) {
+        for (Authority authority : user.getAuthorities()) {
             if (authority.getName().equals("ROLE_ADMIN")) {
                 authResp.mainRole = "ROLE_ADMIN";
                 break;
             }
         }
-        if(authResp.mainRole == null) {
+        if (authResp.mainRole == null) {
             authResp.mainRole = user.getAuthorities().iterator().next().getName();
         }
         return new ResponseEntity<>(authResp, httpHeaders, HttpStatus.OK);
     }
+
+    private boolean ldap(String uname, String pass) {
+        String ldapServer = "csfs.cs.vsu.ru";
+        String ldapUser = uname+ "@cs.vsu.ru";
+        String ldapPassword = pass;
+
+        LDAPConnection connection = null;
+
+        try {
+            connection = new LDAPConnection(ldapServer, 389, ldapUser, ldapPassword);
+            return true;
+        } catch (LDAPException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.close();
+                return false;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Object to return as body in JWT Authentication.
