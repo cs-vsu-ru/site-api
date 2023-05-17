@@ -1,32 +1,38 @@
 package cs.vsu.is.web.rest;
 
+import cs.vsu.is.domain.Emails;
 import cs.vsu.is.domain.Newsletter;
+import cs.vsu.is.repository.EmailsRepository;
 import cs.vsu.is.repository.NewsletterRepository;
-import cs.vsu.is.service.dto.LessonDTO;
-import cs.vsu.is.web.rest.errors.BadRequestAlertException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
 public class NewsletterResource {
     private final NewsletterRepository newsletterRepository;
+    private final EmailsRepository emailsRepository;
 
-    public NewsletterResource(NewsletterRepository newsletterRepository) {
+    public NewsletterResource(NewsletterRepository newsletterRepository, EmailsRepository emailsRepository) {
         this.newsletterRepository = newsletterRepository;
+        this.emailsRepository = emailsRepository;
     }
 
     @PostMapping("/newsletter")
     public ResponseEntity<Newsletter> createNewsletter(@RequestBody Newsletter newsletter) throws URISyntaxException {
-        newsletter = newsletterRepository.save(newsletter);
+        newsletterRepository.save(newsletter);
+        for(Emails item: newsletter.getEmails()) {
+            item.setNewsletter(newsletter);
+        }
+        List<Emails> emails = emailsRepository.saveAll(newsletter.getEmails());
+        newsletter.setEmails(emails);
         return ResponseEntity
             .created(new URI("/api/newsletter/" + newsletter.getId()))
             .body(newsletter);

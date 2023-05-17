@@ -19,7 +19,7 @@ public class NewsScheduler {
     this.mailSender = mailSender;
   }
 
-  @Scheduled(fixedDelay = 5 * 60 * 1000, initialDelay = 1000)
+  @Scheduled(fixedDelay = 1 * 10 * 1000, initialDelay = 20000)
   public void makeNewsletter() {
     LocalDateTime currentTime = LocalDateTime.now();
     LocalDateTime tenMinutesAgo = currentTime.minusMinutes(10);

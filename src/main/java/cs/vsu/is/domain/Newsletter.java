@@ -1,5 +1,8 @@
 package cs.vsu.is.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,26 +20,26 @@ import java.util.Set;
 @Table(name = "newsletter")
 public class Newsletter implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-  @Column(name = "newsletter_date")
-  private LocalDateTime newsletterDate;
+    @Column(name = "newsletter_date")
+    private LocalDateTime newsletterDate;
 
-  @Column(name = "subject")
-  private String subject;
+    @Column(name = "subject")
+    private String subject;
 
-  @Column(name = "content")
-  private String content;
+    @Column(name = "content")
+    private String content;
 
-  @Column(name = "status")
-  private String status;
+    @Column(name = "status")
+    private String status;
 
-  @OneToMany /* (mappedBy = "newsletter") */
-  private Set<Emails> emails = new HashSet<>();
-
+    @OneToMany(mappedBy = "newsletter" , fetch = FetchType.EAGER)
+    @JsonIgnoreProperties(value = {"newsletter"}, allowSetters = true)
+    private List<Emails> emails = new ArrayList<>();
 }

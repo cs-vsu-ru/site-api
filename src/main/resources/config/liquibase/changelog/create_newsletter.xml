@@ -3,10 +3,10 @@
   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
-  
+
   <changeSet id="11" author="andrey">
       <createTable tableName="newsletter">
-      <column name="newsletter_date" type="varchar(12)"/>
+      <column name="newsletter_date" type="TIMESTAMP"/>
       <column name="subject" type="text"/>
       <column name="content" type="text"/>
       <column name="status" type="text"/>
@@ -19,7 +19,7 @@
     <changeSet id="12" author="andrey">
       <createTable tableName="emails">
       <column name="newsletter_id" type="bigint"/>
-      <column name="email" type="varchar(255)"/>
+      <column name="email_column" type="varchar(255)"/>
       <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
       </column>
