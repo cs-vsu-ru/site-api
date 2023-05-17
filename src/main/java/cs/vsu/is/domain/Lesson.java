@@ -18,40 +18,36 @@ import javax.persistence.*;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Lesson implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-  @Column(name = "course")
-  private Integer course;
+    @Column(name = "course")
+    private Integer course;
 
-  @Column(name = "jhi_group")
-  private Integer group;
+    @Column(name = "jhi_group")
+    private Integer group;
 
-  @Column(name = "subgroup")
-  private Integer subgroup;
+    @Column(name = "subgroup")
+    private Integer subgroup;
+    @ManyToOne
+    private EduSchedulePlace eduSchedulePlace;
 
-  @ManyToOne
-  private Subject subject;
+    @ManyToOne
+    private Schedule schedule;
 
-  @ManyToOne
-  private EduSchedulePlace eduSchedulePlace;
+    @Column(name = "classroom")
+    private String classroom;
 
-  @ManyToOne
-  private Schedule schedule;
+    @ManyToOne
+    @JsonIgnoreProperties(value = {"user", "articles", "events", "lessons", "pages", "scientificLeaderships",
+        "teachings", "roles"}, allowSetters = true)
+    private Employee employee;
 
-  @Column(name = "classroom")
-  private String classroom;
-
-  @ManyToOne
-  @JsonIgnoreProperties(value = { "user", "articles", "events", "lessons", "pages", "scientificLeaderships",
-      "teachings", "roles" }, allowSetters = true)
-  private Employee employee;
-
-  @Column(name = "subject_name")
-  private String subjectName;
+    @Column(name = "subject_name")
+    private String subjectName;
 
 }

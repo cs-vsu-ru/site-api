@@ -7,6 +7,7 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Component;
 
 import cs.vsu.is.domain.Employee;
+import cs.vsu.is.service.dto.AdminEmployeeDTO;
 import cs.vsu.is.service.dto.EmployeeDTO;
 import lombok.AllArgsConstructor;
 
@@ -22,6 +23,13 @@ public class EmployeeConverter {
   public EmployeeDTO toDto(Employee entity) {
     this.modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
     EmployeeDTO dto = modelMapper.map(entity, EmployeeDTO.class);
+    modelMapper.map(entity.getUser(), dto);
+    return dto;
+  }
+
+  public AdminEmployeeDTO toAdminDto(Employee entity) {
+    this.modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
+    AdminEmployeeDTO dto = modelMapper.map(entity, AdminEmployeeDTO.class);
     modelMapper.map(entity.getUser(), dto);
     return dto;
   }

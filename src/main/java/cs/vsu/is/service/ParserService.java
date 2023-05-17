@@ -13,7 +13,6 @@ import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -27,14 +26,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @AllArgsConstructor
 public class ParserService {
     private static final String[] timesArray = {"8:00 - 9:30",
@@ -133,6 +129,9 @@ public class ParserService {
                 prevIndex = i;
             }
         }
+        List<Integer[]> buff = new ArrayList<>();
+        buff.add(new Integer[]{prevIndex, sheet.getPhysicalNumberOfRows()});
+        indexMap.put(prevValue, buff);
 
         return indexMap;
     }
@@ -229,10 +228,11 @@ public class ParserService {
         emptySlot.setStartTime(startEndTimes[0]);
         emptySlot.setEndTime(startEndTimes[1]);
 
-        for (int i = 0; i < WeekDays.values().length; i++) {
-            String buff = WeekDays.values()[i].toString();
+        for (int i = 0; i < WeekDays.values().length - 1; i++) {
+            String buff = WeekDays.values()[i + 1].toString();
             if (buff.equals(weekdayName)) {
                 emptySlot.setDayOfWeak(i);
+                break;
             } else emptySlot.setDayOfWeak(-1);
         }
 
@@ -256,8 +256,6 @@ public class ParserService {
             String classNum = params[params.length - 1];
             completedSlot.setClassroom(classNum);
 
-//            String teacherName;
-
             if (params.length > 2) {
                 //todo: make query for initials and surname
                 Employee employee = employeeRepository.findByUserLastName(params[params.length - 3]);
@@ -267,14 +265,11 @@ public class ParserService {
                 for (int k = 0; k < params.length - 4; k++) {
                     subjectName.append(params[k]).append(" ");
                 }
-//                Subject subject = subjectRepository.findByName(String.valueOf(subjectName));
-//                completedSlot.setSubject(subject);
+
                 completedSlot.setSubjectName(String.valueOf(subjectName));
 
             }
         }
-
-        completedSlot = lessonRepository.save(completedSlot);
 
         return completedSlot;
     }
@@ -284,7 +279,7 @@ public class ParserService {
         logger.info("Request to parse XLSX document: {}, sheet: {}", workbook.getSheetName(sheetNumber), sheetNumber);
 
         Sheet currentSheet = workbook.getSheetAt(sheetNumber);
-        List<Lesson> result = new LinkedList<>();
+//        List<Lesson> result = new LinkedList<>();
 
         try {
             this.coursesIndexRange = countRowIndexRange(currentSheet.getRow(0));
@@ -295,7 +290,6 @@ public class ParserService {
             this.mergedRegions = processMergedRegions(currentSheet);
         } catch (Exception e) {
             e.printStackTrace();
-//            return ResponseEntity.badRequest().body("Parsing failed on the stage of parsing courses, groups, weekdays and times cell ranges");
         }
 
         for (int i = 4; i < currentSheet.getPhysicalNumberOfRows(); i++) {
@@ -315,14 +309,24 @@ public class ParserService {
                     if (addressInvolved != null) {
                         if (currentCell.getColumnIndex() == addressInvolved.getFirstColumn() &&
                             currentCell.getRowIndex() == addressInvolved.getFirstRow()) {
-                            for (int cellIndex = addressInvolved.getFirstColumn(); cellIndex <= addressInvolved.getLastColumn(); cellIndex++) {
-                                for (int rowInde = addressInvolved.getFirstRow(); rowInde <= addressInvolved.getLastRow(); rowInde++) {
-                                    Lesson duplicatedSlot = parseCompletedSlot(currentSheet.getRow(rowInde).getCell(cellIndex),
+                            Lesson slot = parseCompletedSlot(currentSheet.getRow(addressInvolved.getFirstRow()).getCell(addressInvolved.getFirstColumn()),
+                                timesIndexRange,
+                                weekdaysIndexRange,
+                                coursesIndexRange,
+                                groupsIndexRange);
+                            slot = lessonRepository.save(slot);
+                            for (int cellIndex = addressInvolved.getFirstColumn() + 1; cellIndex <= addressInvolved.getLastColumn(); cellIndex++) {
+                                for (int rowInde = addressInvolved.getFirstRow() + 1; rowInde <= addressInvolved.getLastRow(); rowInde++) {
+                                    Lesson duplicatedSlot = parseCompletedSlot(currentSheet.getRow(addressInvolved.getFirstRow()).getCell(addressInvolved.getFirstColumn()),
                                         timesIndexRange,
                                         weekdaysIndexRange,
                                         coursesIndexRange,
                                         groupsIndexRange);
-                                    result.add(duplicatedSlot);
+                                    duplicatedSlot.setClassroom(slot.getClassroom());
+                                    duplicatedSlot.setSubjectName(slot.getSubjectName());
+                                    duplicatedSlot.setEmployee(slot.getEmployee());
+                                    lessonRepository.save(duplicatedSlot);
+//                                    result.add(duplicatedSlot);
                                 }
                             }
                         }
@@ -330,7 +334,8 @@ public class ParserService {
                         try {
                             if (!currentCell.getStringCellValue().equals("")) {
                                 Lesson slot = this.parseCompletedSlot(currentCell, timesIndexRange, weekdaysIndexRange, coursesIndexRange, groupsIndexRange);
-                                result.add(slot);
+//                                result.add(slot);
+                                lessonRepository.save(slot);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -339,7 +344,6 @@ public class ParserService {
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-//                return ResponseEntity.badRequest().body("Parsing failed on the stage of parsing nullable cell");
             }
         }
         return ResponseEntity.ok().body("Parsing succeeded");
@@ -358,10 +362,11 @@ public class ParserService {
         String safeSheetName = WorkbookUtil.createSafeSheetName(" ");
         Sheet sheet = workbook.createSheet(safeSheetName);
 
+        CreationHelper helper = workbook.getCreationHelper();
+
         sheet.createRow(0).setHeight((short) 500);
         sheet.setColumnWidth(0, 5000);
-
-        CreationHelper helper = workbook.getCreationHelper();
+        sheet.getRow(0).createCell(0).setCellValue("Время:");
 
         for (int i = 1; i < 7; i++) {
             sheet.getRow(0).createCell(i).setCellValue(helper.createRichTextString(String.valueOf(WeekDays.values()[i])));
@@ -384,7 +389,7 @@ public class ParserService {
             if (i % 2 == 0) {
                 sheet.addMergedRegion(new CellRangeAddress(i - 1, i, 0, 0));
             } else {
-                if (counter < timesArray.length) {
+                if (counter < timesArray.length - 1) {
                     sheet.getRow(i).getCell(0).setCellValue(helper.createRichTextString(timesArray[counter]));
                     ++counter;
                 }
@@ -407,13 +412,14 @@ public class ParserService {
                 if (isDemoninator) {
                     ++rowTimeIndex;
                 }
+
+                String value = slot.getSubjectName() + " "
+                    + slot.getClassroom() + " к."
+                    + slot.getCourse() + " гр. "
+                    + slot.getGroup() + "."
+                    + slot.getSubgroup();
                 sheet.getRow(rowTimeIndex).getCell(i).setCellValue(
-                    helper.createRichTextString(slot.getSubjectName() + " "
-                        + slot.getClassroom()) + " к."
-                        + slot.getCourse() + " гр. "
-                        + slot.getGroup() + "."
-                        + slot.getSubgroup()
-                );
+                    helper.createRichTextString(value));
             }
         }
 
@@ -465,27 +471,22 @@ public class ParserService {
         return -1;
     }
 
-    public Workbook filterTimetableByTeacher(String teacherName, Integer timetableIndex) {
-        Employee employee = employeeRepository.findByUserLastName(teacherName); //todo: use an initials too and timetable id
+    public Workbook filterTimetableByTeacher(String teacherName) {
+        Employee employee = employeeRepository.findByUserLastName(teacherName);
         List<Lesson> lessons = lessonRepository.findAllByEmployeeId(employee.getId());
-
         lessons = lessons.stream()
-            .filter(lesson -> lesson.getSchedule().getIsActual())
-            .sorted(Comparator.comparing(lesson -> lesson.getEduSchedulePlace().getDayOfWeak()))
-            .sorted(Comparator.comparing(lesson -> lesson.getEduSchedulePlace().getStartTime()))
+            .filter(lesson -> (lesson.getEmployee().getPatronymic().charAt(0) == employee.getPatronymic().charAt(0))
+                && (lesson.getEmployee().getUser().getFirstName().charAt(0) == employee.getUser().getFirstName().charAt(0)))
             .collect(Collectors.toList());
 
+//        lessons = lessons.stream()
+//            .filter(lesson -> lesson.getSchedule().getIsActual())
+//            .sorted(Comparator.comparing(lesson -> lesson.getEduSchedulePlace().getDayOfWeak()))
+//            .sorted(Comparator.comparing(lesson -> lesson.getEduSchedulePlace().getStartTime()))
+//            .collect(Collectors.toList());
+
         Workbook workbook = createHFFSSchemaForTeacher(lessons);
-
-        UUID uuid = UUID.randomUUID();
-        Path path = Path.of("files/" + uuid + teacherName + timetableIndex);
-        logger.debug("Personal timetable saved to path {}", path);
-
-//        try (OutputStream file = new FileOutputStream(path.toString())) {
-//            workbook.write(file);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        logger.debug("Personal timetable filtered for teacher {}", teacherName);
         return workbook;
     }
 
@@ -496,15 +497,151 @@ public class ParserService {
         this.parseXLSXToSlots(workbook, 1);
 
         //todo: merge function and selection of last timetable
-        Schedule previous = scheduleRepository.findFirstByIsActual(true);
-        previous.setIsActual(false);
+//        Schedule previous = scheduleRepository.findFirstByIsActual(true);
+//        previous.setIsActual(false);
+//        scheduleRepository.deleteById(previous.getId());
+//        scheduleRepository.save(previous);
 
         scheduleRepository.save(new Schedule(path, Instant.now(), true));
     }
 
     public Workbook filterTimetableByChair(List<String> employeeNames) {
+        HSSFWorkbook workbook = new HSSFWorkbook();
 
+        String safeSheetName = WorkbookUtil.createSafeSheetName(" ");
+        Sheet sheet = workbook.createSheet(safeSheetName);
 
-        return null;
+        CellStyle styleVertical = workbook.createCellStyle();
+        styleVertical.setRotation((short) 90);
+        styleVertical.setAlignment(HorizontalAlignment.CENTER);
+        styleVertical.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        CellStyle styleHorizontal = workbook.createCellStyle();
+        styleHorizontal.setAlignment(HorizontalAlignment.CENTER);
+        styleHorizontal.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        sheet.setDefaultColumnWidth(17);
+        CreationHelper helper = workbook.getCreationHelper();
+
+        sheet.createRow(0).setHeight((short) 2500);
+        sheet.setColumnWidth(0, 2300);
+        sheet.getRow(0).createCell(0).setCellValue(helper.createRichTextString("День недели:"));
+        sheet.getRow(0).getCell(0).setCellStyle(styleHorizontal);
+        setBordersOnCell(0, 0, sheet);
+        sheet.getRow(0).createCell(1).setCellValue(helper.createRichTextString("Время:"));
+        sheet.getRow(0).getCell(1).setCellStyle(styleHorizontal);
+        setBordersOnCell(0, 1, sheet);
+
+        try {
+            for (int i = 2; i < employeeNames.size() + 2; i++) {
+                Employee employee = employeeRepository.findByUserLastName(employeeNames.get(i - 2));
+                var value = employee.getUser().getLastName() + " " + employee.getUser().getLastName().charAt(0) +
+                    "." + employee.getPatronymic().charAt(0) + ".";
+
+                sheet.getRow(0).createCell(i).setCellValue(helper.createRichTextString(value));
+                sheet.getRow(0).getCell(i).setCellStyle(styleVertical);
+                setBordersOnCell(0, i, sheet);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        int count = (WeekDays.values().length * timesArray.length - timesArray.length) * 2;
+        for (int i = 1; i < count; i += timesArray.length * 2) {
+            var weekDay = String.valueOf(WeekDays.values()[(i / timesArray.length) / 2 + 1]);
+            sheet.createRow(i).createCell(0).setCellValue(helper.createRichTextString(weekDay));
+            sheet.getRow(i).getCell(0).setCellStyle(styleVertical);
+            sheet.getRow(i).setHeight((short) 400);
+            setBordersOnCell(i, 0, sheet);
+
+            int timeCount = 0;
+            for (int j = i + 1; j < i + timesArray.length * 2; j++) {
+                sheet.createRow(j).createCell(0);
+                sheet.getRow(j).setHeight((short) 400);
+                setBordersOnCell(j, 0, sheet);
+
+                if (j % 2 == 0) {
+                    var time = timesArray[timeCount];
+                    sheet.getRow(j - 1).createCell(1).setCellValue(helper.createRichTextString(time));
+                    sheet.getRow(j).createCell(1);
+                    sheet.getRow(j - 1).getCell(1).setCellStyle(styleHorizontal);
+                    setBordersOnCell(j, 1, sheet);
+                    setBordersOnCell(j - 1, 1, sheet);
+                    sheet.addMergedRegion(new CellRangeAddress(j - 1, j, 1, 1));
+                    ++timeCount;
+                }
+            }
+            sheet.addMergedRegion(new CellRangeAddress(i, i + timesArray.length * 2 - 1, 0, 0));
+        }
+
+        for (int i = 1; i <= count; i++) {
+            for (int j = 2; j < employeeNames.size() + 2; j++) {
+                sheet.getRow(i).createCell(j);
+                setBordersOnCell(i, j, sheet);
+            }
+        }
+
+        try {
+            for (int t = 0; t < employeeNames.size(); t++) {
+                Employee employee = employeeRepository.findByUserLastName(employeeNames.get(t));
+                Long teacherId = employee.getId();
+
+                List<Lesson> teacherLessons = lessonRepository.findAllByEmployeeId(teacherId);
+
+                teacherLessons = teacherLessons.stream()
+                    .filter(lesson -> (lesson.getEmployee().getPatronymic().charAt(0) == employee.getPatronymic().charAt(0))
+                        && (lesson.getEmployee().getUser().getFirstName().charAt(0) == employee.getUser().getFirstName().charAt(0)))
+                    .collect(Collectors.toList());
+
+                teacherLessons = teacherLessons.stream()
+                    .filter(lesson -> lesson.getSchedule().getIsActual().equals(Boolean.TRUE))
+                    .collect(Collectors.toList());
+
+                for (int i = 1; i < count; i += timesArray.length * 2) {
+                    var weekDay = (i / timesArray.length) / 2 + 1;
+
+                    List<Lesson> weekdayLessons = teacherLessons.stream()
+                        .filter(lesson -> lesson.getEduSchedulePlace().getDayOfWeak().equals(weekDay))
+                        .collect(Collectors.toList());
+
+                    for (Lesson slot : weekdayLessons) {
+                        String timeGap = slot.getEduSchedulePlace().getStartTime() + " - " + slot.getEduSchedulePlace().getEndTime();
+                        boolean isDemoninator = slot.getEduSchedulePlace().getIsDenominator();
+                        int rowTimeIndex = findTimeRowIndex(timeGap, timesArray);
+                        rowTimeIndex = i + rowTimeIndex * 2;
+
+                        if (isDemoninator) {
+                            ++rowTimeIndex;
+                        }
+
+                        String value = slot.getSubjectName() + " "
+                            + slot.getClassroom() + " к."
+                            + slot.getCourse() + " гр. "
+                            + slot.getGroup() + "."
+                            + slot.getSubgroup();
+                        sheet.getRow(rowTimeIndex).createCell(t + 2).setCellValue(helper.createRichTextString(value));
+                        setBordersOnCell(rowTimeIndex, t + 2, sheet);
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
+        }
+
+        for (int i = 1; i < count; i += 2) {
+            for (int j = 2; j < employeeNames.size() + 2; j++) {
+                if (sheet.getRow(i).getCell(j).getStringCellValue().equals("") &&
+                    (sheet.getRow(i + 1).getCell(j).getStringCellValue().equals(""))) {
+                    sheet.addMergedRegion(new CellRangeAddress(
+                        i,
+                        i + 1,
+                        j,
+                        j
+                    ));
+                    setBordersOnCell(i, j, sheet);
+                }
+            }
+        }
+        return workbook;
     }
 }

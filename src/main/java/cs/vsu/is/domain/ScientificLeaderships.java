@@ -40,4 +40,7 @@ public class ScientificLeaderships implements Serializable {
       "teachings", "roles" }, allowSetters = true)
   private Employee employee;
 
+  @Column(name = "sci_work_name")
+  private String sciWorkName;
+
 }

@@ -1,0 +1,21 @@
+name: "Call: deploy ldap"
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: [ self-hosted, prod ]
+    steps:
+      - uses: actions/checkout@v3.5.2
+        with:
+          clean: false
+      - name: Set up environment
+        run: |
+          echo "API_DOMAIN=10.16.1.32" > .env
+      - name: Pull images
+        run: |
+          docker pull ghcr.io/cs-vsu-ru/site-web/web:latest
+      - name: Deploy dev environment
+        run: docker-compose up --force-recreate --build -d
