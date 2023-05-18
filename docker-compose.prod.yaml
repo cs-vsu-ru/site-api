@@ -37,10 +37,9 @@ services:
       dockerfile: src/main/docker/nginx.prod.dockerfile
     volumes:
       - files_volume:/etc/nginx/html/api/files
-    env_file: [ .env ]
     environment:
       - NGINX_ENVSUBST_TEMPLATE_SUFFIX=.conf
-    ports: [ 80:80 ]
+    ports: [ 80:80, 443:443 ]
     networks: [ nginx_network ]
     restart: unless-stopped
 

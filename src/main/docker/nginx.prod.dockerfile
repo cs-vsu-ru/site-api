@@ -1,4 +1,4 @@
-FROM ghcr.io/cs-vsu-ru/site-web/web:latest as web
+FROM ghcr.io/cs-vsu-ru/site-web/web:prod as web
 
 FROM nginx:1.24.0 as nginx
 
