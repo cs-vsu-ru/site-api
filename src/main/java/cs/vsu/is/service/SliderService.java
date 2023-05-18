@@ -4,6 +4,8 @@ import cs.vsu.is.domain.Slider;
 import cs.vsu.is.repository.SliderRepository;
 import cs.vsu.is.service.dto.SliderDTO;
 import cs.vsu.is.service.convertor.SliderConverter;
+
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -108,6 +110,12 @@ public class SliderService {
    */
   public void delete(Long id) {
     log.debug("Request to delete Slider : {}", id);
-    sliderRepository.deleteById(id);
+      Optional<Slider> byId = sliderRepository.findById(id);
+      if(byId.isPresent()) {
+          String imageURL = byId.get().getImageURL();
+          File file = new File(imageURL.substring(imageURL.indexOf("api/")+4));
+          file.delete();
+      }
+      sliderRepository.deleteById(id);
   }
 }

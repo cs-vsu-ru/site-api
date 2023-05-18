@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+  
+  <changeSet author="andrey" id="4">
+  <dropForeignKeyConstraint baseTableName="teaching"
+                             constraintName="fk_teaching__specialities_id"/>
+  <dropForeignKeyConstraint baseTableName="teaching"
+                             constraintName="fk_teaching__subject_id"/>
+  <dropForeignKeyConstraint baseTableName="teaching"
+                             constraintName="fk_teaching__employee_id"/>
+  </changeSet>
+
+  <changeSet author="andrey" id="5">
+    <dropTable tableName="teaching"/>
+  </changeSet>
+
+  <changeSet author="andrey" id="6">
+    <createTable tableName="employee_specialities">
+      <column name="employee_id" type="bigint"/>
+      <column name="specialities_id" type="bigint"/>
+      <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="andrey" id="7">
+    <addForeignKeyConstraint baseTableName="employee_specialities" 
+    baseColumnNames="employee_id" referencedTableName="employee" 
+    referencedColumnNames="id" constraintName="fk_employee_specialities"/>
+    <addForeignKeyConstraint baseTableName="employee_specialities" 
+    baseColumnNames="specialities_id" referencedTableName="specialities" 
+    referencedColumnNames="id" constraintName="fk_specialities_employee"/>
+  </changeSet> 
+
+  <changeSet author="andrey" id="8">
+    <createTable tableName="specialities_subject">
+      <column name="subject_id" type="bigint"/>
+      <column name="specialities_id" type="bigint"/>
+      <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="andrey" id="9">
+    <addForeignKeyConstraint baseTableName="specialities_subject" 
+    baseColumnNames="subject_id" referencedTableName="subject" 
+    referencedColumnNames="id" constraintName="fk_specialities_subject"/>
+    <addForeignKeyConstraint baseTableName="specialities_subject" 
+    baseColumnNames="specialities_id" referencedTableName="specialities" 
+    referencedColumnNames="id" constraintName="fk_subject_specialities"/>
+  </changeSet>
+
+
+  <changeSet author="andrey" id="10">
+    <loadData
+                  file="config/liquibase/data/specialities_subject.csv"
+                  separator=";"
+                  tableName="specialities_subject"
+                  usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="subject_id" type="numeric"/>
+            <column name="specialities_id" type="numeric"/>
+    </loadData>
+
+    <loadData
+                  file="config/liquibase/data/employee_specialities.csv"
+                  separator=";"
+                  tableName="employee_specialities"
+                  usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="employee_id" type="numeric"/>
+            <column name="specialities_id" type="numeric"/>
+    </loadData>
+    
+  </changeSet>
+</databaseChangeLog>

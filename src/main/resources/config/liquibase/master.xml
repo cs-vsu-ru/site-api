@@ -10,20 +10,24 @@
     <property name="uuidType" value="varchar(36)" dbms="mysql"/>
     <property name="datetimeType" value="datetime(6)" dbms="mysql"/>
 
+    <include file="config/liquibase/changelog/create_newsletter.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20230509_add_static_pages_table.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230321105205_added_entity_Lesson.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230321105206_added_entity_Subject.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230321105207_added_entity_EduSchedulePlace.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230321105208_added_entity_Schedule.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230321105210_added_entity_ScientificWorkType.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20230321105211_added_entity_Students.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230321105212_added_entity_Events.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230321105213_added_entity_Articles.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230321105214_added_entity_Pages.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230408144338_added_entity_Employee.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230409103909_added_entity_Teaching.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230409134112_added_entity_Specialities.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20230321105211_added_entity_Students.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20230321105211_added_entity_constraints_Students.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230409135053_added_entity_ScientificLeaderships.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20230409135053_added_entity_constraints_ScientificLeaderships.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230409140654_added_entity_AccessModes.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230420121943_added_entity_Slider.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
@@ -33,7 +37,13 @@
     <include file="config/liquibase/changelog/20230321105205_added_entity_constraints_Lesson.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230321105212_added_entity_constraints_Events.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20230409103909_added_entity_constraints_Teaching.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20230409135053_added_entity_constraints_ScientificLeaderships.xml" relativeToChangelogFile="false"/>
+
+    <include file="config/liquibase/changelog/add_static_pages_content.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/create_employee_specialities.xml" relativeToChangelogFile="false"/>
+
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
+<!--    <include file="config/liquibase/changelog/20230512170300_add_column_Student.xml" relativeToChangelogFile="false"/>-->
+<!--    <include file="config/liquibase/changelog/20230512213700_delete_column_Lesson.xml" relativeToChangelogFile="false"/>-->
+<!--    <include file="config/liquibase/changelog/20230514120300_add_column_SciLead.xml" relativeToChangelogFile="false"/>-->
 </databaseChangeLog>

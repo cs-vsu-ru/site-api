@@ -23,4 +23,11 @@ public class ScheduleConverter {
   public Schedule toEntity(ScheduleDTO dto) {
     return modelMapper.map(dto, Schedule.class);
   }
+  public Schedule merge(Schedule entityLeft, Schedule entityRight){
+      entityRight.setName(entityLeft.getName());
+      entityRight.setUploadingTime(entityLeft.getUploadingTime());
+      entityRight.setIsActual(entityLeft.getIsActual());
+      entityRight.setId(entityLeft.getId());
+      return entityRight;
+  }
 }

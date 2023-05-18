@@ -21,6 +21,7 @@ public class ScientificLeadershipsDTO {
 
   private ScientificWorkTypeDTO scientificWorkType;
 
-  // private EmployeeDTO employee;
+   private EmployeeDTO employee;
 
+    private String studentPersonalNumber;
 }

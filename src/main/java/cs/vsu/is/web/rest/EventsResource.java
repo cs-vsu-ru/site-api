@@ -52,9 +52,6 @@ public class EventsResource {
   @PostMapping("/events")
   public ResponseEntity<EventDTO> createEvents(@RequestBody EventDTO eventsDTO) throws URISyntaxException {
     log.debug("REST request to save Events : {}", eventsDTO);
-    if (eventsDTO.getId() != null) {
-      throw new BadRequestAlertException("A new events cannot already have an ID", ENTITY_NAME, "idexists");
-    }
     EventDTO result = eventsService.save(eventsDTO);
     return ResponseEntity
         .created(new URI("/api/events/" + result.getId()))
@@ -127,14 +124,14 @@ public class EventsResource {
   // if (!Objects.equals(id, eventsDTO.getId())) {
   // throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
   // }
-
+  //
   // if (!eventsRepository.existsById(id)) {
   // throw new BadRequestAlertException("Entity not found", ENTITY_NAME,
   // "idnotfound");
   // }
-
+  //
   // Optional<EventDTO> result = eventsService.partialUpdate(eventsDTO);
-
+  //
   // return ResponseUtil.wrapOrNotFound(
   // result,
   // HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME,

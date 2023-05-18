@@ -26,6 +26,9 @@
             <column name="scientific_work_type_id" type="bigint">
                 <constraints nullable="true" />
             </column>
+            <column name="sci_work_name" type="varchar(128)">
+                <constraints nullable="true"/>
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
     </changeSet>
@@ -51,7 +54,7 @@
             <column name="student_id" type="numeric"/>
             <column name="employee_id" type="numeric"/>
             <column name="scientific_work_type_id" type="numeric"/>
-            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+            <column name="sci_work_name" type="string"/>
         </loadData>
     </changeSet>
 </databaseChangeLog>

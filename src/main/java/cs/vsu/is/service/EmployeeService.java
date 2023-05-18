@@ -1,9 +1,18 @@
 package cs.vsu.is.service;
 
 import cs.vsu.is.domain.Employee;
+import cs.vsu.is.domain.User;
 import cs.vsu.is.repository.EmployeeRepository;
+import cs.vsu.is.repository.UserRepository;
+import cs.vsu.is.service.convertor.AdminUserConverter;
 import cs.vsu.is.service.convertor.EmployeeConverter;
+import cs.vsu.is.service.convertor.store.EmployeeConverterStore;
+import cs.vsu.is.service.convertor.update.EmployeeConverterUpdate;
+import cs.vsu.is.service.dto.AdminEmployeeDTO;
+import cs.vsu.is.service.dto.AdminUserDTO;
 import cs.vsu.is.service.dto.EmployeeDTO;
+import cs.vsu.is.service.dto.store.EmployeeDTOStore;
+import cs.vsu.is.service.dto.update.EmployeeDTOUpdate;
 import lombok.AllArgsConstructor;
 
 import java.util.LinkedList;
@@ -17,6 +26,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
+
 /**
  * Service Implementation for managing {@link Employee}.
  */
@@ -29,19 +40,30 @@ public class EmployeeService {
 
   private final EmployeeRepository employeeRepository;
 
+  private final UserRepository userRepository;
+  private final UserService userService;
+  private final AdminUserConverter adminUserConverter;
+
   private final EmployeeConverter employeeMapper;
-  private final EmployeeConverter employeeConvertor;
+  private final EmployeeConverterStore employeeMapperStore;
+
+  private final EmployeeConverterUpdate employeeMapperUpdate;
 
   /**
    * Save a employee.
    *
    * @param employeeDTO the entity to save.
    * @return the persisted entity.
+   * @throws Exception
    */
-  public EmployeeDTO save(EmployeeDTO employeeDTO) {
+  public EmployeeDTO save(@Valid EmployeeDTOStore employeeDTO) throws Exception {
     log.debug("Request to save Employee : {}", employeeDTO);
-    Employee employee = employeeMapper.toEntity(employeeDTO);
+    AdminUserDTO userDTO = employeeMapperStore.toAdminUserDTO(employeeDTO);
+    User user = userService.createUser(userDTO);
+    Employee employee = employeeMapperStore.toEmployeeEntity(employeeDTO);
+    employee.setUser(user);
     employee = employeeRepository.save(employee);
+
     return employeeMapper.toDto(employee);
   }
 
@@ -51,11 +73,15 @@ public class EmployeeService {
    * @param employeeDTO the entity to save.
    * @return the persisted entity.
    */
-  public EmployeeDTO update(EmployeeDTO employeeDTO) {
+  public AdminEmployeeDTO update(@Valid EmployeeDTOUpdate employeeDTO) {
     log.debug("Request to update Employee : {}", employeeDTO);
-    Employee employee = employeeMapper.toEntity(employeeDTO);
-    employee = employeeRepository.save(employee);
-    return employeeMapper.toDto(employee);
+    Employee employee = employeeRepository.findById(employeeDTO.getId()).get();
+    User user = userRepository.findById(employeeDTO.getId()).get();
+    employeeMapperUpdate.toEmployeeEntity(employeeDTO, employee);
+    employeeMapperUpdate.toUserEntity(employeeDTO, user);
+    employeeRepository.save(employee);
+    userRepository.save(user);
+    return employeeMapper.toAdminDto(employee);
   }
 
   /**
@@ -86,7 +112,7 @@ public class EmployeeService {
   @Transactional(readOnly = true)
   public List<EmployeeDTO> findAll() {
     log.debug("Request to get all Employees");
-    return employeeRepository.findAll().stream().map(employeeConvertor::toDto)
+    return employeeRepository.findAll().stream().map(employeeMapper::toDto)
         .collect(Collectors.toCollection(LinkedList::new));
   }
 
@@ -109,6 +135,12 @@ public class EmployeeService {
   public Optional<EmployeeDTO> findOne(Long id) {
     log.debug("Request to get Employee : {}", id);
     return employeeRepository.findById(id).map(employeeMapper::toDto);
+  }
+
+  @Transactional(readOnly = true)
+  public Optional<AdminEmployeeDTO> findAdminOne(Long id) {
+    log.debug("Request to get Employee : {}", id);
+    return employeeRepository.findById(id).map(employeeMapper::toAdminDto);
   }
 
   /**

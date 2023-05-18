@@ -1,5 +1,6 @@
 package cs.vsu.is.web.rest;
 
+import cs.vsu.is.domain.Authority;
 import cs.vsu.is.domain.Employee;
 import cs.vsu.is.domain.User;
 import cs.vsu.is.repository.UserRepository;
@@ -110,7 +111,17 @@ public class AccountResource {
         .getUserWithAuthorities()
         .map(AdminUserDTO::new)
         .orElseThrow(() -> new AccountResourceException("User could not be found"));
-    return ResponseUtil.wrapOrNotFound(employeeService.findOne(user.getId()));
+    Optional<EmployeeDTO> employeeDTO = employeeService.findOne(user.getId());
+    for (String authority : user.getAuthorities()) {
+      if (authority.equals("ROLE_ADMIN")) {
+        employeeDTO.get().setMainRole("ROLE_ADMIN");
+        break;
+      }
+    }
+    if (employeeDTO.get().getMainRole() == null) {
+      employeeDTO.get().setMainRole(user.getAuthorities().iterator().next());
+    }
+    return ResponseEntity.ok(employeeDTO.get());
   }
 
   /**

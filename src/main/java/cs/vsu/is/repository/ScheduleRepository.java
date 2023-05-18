@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ScheduleRepository extends JpaRepository<Schedule, Long> {}
+public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+    Schedule findByIsActual(Boolean isActual);
+    Schedule findFirstByIsActual(Boolean isActual);
+}

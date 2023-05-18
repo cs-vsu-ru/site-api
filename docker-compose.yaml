@@ -4,6 +4,8 @@ services:
   api:
     build:
       context: .
+    volumes:
+      - files_volume:/api/files
     environment:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
       - SPRING_PROFILES_ACTIVE=dev,api-docs
@@ -15,7 +17,7 @@ services:
       - JHIPSTER_SLEEP=30
     networks: [ db_network, redis_network, nginx_network ]
     depends_on: [ db, redis ]
-    command: java -jar /app.jar
+    command: java -jar api.jar
     restart: unless-stopped
   db:
     image: mysql:8.0.30
@@ -32,8 +34,10 @@ services:
     networks: [ redis_network ]
     restart: unless-stopped
   nginx:
-    image: nginx:1.20.2
+    build:
+      dockerfile: src/main/docker/nginx.dev.dockerfile
     volumes:
+      - files_volume:/etc/nginx/html/api/files
       - ./src/main/docker/config/nginx:/etc/nginx/templates:ro
     env_file: [ .env ]
     environment:
@@ -43,6 +47,7 @@ services:
     restart: unless-stopped
 
 volumes:
+  files_volume:
   db_volume:
 
 networks:

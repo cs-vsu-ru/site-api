@@ -26,13 +26,19 @@ public class EmployeeDTO {
   private String academicDegree;
   private String experience;
   private String professionalExperience;
-  private LocalDate dateOfBirth;
-  private AdminUserDTO user;
-  private Set<ArticleDTO> articles = new HashSet<>();
-  private Set<EventDTO> events = new HashSet<>();
-  private Set<LessonDTO> lessons = new HashSet<>();
-  private Set<PageDTO> pages = new HashSet<>();
-  private Set<ScientificLeadershipsDTO> scientificLeaderships = new HashSet<>();
-  private Set<TeachingDTO> teachings = new HashSet<>();
-
+  // private String dateOfBirth;
+  // private String login;
+  private String firstName;
+  private String lastName;
+  private String email;
+  private String imageUrl;
+  // private AdminUserDTO user;
+  // private Set<ArticleDTO> articles = new HashSet<>();
+  // private Set<EventDTO> events = new HashSet<>();
+  // private Set<LessonDTO> lessons = new HashSet<>();
+  // private Set<PageDTO> pages = new HashSet<>();
+  // private Set<ScientificLeadershipsDTO> scientificLeaderships = new
+  // HashSet<>();
+  private Set<SpecialitiesDTO> specialities = new HashSet<>();
+  private String mainRole;
 }

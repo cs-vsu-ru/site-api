@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ScientificWorkTypeRepository extends JpaRepository<ScientificWorkType, Long> {}
+public interface ScientificWorkTypeRepository extends JpaRepository<ScientificWorkType, Long> {
+    ScientificWorkType findFirstByName(String name);
+}

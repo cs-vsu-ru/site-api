@@ -9,7 +9,7 @@ jobs:
     runs-on: [ self-hosted, dev ]
     environment:
       name: dev
-      url: 'http://83.69.248.136/swagger-ui.html'
+      url: 'http://dev.fiori-vrn.online/api/swagger-ui.html'
     steps:
       - uses: actions/checkout@v3.5.2
         with:
@@ -17,5 +17,8 @@ jobs:
       - name: Set up environment
         run: |
           echo "API_DOMAIN=${{ vars.DEV_API_DOMAIN }}" > .env
+      - name: Pull images
+        run: |
+          docker pull ghcr.io/cs-vsu-ru/site-web/web:latest
       - name: Deploy dev environment
-        run: docker-compose up --build -d
+        run: docker-compose up --force-recreate --build -d

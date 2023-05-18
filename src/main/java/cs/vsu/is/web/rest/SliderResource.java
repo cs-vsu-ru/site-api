@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -148,6 +149,7 @@ public class SliderResource {
    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
    *         of sliders in body.
    */
+
   @GetMapping("/sliders")
   public List<SliderDTO> getAllSliders() {
     log.debug("REST request to get all Sliders");
@@ -161,6 +163,7 @@ public class SliderResource {
    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
    *         the sliderDTO, or with status {@code 404 (Not Found)}.
    */
+
   @GetMapping("/sliders/{id}")
   public ResponseEntity<SliderDTO> getSlider(@PathVariable Long id) {
     log.debug("REST request to get Slider : {}", id);

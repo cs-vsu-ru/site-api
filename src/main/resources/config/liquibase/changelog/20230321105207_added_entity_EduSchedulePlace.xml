@@ -17,19 +17,19 @@
             <column name="is_denominator" type="boolean">
                 <constraints nullable="true" />
             </column>
-            <column name="start_time" type="${datetimeType}">
+            <column name="start_time" type="varchar(20)">
                 <constraints nullable="true" />
             </column>
-            <column name="end_time" type="${datetimeType}">
+            <column name="end_time" type="varchar(20)">
                 <constraints nullable="true" />
             </column>
-            <column name="day_of_weak" type="integer">
+            <column name="day_of_weak" type="int">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
-        <dropDefaultValue tableName="edu_schedule_place" columnName="start_time" columnDataType="${datetimeType}"/>
-        <dropDefaultValue tableName="edu_schedule_place" columnName="end_time" columnDataType="${datetimeType}"/>
+<!--        <dropDefaultValue tableName="edu_schedule_place" columnName="start_time" columnDataType="${datetimeType}"/>-->
+<!--        <dropDefaultValue tableName="edu_schedule_place" columnName="end_time" columnDataType="${datetimeType}"/>-->
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
@@ -50,8 +50,8 @@
                   usePreparedStatements="true">
             <column name="id" type="numeric"/>
             <column name="is_denominator" type="boolean"/>
-            <column name="start_time" type="date"/>
-            <column name="end_time" type="date"/>
+            <column name="start_time" type="string"/>
+            <column name="end_time" type="string"/>
             <column name="day_of_weak" type="numeric"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>

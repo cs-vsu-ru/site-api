@@ -24,6 +24,13 @@ public class Students implements Serializable {
     @Column(name = "surname")
     private String surname;
 
+    @Column(name = "student_pers_num")
+    private String studentPersonalNumber;
+
+    public Students() {
+
+    }
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -33,6 +40,13 @@ public class Students implements Serializable {
     public Students id(Long id) {
         this.setId(id);
         return this;
+    }
+
+    public Students(Long id, String name, String surname, String studentPersonalNumber) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.studentPersonalNumber = studentPersonalNumber;
     }
 
     public void setId(Long id) {
@@ -91,6 +105,15 @@ public class Students implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", surname='" + getSurname() + "'" +
+            ", personalId=" + getStudentPersonalNumber() +
             "}";
+    }
+
+    public String getStudentPersonalNumber() {
+        return studentPersonalNumber;
+    }
+
+    public void setStudentPersonalNumber(String studentPersonalNumber) {
+        this.studentPersonalNumber = studentPersonalNumber;
     }
 }
