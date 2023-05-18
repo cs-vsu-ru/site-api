@@ -35,7 +35,7 @@ services:
     restart: unless-stopped
   nginx:
     build:
-      dockerfile: src/main/docker/nginx.dev.dockerfile
+      dockerfile: src/main/docker/nginx.prod.dockerfile
     volumes:
       - files_volume:/etc/nginx/html/api/files
     env_file: [ .env ]
