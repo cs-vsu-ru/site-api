@@ -26,20 +26,21 @@
 
     <changeSet id="20230321105211-1-relations" author="jhipster">
 
-        <createTable tableName="rel_students__scientific_leadeship">
-            <column name="scientific_leadeship_id" type="bigint">
-                <constraints nullable="false"/>
+        <createTable tableName="rel_students__scientific_leadership">
+						<column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="scientific_leadership_id" type="bigint">
+                <constraints nullable="true"/>
             </column>
             <column name="students_id" type="bigint">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="student_pers_num" type="varchar(8)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
         </createTable>
-
-        <addPrimaryKey columnNames="students_id, scientific_leadeship_id" tableName="rel_students__scientific_leadeship"/>
-    </changeSet>
+        </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 
