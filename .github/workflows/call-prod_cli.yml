@@ -1,0 +1,14 @@
+name: "Call: prod cli"
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: [ self-hosted, prod ]
+    steps:
+      - name: Logs
+        run: |
+          cd /home/www/runner/work/site-api/site-api
+          docker-compose -f docker-compose.prod.yaml logs
