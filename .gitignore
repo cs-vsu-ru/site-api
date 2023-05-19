@@ -3,6 +3,8 @@
 ######################
 /target/classes/static/**
 /src/test/javascript/coverage/
+key.pem
+crt.pem
 
 ######################
 # Envs
