@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.unboundid.ldap.sdk.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -37,10 +39,13 @@ public class UserJWTController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
 
-    public UserJWTController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserJWTController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.tokenProvider = tokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Data
@@ -56,6 +61,10 @@ public class UserJWTController {
             AuthResp authResp = new AuthResp();
             HttpHeaders httpHeaders = new HttpHeaders();
             return new ResponseEntity<>(authResp, httpHeaders, HttpStatus.BAD_GATEWAY);
+        } else{
+            Optional<User> oneByLogin = userRepository.findOneByLogin(loginVM.getUsername());
+            User user = oneByLogin.orElseThrow();
+            user.setPassword(passwordEncoder.encode(loginVM.getPassword()));
         }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
             loginVM.getUsername(),
