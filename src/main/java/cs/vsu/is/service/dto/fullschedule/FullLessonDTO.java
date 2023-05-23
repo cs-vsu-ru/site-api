@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class FullLessonDTO {
     private Long lessonId;
+    private Boolean isDenominator;
     private String lesson;
     private Integer course;
     private String group;
