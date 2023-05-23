@@ -64,7 +64,7 @@ public class Employee implements Serializable {
   @JsonIgnoreProperties(value = { "employee", "accessModes" }, allowSetters = true)
   private Set<Events> events = new HashSet<>();
 
-  @OneToMany(mappedBy = "employee")
+  @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
   @JsonIgnoreProperties(value = { "subject", "eduSchedulePlace", "schedule", "employee" }, allowSetters = true)
   private Set<Lesson> lessons = new HashSet<>();
 
