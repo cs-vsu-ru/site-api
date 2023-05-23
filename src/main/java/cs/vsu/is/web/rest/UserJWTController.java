@@ -60,7 +60,7 @@ public class UserJWTController {
         if (!ldap(loginVM.getUsername(), loginVM.getPassword())) {
             AuthResp authResp = new AuthResp();
             HttpHeaders httpHeaders = new HttpHeaders();
-            return new ResponseEntity<>(authResp, httpHeaders, HttpStatus.BAD_GATEWAY);
+            return new ResponseEntity<>(authResp, httpHeaders, HttpStatus.BAD_REQUEST);
         } else{
             Optional<User> oneByLogin = userRepository.findOneByLogin(loginVM.getUsername());
             User user = oneByLogin.orElseThrow();

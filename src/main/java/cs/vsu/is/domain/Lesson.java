@@ -33,7 +33,8 @@ public class Lesson implements Serializable {
 
     @Column(name = "subgroup")
     private Integer subgroup;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.EAGER)
     private EduSchedulePlace eduSchedulePlace;
 
     @ManyToOne
