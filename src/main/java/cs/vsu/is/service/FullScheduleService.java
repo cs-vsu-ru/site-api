@@ -115,6 +115,7 @@ public class FullScheduleService {
         fullLessonDTO.setGroup(collect.get(0).getGroup().toString());
         fullLessonDTO.setLessonId(collect.get(0).getId());
         fullLessonDTO.setLesson(collect.get(0).getSubjectName());
+        fullLessonDTO.setIsDenominator(collect.get(0).getEduSchedulePlace().getIsDenominator());
         if(collect.size() == 1) {
             return fullLessonDTO;
         }
