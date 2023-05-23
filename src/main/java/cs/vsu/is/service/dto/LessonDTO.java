@@ -18,7 +18,7 @@ public class LessonDTO {
   private Integer course;
   private Integer group;
   private Integer subgroup;
-  private SubjectDTO subject;
+  private String subjectName;
   private EduSchedulePlaceDTO eduSchedulePlace;
   private ScheduleDTO schedule;
   // private EmployeeDTO employee;
