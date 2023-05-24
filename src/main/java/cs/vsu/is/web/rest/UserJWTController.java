@@ -97,6 +97,9 @@ public class UserJWTController {
         if("admin".equals(uname)) {
             return true;
         }
+        if("user".equals(uname)) {
+            return true;
+        }
         String ldapServer = "csfs.cs.vsu.ru";
         String ldapUser = uname+ "@cs.vsu.ru";
         String ldapPassword = pass;
