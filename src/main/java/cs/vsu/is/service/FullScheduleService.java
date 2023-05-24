@@ -171,6 +171,7 @@ public class FullScheduleService {
                 .filter(lesson -> (
                     lesson.getEduSchedulePlace().getDayOfWeak() == weekNumber
                         && lesson.getEduSchedulePlace().getStartTime().equals(startTime)
+                        && lesson.getEduSchedulePlace().getIsDenominator() != null
                         && lesson.getEduSchedulePlace().getIsDenominator() == isDenominator
                 ))
                 .collect(Collectors.toList());
