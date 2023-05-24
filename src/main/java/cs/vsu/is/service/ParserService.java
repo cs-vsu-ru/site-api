@@ -493,6 +493,9 @@ public class ParserService {
     public void parseTimetable(String path) throws IOException {
         Workbook workbook = new XSSFWorkbook("files" + path);
 
+        lessonRepository.deleteAll();
+        scheduleRepository.deleteAll();
+
         this.parseXLSXToSlots(workbook, 0);
         this.parseXLSXToSlots(workbook, 1);
 
