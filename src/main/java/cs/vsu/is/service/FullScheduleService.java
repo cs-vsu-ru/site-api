@@ -20,6 +20,17 @@ public class FullScheduleService {
     private final LessonRepository lessonRepository;
     private final EduSchedulePlaceRepository eduSchedulePlaceRepository;
 
+    private final HashMap<String, String> timeMap = new HashMap<String, String>() {{
+        put("8:00", "8:00 - 9:30");
+        put("9:45", "9:45 - 11:20");
+        put("11:30", "11:30 - 13:05");
+        put("13:25", "13:25 - 15:00");
+        put("15:10", "15:10 - 16:45");
+        put("16:55", "16:55 - 18:30");
+        put("18:40", "18:40 - 20:00");
+        put("20:10", "20:10 - 21:30");
+    }};
+
     public FullScheduleService(EmployeeRepository employeeRepository, LessonRepository lessonRepository, EduSchedulePlaceRepository eduSchedulePlaceRepository) {
         this.employeeRepository = employeeRepository;
         this.lessonRepository = lessonRepository;
@@ -29,19 +40,43 @@ public class FullScheduleService {
     public List<EmployeeScheduleDTO> getFullSchedule() {
         List<Employee> employees = employeeRepository.findAll();
         List<EmployeeScheduleDTO> employeeScheduleDTOS = new LinkedList<>();
-        for(Employee employee: employees) {
+        for (Employee employee : employees) {
             Set<Lesson> employeeLessons = employee.getLessons();
             List<String> times = Arrays.asList("8:00", "9:45", "11:30", "13:25", "15:10", "16:55", "18:40", "20:10");
             List<FullScheduleDTO> fullScheduleDTOS = new LinkedList<>();
             for (String time : times) {
-                FullLessonDTO monday = getLessonForDayOfWeekAndTime(employeeLessons, time, 0, employee);
-                FullLessonDTO tuesday = getLessonForDayOfWeekAndTime(employeeLessons, time, 1, employee);
-                FullLessonDTO wednesday = getLessonForDayOfWeekAndTime(employeeLessons, time, 2, employee);
-                FullLessonDTO thursday = getLessonForDayOfWeekAndTime(employeeLessons, time, 3, employee);
-                FullLessonDTO friday = getLessonForDayOfWeekAndTime(employeeLessons, time, 4, employee);
-                FullLessonDTO saturday = getLessonForDayOfWeekAndTime(employeeLessons, time, 5, employee);
+                List<FullLessonDTO> monday =
+                    Arrays.asList(
+                        getLessonForDayOfWeekAndTime(employeeLessons, time, 0, employee, true),
+                        getLessonForDayOfWeekAndTime(employeeLessons, time, 0, employee, false)
+                    );
+                List<FullLessonDTO> tuesday =
+                    Arrays.asList(
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 1, employee, true),
+                        getLessonForDayOfWeekAndTime(employeeLessons, time, 1, employee, false)
+                        );
+                List<FullLessonDTO> wednesday =
+                    Arrays.asList(
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 2, employee, true),
+                        getLessonForDayOfWeekAndTime(employeeLessons, time, 2, employee, false)
+                        );
+                List<FullLessonDTO> thursday =
+                    Arrays.asList(
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 3, employee, true),
+                        getLessonForDayOfWeekAndTime(employeeLessons, time, 3, employee, false)
+                        );
+                List<FullLessonDTO> friday =
+                    Arrays.asList(
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 4, employee, true),
+                        getLessonForDayOfWeekAndTime(employeeLessons, time, 4, employee, false)
+                        );
+                List<FullLessonDTO> saturday =
+                    Arrays.asList(
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 5, employee, true),
+                        getLessonForDayOfWeekAndTime(employeeLessons, time, 5, employee, false)
+                        );
                 FullScheduleDTO fullScheduleDTO = new FullScheduleDTO();
-                fullScheduleDTO.setTime(time);
+                fullScheduleDTO.setTime(timeMap.get(time));
                 fullScheduleDTO.setMonday(monday);
                 fullScheduleDTO.setTuesday(tuesday);
                 fullScheduleDTO.setWednesday(wednesday);
@@ -55,9 +90,9 @@ public class FullScheduleService {
             employeeScheduleDTO.setId(employee.getUser().getId());
             employeeScheduleDTO.setShortName(employee.getUser().getLastName()
                 + " " +
-                    Character.toUpperCase(employee.getUser().getFirstName().charAt(0))
-                +". "+
-                    Character.toUpperCase(employee.getPatronymic().charAt(0))
+                Character.toUpperCase(employee.getUser().getFirstName().charAt(0))
+                + ". " +
+                Character.toUpperCase(employee.getPatronymic().charAt(0))
                 + "."
             );
             employeeScheduleDTOS.add(employeeScheduleDTO);
@@ -75,14 +110,38 @@ public class FullScheduleService {
         List<String> times = Arrays.asList("8:00", "9:45", "11:30", "13:25", "15:10", "16:55", "18:40", "20:10");
         List<FullScheduleDTO> fullScheduleDTOS = new LinkedList<>();
         for (String time : times) {
-            FullLessonDTO monday = getLessonForDayOfWeekAndTime(employeeLessons, time, 0, employee);
-            FullLessonDTO tuesday = getLessonForDayOfWeekAndTime(employeeLessons, time, 1, employee);
-            FullLessonDTO wednesday = getLessonForDayOfWeekAndTime(employeeLessons, time, 2, employee);
-            FullLessonDTO thursday = getLessonForDayOfWeekAndTime(employeeLessons, time, 3, employee);
-            FullLessonDTO friday = getLessonForDayOfWeekAndTime(employeeLessons, time, 4, employee);
-            FullLessonDTO saturday = getLessonForDayOfWeekAndTime(employeeLessons, time, 5, employee);
+            List<FullLessonDTO> monday =
+                Arrays.asList(
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 0, employee, true),
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 0, employee, false)
+                );
+            List<FullLessonDTO> tuesday =
+                Arrays.asList(
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 1, employee, true),
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 1, employee, false)
+                );
+            List<FullLessonDTO> wednesday =
+                Arrays.asList(
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 2, employee, true),
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 2, employee, false)
+                    );
+            List<FullLessonDTO> thursday =
+                Arrays.asList(
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 3, employee, true),
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 3, employee, false)
+                    );
+            List<FullLessonDTO> friday =
+                Arrays.asList(
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 4, employee, true),
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 4, employee, false)
+                    );
+            List<FullLessonDTO> saturday =
+                Arrays.asList(
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 5, employee, true),
+                    getLessonForDayOfWeekAndTime(employeeLessons, time, 5, employee, false)
+                    );
             FullScheduleDTO fullScheduleDTO = new FullScheduleDTO();
-            fullScheduleDTO.setTime(time);
+            fullScheduleDTO.setTime(timeMap.get(time));
             fullScheduleDTO.setMonday(monday);
             fullScheduleDTO.setTuesday(tuesday);
             fullScheduleDTO.setWednesday(wednesday);
@@ -104,17 +163,22 @@ public class FullScheduleService {
         return employeeScheduleDTO;
     }
 
-    private FullLessonDTO getLessonForDayOfWeekAndTime(Set<Lesson> lessons, String startTime, int weekNumber, Employee employee) {
-        if (lessons == null || lessons.isEmpty()) {
-            return new FullLessonDTO();
+    private FullLessonDTO getLessonForDayOfWeekAndTime(Set<Lesson> lessons, String startTime, int weekNumber, Employee employee, boolean isDenominator) {
+        List<Lesson> collect = new ArrayList<>();
+        if (lessons != null) {
+             collect = lessons
+                .stream()
+                .filter(lesson -> (
+                    lesson.getEduSchedulePlace().getDayOfWeak() == weekNumber
+                        && lesson.getEduSchedulePlace().getStartTime().equals(startTime)
+                        && lesson.getEduSchedulePlace().getIsDenominator() == isDenominator
+                ))
+                .collect(Collectors.toList());
         }
-        List<Lesson> collect = lessons
-            .stream()
-            .filter(lesson -> (lesson.getEduSchedulePlace().getDayOfWeak() == weekNumber && lesson.getEduSchedulePlace().getStartTime().equals(startTime)))
-            .collect(Collectors.toList());
-        if(collect.isEmpty()) {
+        if (collect.isEmpty()) {
             EduSchedulePlace eduSchedulePlace = new EduSchedulePlace();
             eduSchedulePlace.setDayOfWeak(weekNumber);
+            eduSchedulePlace.setIsDenominator(isDenominator);
             eduSchedulePlace.setStartTime(startTime);
             eduSchedulePlace = eduSchedulePlaceRepository.save(eduSchedulePlace);
             Lesson lesson = new Lesson();
@@ -123,6 +187,7 @@ public class FullScheduleService {
             lesson = lessonRepository.save(lesson);
             FullLessonDTO fullLessonDTO = new FullLessonDTO();
             fullLessonDTO.setLessonId(lesson.getId());
+            fullLessonDTO.setIsDenominator(isDenominator);
             return fullLessonDTO;
         }
         FullLessonDTO fullLessonDTO = new FullLessonDTO();
@@ -136,11 +201,11 @@ public class FullScheduleService {
         fullLessonDTO.setLessonId(collect.get(0).getId());
         fullLessonDTO.setLesson(collect.get(0).getSubjectName());
         fullLessonDTO.setIsDenominator(collect.get(0).getEduSchedulePlace().getIsDenominator());
-        if(collect.size() == 1) {
+        if (collect.size() == 1) {
             return fullLessonDTO;
         }
         StringBuilder group = new StringBuilder();
-        for(Lesson lesson:collect) {
+        for (Lesson lesson : collect) {
             group.append(lesson.getGroup()).append(", ");
         }
         fullLessonDTO.setGroup(group.toString());
