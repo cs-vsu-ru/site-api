@@ -47,7 +47,7 @@ public class UtilResource {
             String domain = request.getServerName();
             int port = request.getServerPort();
             String url = scheme + "://" + domain + ":" + port;
-            return ResponseEntity.ok().body(url + "/api/" + write);
+            return ResponseEntity.ok().body(url + "/is/api/" + write);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(null);
