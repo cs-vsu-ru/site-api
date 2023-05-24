@@ -1,5 +1,6 @@
 package cs.vsu.is.web.rest;
 
+import cs.vsu.is.domain.Lesson;
 import cs.vsu.is.repository.LessonRepository;
 import cs.vsu.is.service.LessonService;
 import cs.vsu.is.service.dto.LessonDTO;
@@ -98,49 +99,31 @@ public class LessonResource {
         .body(result);
   }
 
-  /**
-   * {@code PATCH  /lessons/:id} : Partial updates given fields of an existing
-   * lesson, field will ignore if it is null
-   *
-   * @param id        the id of the lessonDTO to save.
-   * @param lessonDTO the lessonDTO to update.
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
-   *         the updated lessonDTO,
-   *         or with status {@code 400 (Bad Request)} if the lessonDTO is not
-   *         valid,
-   *         or with status {@code 404 (Not Found)} if the lessonDTO is not found,
-   *         or with status {@code 500 (Internal Server Error)} if the lessonDTO
-   *         couldn't be updated.
-   * @throws URISyntaxException if the Location URI syntax is incorrect.
-   */
-  // @PatchMapping(value = "/lessons/{id}", consumes = { "application/json",
-  // "application/merge-patch+json" })
-  // public ResponseEntity<LessonDTO> partialUpdateLesson(
-  // @PathVariable(value = "id", required = false) final Long id,
-  // @RequestBody LessonDTO lessonDTO
-  // ) throws URISyntaxException {
-  // log.debug("REST request to partial update Lesson partially : {}, {}", id,
-  // lessonDTO);
-  // if (lessonDTO.getId() == null) {
-  // throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-  // }
-  // if (!Objects.equals(id, lessonDTO.getId())) {
-  // throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-  // }
 
-  // if (!lessonRepository.existsById(id)) {
-  // throw new BadRequestAlertException("Entity not found", ENTITY_NAME,
-  // "idnotfound");
-  // }
+   @PatchMapping(value = "/lessons/{id}", consumes = { "application/json",
+   "application/merge-patch+json" })
+   public ResponseEntity<LessonDTO> partialUpdateLesson(
+   @PathVariable(value = "id", required = false) final Long id,
+   @RequestBody LessonDTO lessonDTO
+   ) throws URISyntaxException {
+       log.debug("REST request to partial update Lesson partially : {}, {}", id,
+           lessonDTO);
+       if (lessonDTO.getId() == null) {
+           throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+       }
+       if (!Objects.equals(id, lessonDTO.getId())) {
+           throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+       }
 
-  // Optional<LessonDTO> result = lessonService.partialUpdate(lessonDTO);
+       if (!lessonRepository.existsById(id)) {
+           throw new BadRequestAlertException("Entity not found", ENTITY_NAME,
+               "idnotfound");
+       }
 
-  // return ResponseUtil.wrapOrNotFound(
-  // result,
-  // HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME,
-  // lessonDTO.getId().toString())
-  // );
-  // }
+       LessonDTO result = lessonService.partialUpdate(lessonDTO);
+
+       return ResponseEntity.ok(result);
+   }
 
   /**
    * {@code GET  /lessons} : get all the lessons.
