@@ -1,6 +1,8 @@
 package cs.vsu.is.service;
 
+import cs.vsu.is.domain.EduSchedulePlace;
 import cs.vsu.is.domain.Lesson;
+import cs.vsu.is.repository.EduSchedulePlaceRepository;
 import cs.vsu.is.repository.LessonRepository;
 import cs.vsu.is.service.convertor.update.LessonConverterUpdate;
 import cs.vsu.is.service.dto.LessonDTO;
@@ -10,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import net.bytebuddy.dynamic.DynamicType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -31,10 +32,13 @@ public class LessonService {
 
   private final LessonConverterUpdate lessonConverterUpdate;
 
-  public LessonService(LessonRepository lessonRepository, LessonConverter lessonMapper, LessonConverterUpdate lessonConverterUpdate) {
+  private final EduSchedulePlaceRepository eduSchedulePlaceRepository;
+
+  public LessonService(LessonRepository lessonRepository, LessonConverter lessonMapper, LessonConverterUpdate lessonConverterUpdate, EduSchedulePlaceRepository eduSchedulePlaceRepository) {
     this.lessonRepository = lessonRepository;
     this.lessonMapper = lessonMapper;
       this.lessonConverterUpdate = lessonConverterUpdate;
+      this.eduSchedulePlaceRepository = eduSchedulePlaceRepository;
   }
 
   /**
@@ -44,10 +48,12 @@ public class LessonService {
    * @return the persisted entity.
    */
   public LessonDTO save(LessonDTO lessonDTO) {
-    log.debug("Request to save Lesson : {}", lessonDTO);
-    Lesson lesson = lessonMapper.toEntity(lessonDTO);
-    lesson = lessonRepository.save(lesson);
-    return lessonMapper.toDto(lesson);
+      log.debug("Request to save Lesson : {}", lessonDTO);
+      Lesson lesson = lessonMapper.toEntity(lessonDTO);
+      EduSchedulePlace save = eduSchedulePlaceRepository.save(lesson.getEduSchedulePlace());
+      lesson.setEduSchedulePlace(save);
+      lesson = lessonRepository.save(lesson);
+      return lessonMapper.toDto(lesson);
   }
 
   /**
