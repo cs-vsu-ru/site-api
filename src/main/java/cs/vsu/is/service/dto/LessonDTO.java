@@ -13,13 +13,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class LessonDTO {
-
-  private Long id;
-  private Integer course;
-  private Integer group;
-  private Integer subgroup;
-  private SubjectDTO subject;
-  private EduSchedulePlaceDTO eduSchedulePlace;
-  private ScheduleDTO schedule;
-  // private EmployeeDTO employee;
+    private Long id;
+    private Integer course;
+    private Integer group;
+    private Integer subgroup;
+    private String subjectName;
+    private EduSchedulePlaceDTO eduSchedulePlace;
+    private ScheduleDTO schedule;
+    // private EmployeeDTO employee;
 }

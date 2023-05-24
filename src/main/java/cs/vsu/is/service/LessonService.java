@@ -2,12 +2,15 @@ package cs.vsu.is.service;
 
 import cs.vsu.is.domain.Lesson;
 import cs.vsu.is.repository.LessonRepository;
+import cs.vsu.is.service.convertor.update.LessonConverterUpdate;
 import cs.vsu.is.service.dto.LessonDTO;
 import cs.vsu.is.service.convertor.LessonConverter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import net.bytebuddy.dynamic.DynamicType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -26,9 +29,12 @@ public class LessonService {
 
   private final LessonConverter lessonMapper;
 
-  public LessonService(LessonRepository lessonRepository, LessonConverter lessonMapper) {
+  private final LessonConverterUpdate lessonConverterUpdate;
+
+  public LessonService(LessonRepository lessonRepository, LessonConverter lessonMapper, LessonConverterUpdate lessonConverterUpdate) {
     this.lessonRepository = lessonRepository;
     this.lessonMapper = lessonMapper;
+      this.lessonConverterUpdate = lessonConverterUpdate;
   }
 
   /**
@@ -110,4 +116,11 @@ public class LessonService {
     log.debug("Request to delete Lesson : {}", id);
     lessonRepository.deleteById(id);
   }
+
+    public LessonDTO partialUpdate(LessonDTO lessonDTO) {
+        Lesson lesson = lessonRepository.findById(lessonDTO.getId()).get();
+        lessonConverterUpdate.substitute(lessonDTO, lesson);
+        lesson = lessonRepository.save(lesson);
+        return lessonMapper.toDto(lesson);
+    }
 }
