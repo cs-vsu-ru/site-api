@@ -1,0 +1,11 @@
+name: "Push: prod"
+
+on:
+  push:
+    branches:    
+      - 'prod'
+
+jobs:
+  cd:
+    uses: ./.github/workflows/call-deploy_prod.yml
+    secrets: inherit
