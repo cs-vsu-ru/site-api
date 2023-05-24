@@ -11,4 +11,4 @@ jobs:
       - name: Logs
         run: |
           cd /home/user/runner/work/site-api/site-api
-          docker-compose -f docker-compose.prod.yaml logs
+          docker-compose down -v
