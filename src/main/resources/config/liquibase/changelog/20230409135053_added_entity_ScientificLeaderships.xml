@@ -10,7 +10,7 @@
         Added the entity ScientificLeaderships.
     -->
     <changeSet id="20230409135053-1" author="jhipster">
-        <createTable tableName="	">
+        <createTable tableName="scientific_leaderships">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
