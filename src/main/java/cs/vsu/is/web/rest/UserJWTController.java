@@ -72,6 +72,7 @@ public class UserJWTController {
             Optional<User> oneByLogin = userRepository.findOneByLogin(loginVM.getUsername());
             User user = oneByLogin.orElseThrow();
             user.setPassword(passwordEncoder.encode(loginVM.getPassword()));
+            userRepository.save(user);
         }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
             loginVM.getUsername(),
