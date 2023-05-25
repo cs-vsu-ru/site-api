@@ -20,5 +20,6 @@ public class LessonDTO {
     private String subjectName;
     private EduSchedulePlaceDTO eduSchedulePlace;
     private ScheduleDTO schedule;
+    private String classroom;
     // private EmployeeDTO employee;
 }
