@@ -125,6 +125,15 @@ public class LessonService {
 
     public LessonDTO partialUpdate(LessonDTO lessonDTO) {
         Lesson lesson = lessonRepository.findById(lessonDTO.getId()).get();
+        if(lessonDTO.getCourse() == null) {
+            lesson.setCourse(null);
+        }
+        if(lessonDTO.getSubjectName() == null || lessonDTO.getSubjectName().isEmpty() || lessonDTO.getSubjectName().isBlank()) {
+            lesson.setCourse(null);
+            lesson.setGroup(null);
+            lesson.setClassroom(null);
+            lesson.setSubjectName(null);
+        }
         lessonConverterUpdate.substitute(lessonDTO, lesson);
         lesson.setId(lessonDTO.getId());
         lesson = lessonRepository.save(lesson);
