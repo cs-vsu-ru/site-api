@@ -95,12 +95,11 @@ public class UserJWTController {
             }
         }
         if (authResp.mainRole == null) {
-            if(user.getAuthorities() != null) {
+            try {
                 authResp.mainRole = user.getAuthorities().iterator().next().getName();
-            } else {
+            } catch (Exception e) {
                 authResp.mainRole = "ROLE_EMPLOYEE";
             }
-
         }
         return new ResponseEntity<>(authResp, httpHeaders, HttpStatus.OK);
     }
