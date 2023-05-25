@@ -25,8 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.unboundid.ldap.sdk.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -96,7 +95,12 @@ public class UserJWTController {
             }
         }
         if (authResp.mainRole == null) {
-            authResp.mainRole = user.getAuthorities().iterator().next().getName();
+            if(user.getAuthorities() != null) {
+                authResp.mainRole = user.getAuthorities().iterator().next().getName();
+            } else {
+                authResp.mainRole = "ROLE_EMPLOYEE";
+            }
+
         }
         return new ResponseEntity<>(authResp, httpHeaders, HttpStatus.OK);
     }
@@ -127,7 +131,6 @@ public class UserJWTController {
             log.debug("final отработал ");
             if (connection != null) {
                 connection.close();
-                return true;
             }
         }
         log.debug("дошли до конца вернули фолс ");
