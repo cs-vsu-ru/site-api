@@ -215,7 +215,6 @@ public class FullScheduleService {
         }
         fullLessonDTO.setGroup(group.toString());
 //        for(int i =1;i<collect.size();i++) {
-//            scheduleRepository.deleteById(collect.get(i).getSchedule().getId());
 //            lessonRepository.deleteById(collect.get(i).getId());
 //        }
         return fullLessonDTO;
