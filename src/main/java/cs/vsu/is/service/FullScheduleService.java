@@ -6,6 +6,7 @@ import cs.vsu.is.domain.Lesson;
 import cs.vsu.is.repository.EduSchedulePlaceRepository;
 import cs.vsu.is.repository.EmployeeRepository;
 import cs.vsu.is.repository.LessonRepository;
+import cs.vsu.is.repository.ScheduleRepository;
 import cs.vsu.is.service.dto.fullschedule.EmployeeScheduleDTO;
 import cs.vsu.is.service.dto.fullschedule.FullLessonDTO;
 import cs.vsu.is.service.dto.fullschedule.FullScheduleDTO;
@@ -30,11 +31,14 @@ public class FullScheduleService {
         put("18:40", "18:40 - 20:00");
         put("20:10", "20:10 - 21:30");
     }};
+    private final ScheduleRepository scheduleRepository;
 
-    public FullScheduleService(EmployeeRepository employeeRepository, LessonRepository lessonRepository, EduSchedulePlaceRepository eduSchedulePlaceRepository) {
+    public FullScheduleService(EmployeeRepository employeeRepository, LessonRepository lessonRepository, EduSchedulePlaceRepository eduSchedulePlaceRepository,
+                               ScheduleRepository scheduleRepository) {
         this.employeeRepository = employeeRepository;
         this.lessonRepository = lessonRepository;
         this.eduSchedulePlaceRepository = eduSchedulePlaceRepository;
+        this.scheduleRepository = scheduleRepository;
     }
 
     public List<EmployeeScheduleDTO> getFullSchedule() {
@@ -210,6 +214,10 @@ public class FullScheduleService {
             group.append(lesson.getGroup()).append(", ");
         }
         fullLessonDTO.setGroup(group.toString());
+        for(int i =1;i<collect.size();i++) {
+            scheduleRepository.deleteById(collect.get(i).getSchedule().getId());
+            lessonRepository.deleteById(collect.get(i).getId());
+        }
         return fullLessonDTO;
     }
 
