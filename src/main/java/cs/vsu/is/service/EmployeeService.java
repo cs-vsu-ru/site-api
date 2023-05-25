@@ -150,6 +150,8 @@ public class EmployeeService {
    */
   public void delete(Long id) {
     log.debug("Request to delete Employee : {}", id);
+    Long idN = employeeRepository.findById(id).get().getUser().getId();
     employeeRepository.deleteById(id);
+    userRepository.deleteById(idN);
   }
 }
