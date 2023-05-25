@@ -1,9 +1,5 @@
 package cs.vsu.is.service.dto;
 
-import java.io.Serializable;
-import java.util.Objects;
-
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +11,7 @@ import lombok.Setter;
 public class LessonDTO {
     private Long id;
     private Integer course;
-    private Integer group;
+    private String group;
     private Integer subgroup;
     private String subjectName;
     private EduSchedulePlaceDTO eduSchedulePlace;

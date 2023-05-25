@@ -126,6 +126,7 @@ public class LessonService {
     public LessonDTO partialUpdate(LessonDTO lessonDTO) {
         Lesson lesson = lessonRepository.findById(lessonDTO.getId()).get();
         lessonConverterUpdate.substitute(lessonDTO, lesson);
+        lesson.setId(lessonDTO.getId());
         lesson = lessonRepository.save(lesson);
         return lessonMapper.toDto(lesson);
     }

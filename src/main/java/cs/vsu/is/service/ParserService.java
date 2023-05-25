@@ -245,7 +245,7 @@ public class ParserService {
 
         Lesson completedSlot = new Lesson();
         completedSlot.setCourse(course);
-        completedSlot.setGroup(groupAndSubgroup[0]);
+        completedSlot.setGroup(groupAndSubgroup[0].toString());
         completedSlot.setSubgroup(groupAndSubgroup[1]);
         completedSlot.setEduSchedulePlace(emptySlot);
         completedSlot.setSchedule(scheduleRepository.findFirstByIsActual(true));

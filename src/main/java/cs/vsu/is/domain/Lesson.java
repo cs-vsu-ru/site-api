@@ -29,7 +29,7 @@ public class Lesson implements Serializable {
     private Integer course;
 
     @Column(name = "jhi_group")
-    private Integer group;
+    private String group;
 
     @Column(name = "subgroup")
     private Integer subgroup;
