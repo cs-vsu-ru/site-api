@@ -8,6 +8,8 @@ import cs.vsu.is.security.jwt.JWTFilter;
 import cs.vsu.is.security.jwt.TokenProvider;
 import cs.vsu.is.web.rest.vm.LoginVM;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,8 @@ import java.util.Set;
 @RequestMapping("/api")
 public class UserJWTController {
 
+    private final Logger log = LoggerFactory.getLogger(UserJWTController.class);
+
     private final TokenProvider tokenProvider;
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -57,6 +61,8 @@ public class UserJWTController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthResp> authorize(@Valid @RequestBody LoginVM loginVM) {
+        log.debug("начали авторизацю");
+        log.debug("получаем логин и пароль {} {}", loginVM.getUsername(), loginVM.getPassword());
         if (!ldap(loginVM.getUsername(), loginVM.getPassword())) {
             AuthResp authResp = new AuthResp();
             HttpHeaders httpHeaders = new HttpHeaders();
@@ -104,20 +110,26 @@ public class UserJWTController {
         String ldapServer = "csfs.cs.vsu.ru";
         String ldapUser = uname+ "@cs.vsu.ru";
         String ldapPassword = pass;
+        log.debug("метод для проверки черз лдап такие креды {} {} {}", ldapServer, ldapUser, ldapPassword);
 
         LDAPConnection connection = null;
 
         try {
+            log.debug("пытаемся получить connection ");
             connection = new LDAPConnection(ldapServer, 389, ldapUser, ldapPassword);
+            log.debug("connection получен  {}",connection.getConnectionID());
             return true;
         } catch (LDAPException e) {
+            log.debug("не получилось получить connection ");
             e.printStackTrace();
         } finally {
+            log.debug("final отработал ");
             if (connection != null) {
                 connection.close();
-                return false;
+                return true;
             }
         }
+        log.debug("дошли до конца вернули фолс ");
         return false;
     }
 
