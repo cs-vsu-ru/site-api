@@ -112,7 +112,7 @@ DATABASES = {
         'NAME': 'db',
         'USER': 'pg',
         'PASSWORD': 'password',
-        'HOST': 'db',
+        'HOST': 'parser_db',
         'PORT': '5432',
     }
 }
