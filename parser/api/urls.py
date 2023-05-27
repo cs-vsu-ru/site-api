@@ -12,5 +12,5 @@ urlpatterns += [
     path('api/parser/', SpectacularSwaggerView.as_view(url_name='__docs__')),
     path('api/parser/admin/', admin.site.urls),
     path('api/parser/base/', include('app.base.urls')),
-    *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
+    *static(settings.BASE_STATIC_URL, document_root=settings.STATIC_ROOT),
 ]
