@@ -185,7 +185,7 @@ jhipster:
     name: 'siteApiApp'
   # By default CORS is disabled. Uncomment to enable.
   cors:
-    allowed-origins: "http://dev.fiori-vrn.ru,https://www.cs.vsu.ru/is/api"
+    allowed-origins: "http://localhost:8080,http://dev.fiori-vrn.ru,http://www.cs.vsu.ru,https://www.cs.vsu.ru"
     allowed-methods: "*"
     allowed-headers: "*"
     exposed-headers: "Authorization,Link,X-Total-Count,X-${jhipster.clientApp.name}-alert,X-${jhipster.clientApp.name}-error,X-${jhipster.clientApp.name}-params"
