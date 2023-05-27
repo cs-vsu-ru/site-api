@@ -11,4 +11,4 @@ jobs:
       - name: Logs
         run: |
           cd /home/user/runner/work/site-api/site-api
-          docker system prune --all --force
+          docker-compose logs
