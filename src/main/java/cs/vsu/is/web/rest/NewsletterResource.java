@@ -63,4 +63,10 @@ public class NewsletterResource {
         List<Newsletter> newsletters = newsletterRepository.findAll();
         return ResponseEntity.ok(newsletters);
     }
+
+    @DeleteMapping("/newsletter/{id}")
+    public void deleteNewsletter(
+        @PathVariable(value = "id", required = false) final Long id) {
+        newsletterRepository.deleteById(id);
+    }
 }
