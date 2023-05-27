@@ -23,7 +23,7 @@ SITE_ROOT = BASE_DIR
 
 SECRET_KEY = 'secret'
 DEBUG = False
-URL_PREFIX = 'is'
+URL_PREFIX = 'is/api/parser'
 
 INSTALLED_APPS = [
     # django apps
