@@ -15,6 +15,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,11 +23,16 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
 public class UtilResource {
     private final Logger log = LoggerFactory.getLogger(UtilResource.class);
     @Value("${domain}")
     private String domain;
+
+    private final HttpServletRequest request;
+
+    public UtilResource(HttpServletRequest request) {
+        this.request = request;
+    }
 
     @PostMapping("/uploadFile")
     public ResponseEntity<String> uploadFile(
@@ -37,7 +43,11 @@ public class UtilResource {
             Path path = Path.of("files/" + uuid + file.getOriginalFilename());
             log.debug("path {}", path);
             Path write = Files.write(path, bytes);
-            return ResponseEntity.ok().body(domain + "api/" + write);
+            String scheme = request.getScheme();
+            String domain = request.getServerName();
+            int port = request.getServerPort();
+            String url = scheme + "://" + domain + ":" + port;
+            return ResponseEntity.ok().body(url + "/is/api/" + write);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(null);

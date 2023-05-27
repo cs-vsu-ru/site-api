@@ -245,7 +245,7 @@ public class ParserService {
 
         Lesson completedSlot = new Lesson();
         completedSlot.setCourse(course);
-        completedSlot.setGroup(groupAndSubgroup[0]);
+        completedSlot.setGroup(groupAndSubgroup[0].toString());
         completedSlot.setSubgroup(groupAndSubgroup[1]);
         completedSlot.setEduSchedulePlace(emptySlot);
         completedSlot.setSchedule(scheduleRepository.findFirstByIsActual(true));
@@ -493,6 +493,9 @@ public class ParserService {
     public void parseTimetable(String path) throws IOException {
         Workbook workbook = new XSSFWorkbook("files" + path);
 
+        lessonRepository.deleteAll();
+        scheduleRepository.deleteAll();
+
         this.parseXLSXToSlots(workbook, 0);
         this.parseXLSXToSlots(workbook, 1);
 
@@ -535,7 +538,7 @@ public class ParserService {
         try {
             for (int i = 2; i < employeeNames.size() + 2; i++) {
                 Employee employee = employeeRepository.findByUserLastName(employeeNames.get(i - 2));
-                var value = employee.getUser().getLastName() + " " + employee.getUser().getLastName().charAt(0) +
+                var value = employee.getUser().getLastName() + " " + employee.getUser().getFirstName().charAt(0) +
                     "." + employee.getPatronymic().charAt(0) + ".";
 
                 sheet.getRow(0).createCell(i).setCellValue(helper.createRichTextString(value));

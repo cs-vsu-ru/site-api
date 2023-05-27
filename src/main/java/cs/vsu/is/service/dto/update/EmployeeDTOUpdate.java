@@ -39,6 +39,7 @@ public class EmployeeDTOUpdate {
   private String createdBy;
   private String createdDate;
   private String mainRole;
+  private String plan;
   // private Set<LessonDTO> lessons = new HashSet<>();
   // private Set<TeachingDTO> teachings = new HashSet<>();
 

@@ -1,13 +1,17 @@
 package cs.vsu.is.service;
 
+import cs.vsu.is.domain.EduSchedulePlace;
 import cs.vsu.is.domain.Lesson;
+import cs.vsu.is.repository.EduSchedulePlaceRepository;
 import cs.vsu.is.repository.LessonRepository;
+import cs.vsu.is.service.convertor.update.LessonConverterUpdate;
 import cs.vsu.is.service.dto.LessonDTO;
 import cs.vsu.is.service.convertor.LessonConverter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -26,9 +30,15 @@ public class LessonService {
 
   private final LessonConverter lessonMapper;
 
-  public LessonService(LessonRepository lessonRepository, LessonConverter lessonMapper) {
+  private final LessonConverterUpdate lessonConverterUpdate;
+
+  private final EduSchedulePlaceRepository eduSchedulePlaceRepository;
+
+  public LessonService(LessonRepository lessonRepository, LessonConverter lessonMapper, LessonConverterUpdate lessonConverterUpdate, EduSchedulePlaceRepository eduSchedulePlaceRepository) {
     this.lessonRepository = lessonRepository;
     this.lessonMapper = lessonMapper;
+      this.lessonConverterUpdate = lessonConverterUpdate;
+      this.eduSchedulePlaceRepository = eduSchedulePlaceRepository;
   }
 
   /**
@@ -38,10 +48,12 @@ public class LessonService {
    * @return the persisted entity.
    */
   public LessonDTO save(LessonDTO lessonDTO) {
-    log.debug("Request to save Lesson : {}", lessonDTO);
-    Lesson lesson = lessonMapper.toEntity(lessonDTO);
-    lesson = lessonRepository.save(lesson);
-    return lessonMapper.toDto(lesson);
+      log.debug("Request to save Lesson : {}", lessonDTO);
+      Lesson lesson = lessonMapper.toEntity(lessonDTO);
+      EduSchedulePlace save = eduSchedulePlaceRepository.save(lesson.getEduSchedulePlace());
+      lesson.setEduSchedulePlace(save);
+      lesson = lessonRepository.save(lesson);
+      return lessonMapper.toDto(lesson);
   }
 
   /**
@@ -110,4 +122,21 @@ public class LessonService {
     log.debug("Request to delete Lesson : {}", id);
     lessonRepository.deleteById(id);
   }
+
+    public LessonDTO partialUpdate(LessonDTO lessonDTO) {
+        Lesson lesson = lessonRepository.findById(lessonDTO.getId()).get();
+        if(lessonDTO.getCourse() == null) {
+            lesson.setCourse(null);
+        }
+        if(lessonDTO.getSubjectName() == null || lessonDTO.getSubjectName().isEmpty() || lessonDTO.getSubjectName().isBlank()) {
+            lesson.setCourse(null);
+            lesson.setGroup(null);
+            lesson.setClassroom(null);
+            lesson.setSubjectName(null);
+        }
+        lessonConverterUpdate.substitute(lessonDTO, lesson);
+        lesson.setId(lessonDTO.getId());
+        lesson = lessonRepository.save(lesson);
+        return lessonMapper.toDto(lesson);
+    }
 }

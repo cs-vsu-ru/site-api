@@ -13,6 +13,6 @@ jobs:
           clean: false
       - name: Pull images
         run: |
-          docker pull ghcr.io/cs-vsu-ru/site-web/web:latest
+          docker pull ghcr.io/cs-vsu-ru/site-web/web:prod
       - name: Deploy prod environment
-        run: docker-compose -f docker-compose.prod.yaml up --force-recreate --build -d
+        run: docker-compose up --force-recreate --build -d

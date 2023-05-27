@@ -9,15 +9,15 @@
     <changeSet id="20230321105211-2" author="jhipster">
 
         <addForeignKeyConstraint baseColumnNames="students_id"
-                                 baseTableName="rel_students__scientific_leadeship"
-                                 constraintName="fk_rel_students__scientific_leadeship__students_id"
+                                 baseTableName="rel_students__scientific_leadership"
+                                 constraintName="fk_rel_students__scientific_leadership__students_id"
                                  referencedColumnNames="id"
                                  referencedTableName="students"/>
 
-        <addForeignKeyConstraint baseColumnNames="scientific_leadeship_id"
-                                 baseTableName="rel_students__scientific_leadeship"
-                                 constraintName="fk_rel_students__scientific_leadeship__scientific_leadeship_id"
+        <addForeignKeyConstraint baseColumnNames="scientific_leadership_id"
+                                 baseTableName="rel_students__scientific_leadership"
+                                 constraintName="fk_rel_students__scientific_leadership__scientific_leadeship_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="scientific_leadeship"/>
+                                 referencedTableName="scientific_leaderships"/>
     </changeSet>
 </databaseChangeLog>
