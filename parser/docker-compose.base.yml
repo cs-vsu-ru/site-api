@@ -18,7 +18,9 @@ services:
       context: .
     networks: [ parser_db_network ]
     command: bash -c "
-      python manage.py migrate && gunicorn api.wsgi -c gunicorn/config.py
+      python manage.py migrate
+      && python manage.py collectstatic --noinput
+      && gunicorn api.wsgi -c gunicorn/config.py
       "
     restart: unless-stopped
 

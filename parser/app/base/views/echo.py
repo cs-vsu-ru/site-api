@@ -1,5 +1,3 @@
-from django.db import connection
-from django.utils.translation import get_language
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
 from rest_framework.response import Response
@@ -45,18 +43,6 @@ class EchoView(BaseView):
     def get(self, request, *args, **kwargs):
         return Response(
             {
-                'GET': str(request.GET),
-                'POST': str(request.POST),
-                'data': str(request.data),
-                'query_params': str(request.query_params),
-                'user': str(request.user),
-                'auth': str(request.auth),
-                'args': str(args),
-                'kwargs': str(kwargs),
-                'queries': len(connection.queries),
-                'uri': request.build_absolute_uri(),
-                'files': str(request.FILES),
-                'language': str(get_language()),
                 '__dict__': str(request.__dict__),
             }
         )

@@ -22,7 +22,9 @@ SITE_ROOT = BASE_DIR
 # django
 
 SECRET_KEY = 'secret'
-DEBUG = False
+DEBUG = True
+
+APPEND_SLASH = False
 
 INSTALLED_APPS = [
     # django apps
@@ -94,6 +96,11 @@ ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 INTERNAL_IPS = ['127.0.0.1']
 
+# static
+
+STATIC_URL = 'api/parser/static/'
+STATIC_ROOT = BASE_DIR + 'static'
+
 # swagger
 
 SPECTACULAR_SETTINGS = {
@@ -103,7 +110,6 @@ SPECTACULAR_SETTINGS = {
 }
 
 # db
-
 
 DATABASES = {
     'default': {
@@ -140,8 +146,8 @@ LOG_FORMATTERS = {
 }
 LOG_PRETTY = 0
 LOG_MAX_LENGTH = 110
-LOG_CONF = {'api': ['api_console'], 'gunicorn.server': ['web_console']}
-LOG_LEVEL = {'api': 'INFO'}
+LOG_CONF = {'api': ['api_console']}
+LOG_LEVEL = {'api': 'DEBUG'}
 
 _loggers = {
     k: {
