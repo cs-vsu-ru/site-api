@@ -1,5 +1,4 @@
-from collections import defaultdict
-
+from app.employees.models import Employee
 from app.lessons.entites.cell import CellEntity
 from app.lessons.models import Lesson
 from app.lessons.services.converters.group import GroupConverter
@@ -10,13 +9,17 @@ class CellConverter:
         self.group_converter = GroupConverter()
 
     def convert_to_lessons(
-        self, cells: list[CellEntity], indexed_groups: dict[int, dict[str, int]]
+        self,
+        cells_map: dict[Employee, list[CellEntity]],
+        indexed_groups: dict[int, dict[str, int]],
     ) -> list[Lesson]:
         lessons: list[Lesson] = []
-        employee_cells_map: dict[str, list[CellEntity]] = defaultdict(list)
-        for cell in cells:
-            employee_cells_map[cell.employee_name].append(cell)
-        for employee, employee_cells in employee_cells_map.items():
-            group_text = self.group_converter.convert(employee_cells, indexed_groups)
-            # TODO: lessons
+        for employee, cells in cells_map.items():
+            groups = self.group_converter.convert(cells, indexed_groups)
+            name = cells[0].name
+            placement = cells[0].placement
+            lesson = Lesson(
+                employee=employee, name=name, groups=groups, placement=placement
+            )
+            lessons.append(lesson)
         return lessons

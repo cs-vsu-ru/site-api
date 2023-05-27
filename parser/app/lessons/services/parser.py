@@ -4,7 +4,7 @@ import re
 from app.lessons.entites.cell import CellEntity
 from app.lessons.models import Lesson
 from app.lessons.services.converters.cell import CellConverter
-from app.lessons.services.fixer import CellFixer
+from app.lessons.services.cells_fixer import CellsFixer
 from app.lessons.services.xlsx_parser import XlsxParser
 
 
@@ -20,17 +20,18 @@ class Parser:
     def __init__(self):
         self.xlsx_parser = XlsxParser()
         self.cell_converter = CellConverter()
-        self.fixer = CellFixer()
+        self.fixer = CellsFixer()
         self.lesson_manager = Lesson.objects
 
-    def parse(self, filename: str = 'schedule.xlsx'):
+    def parse(self, filename: str = 'schedule.xlsx') -> list[Lesson]:
+        lessons = []
         data = self.xlsx_parser.parse(filename)
         data = crop_array(data)  # FIXME: to simplify
         course_map = self._map_courses(data[0])
         group_map = self._map_groups(data[1])
         indexed_groups = self._index_groups(course_map, group_map)
         for row, row_list in enumerate(data):
-            if row > 3:
+            if row > 3 and (row - 3) % 17:
                 cells = []
                 for column, cell_text in enumerate(row_list):
                     if column > 1:
@@ -42,9 +43,19 @@ class Parser:
                             except ValueError:
                                 continue
                             cells.append(cell)
-                print(row, '-' * 10)
-                cells = self.fixer.fix(cells)
-                lessons = self.cell_converter.convert_to_lessons(cells, indexed_groups)
+                cells_map = self.fixer.fix(cells)
+                row_lessons = self.cell_converter.convert_to_lessons(
+                    cells_map, indexed_groups
+                )
+                weekday = self._get_weekday(row)
+                number = self._get_number(row)
+                is_denominator = self._get_is_denominator(row)
+                for row_lesson in row_lessons:
+                    row_lesson.weekday = weekday
+                    row_lesson.number = number
+                    row_lesson.is_denominator = is_denominator
+                lessons.extend(row_lessons)
+        return lessons
 
     def _extract_course_number(self, course: str) -> int:
         match = re.search(r'(\d+)\s+курс', course.strip())
@@ -117,11 +128,11 @@ class Parser:
         for interval, weekday in intervals.items():
             if interval[0] <= row <= interval[1]:
                 return weekday
-        raise ValueError
+        raise ValueError(row)
 
     def _get_number(self, row: int) -> int:
         row -= 4
-        if 98 < row < 0 or row + 1 % 17 == 0:
+        if 98 < row < 0 or (row + 1) % 17 == 0:
             raise ValueError
         skips = row // 16
         result = (row - skips) // 2
