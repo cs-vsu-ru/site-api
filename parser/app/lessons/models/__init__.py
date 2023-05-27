@@ -1,1 +1,1 @@
-from .employee import Employee
+from ._lessons import Lesson
