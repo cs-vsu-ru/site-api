@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     # own apps
     'app.base',
+    'app.employees',
     'app.lessons',
 ]
 
