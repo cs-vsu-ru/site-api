@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  logs:
     runs-on: [ self-hosted, prod ]
     steps:
       - name: Logs

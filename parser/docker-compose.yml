@@ -5,12 +5,13 @@ services:
     extends:
       file: docker-compose.base.yml
       service: db
-    ports: [ 5434:5432 ]
   api:
     extends:
       file: docker-compose.base.yml
       service: api
-    ports: [ 801:8000 ]
+    command: bash -c "
+      python manage.py migrate && python manage.py test
+      "
 
 volumes:
   parser_db_volume:
