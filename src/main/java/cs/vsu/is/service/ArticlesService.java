@@ -41,7 +41,7 @@ public class ArticlesService {
         log.debug("Request to save Articles : {}", articlesDTO);
         Articles articles = articlesMapper.toEntity(articlesDTO);
         if(articles.getImageURL() == null || articles.getImageURL().isEmpty()) {
-            articles.setImageURL("https://www.cs.vsu.ru/is/api/files/pumpkin.jpg");
+            articles.setImageURL("http://www.cs.vsu.ru/is/api/files/0f94a586-1175-4f87-8176-3d1c6642d423pumpkin.jpg");
         }
         articles = articlesRepository.save(articles);
         return articlesMapper.toDto(articles);
@@ -57,7 +57,7 @@ public class ArticlesService {
         log.debug("Request to update Articles : {}", articlesDTO);
         Articles articles = articlesMapper.toEntity(articlesDTO);
         if(articles.getImageURL() == null || articles.getImageURL().isEmpty()) {
-            articles.setImageURL("https://www.cs.vsu.ru/is/api/files/pumpkin.jpg");
+            articles.setImageURL("http://www.cs.vsu.ru/is/api/files/0f94a586-1175-4f87-8176-3d1c6642d423pumpkin.jpg");
         }
         articles = articlesRepository.save(articles);
         return articlesMapper.toDto(articles);
