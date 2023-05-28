@@ -60,7 +60,7 @@ public class Events implements Serializable {
     @Column(nullable = false)
     private LocalDateTime timestamp;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = {"user", "articles", "events", "lessons", "pages", "scientificLeaderships",
         "teachings", "roles"}, allowSetters = true)
     private Employee employee;
