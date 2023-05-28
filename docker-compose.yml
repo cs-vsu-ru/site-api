@@ -30,8 +30,9 @@ services:
     depends_on: [ parser_api ]
 
 volumes:
-  parser_db_volume:
   files_volume:
+  maven_repo_volume:
+  parser_db_volume:
   db_volume:
 
 networks:
