@@ -6,11 +6,13 @@ import cs.vsu.is.repository.EmployeeRepository;
 import cs.vsu.is.repository.UserRepository;
 import cs.vsu.is.service.convertor.AdminUserConverter;
 import cs.vsu.is.service.convertor.EmployeeConverter;
+import cs.vsu.is.service.convertor.UserConverter;
 import cs.vsu.is.service.convertor.store.EmployeeConverterStore;
 import cs.vsu.is.service.convertor.update.EmployeeConverterUpdate;
 import cs.vsu.is.service.dto.AdminEmployeeDTO;
 import cs.vsu.is.service.dto.AdminUserDTO;
 import cs.vsu.is.service.dto.EmployeeDTO;
+import cs.vsu.is.service.dto.UserDTO;
 import cs.vsu.is.service.dto.store.EmployeeDTOStore;
 import cs.vsu.is.service.dto.update.EmployeeDTOUpdate;
 import lombok.AllArgsConstructor;
@@ -49,6 +51,7 @@ public class EmployeeService {
     private final EmployeeConverterStore employeeMapperStore;
 
     private final EmployeeConverterUpdate employeeMapperUpdate;
+    private final UserConverter userConverter;
 
     /**
      * Save a employee.
@@ -60,7 +63,8 @@ public class EmployeeService {
     public EmployeeDTO save(@Valid EmployeeDTOStore employeeDTO) throws Exception {
         log.debug("Request to save Employee : {}", employeeDTO);
         AdminUserDTO userDTO = employeeMapperStore.toAdminUserDTO(employeeDTO);
-        User user = userService.createUser(userDTO);
+        UserDTO userDTO1 = userService.createUser(userDTO);
+        User user = userConverter.toEntity(userDTO1);
         Employee employee = employeeMapperStore.toEmployeeEntity(employeeDTO);
         employee.setUser(user);
         employee = employeeRepository.save(employee);

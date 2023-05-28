@@ -7,6 +7,7 @@ import cs.vsu.is.security.AuthoritiesConstants;
 import cs.vsu.is.service.MailService;
 import cs.vsu.is.service.UserService;
 import cs.vsu.is.service.dto.AdminUserDTO;
+import cs.vsu.is.service.dto.UserDTO;
 import cs.vsu.is.web.rest.errors.BadRequestAlertException;
 import cs.vsu.is.web.rest.errors.EmailAlreadyUsedException;
 import cs.vsu.is.web.rest.errors.LoginAlreadyUsedException;
@@ -119,7 +120,7 @@ public class UserResource {
    */
   @PostMapping("/users")
   @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-  public ResponseEntity<User> createUser(@Valid @RequestBody AdminUserDTO userDTO) throws Exception {
+  public ResponseEntity<UserDTO> createUser(@Valid @RequestBody AdminUserDTO userDTO) throws Exception {
     log.debug("REST request to save User : {}", userDTO);
 
     if (userDTO.getId() != null) {
@@ -130,10 +131,8 @@ public class UserResource {
     } else if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
       throw new EmailAlreadyUsedException();
     } else {
-      User newUser;
-      newUser = userService.createUser(userDTO);
-
-      mailService.sendCreationEmail(newUser);
+      UserDTO newUser = userService.createUser(userDTO);
+//      mailService.sendCreationEmail(newUser);
       return ResponseEntity
           .created(new URI("/api/admin/users/" + newUser.getLogin()))
           .headers(
