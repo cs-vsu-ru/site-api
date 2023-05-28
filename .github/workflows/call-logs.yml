@@ -1,0 +1,14 @@
+name: "Call: prod cli"
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  logs:
+    runs-on: [ self-hosted, prod ]
+    steps:
+      - name: Logs
+        run: |
+          cd /home/user/runner/work/site-api/site-api
+          docker-compose logs --tail 10000

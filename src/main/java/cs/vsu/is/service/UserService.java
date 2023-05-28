@@ -7,6 +7,7 @@ import cs.vsu.is.repository.AuthorityRepository;
 import cs.vsu.is.repository.UserRepository;
 import cs.vsu.is.security.AuthoritiesConstants;
 import cs.vsu.is.security.SecurityUtils;
+import cs.vsu.is.service.convertor.UserConverter;
 import cs.vsu.is.service.dto.AdminUserDTO;
 import cs.vsu.is.service.dto.UserDTO;
 import java.time.Instant;
@@ -40,16 +41,18 @@ public class UserService {
   private final AuthorityRepository authorityRepository;
 
   private final CacheManager cacheManager;
+    private final UserConverter userConverter;
 
   public UserService(
       UserRepository userRepository,
       PasswordEncoder passwordEncoder,
       AuthorityRepository authorityRepository,
-      CacheManager cacheManager) {
+      CacheManager cacheManager, UserConverter userConverter) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
     this.authorityRepository = authorityRepository;
     this.cacheManager = cacheManager;
+      this.userConverter = userConverter;
   }
 
   public Optional<User> activateRegistration(String key) {
@@ -144,7 +147,7 @@ public class UserService {
     return true;
   }
 
-  public User createUser(AdminUserDTO userDTO) throws Exception {
+  public UserDTO createUser(AdminUserDTO userDTO) throws Exception {
     User user = new User();
     if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail().toLowerCase()).isPresent()) {
       throw new Exception("Пользователь с таким email уже зарегистрирован.");
@@ -183,7 +186,25 @@ public class UserService {
     userRepository.save(user);
     this.clearUserCaches(user);
     log.debug("Created Information for User: {}", user);
-    return user;
+    UserDTO userDTO1 = userConverter.toDto(user);
+    Authority adminAuthority = new Authority();
+    adminAuthority.setName("ROLE_ADMIN");
+    Authority moderatorAuthority = new Authority();
+    moderatorAuthority.setName("ROLE_MODERATOR");
+      Authority employeeAuthority = new Authority();
+      employeeAuthority.setName("ROLE_EMPLOYEE");
+    if(user.getAuthorities() != null) {
+        if(user.getAuthorities().contains(adminAuthority)){
+            userDTO1.setMainRole(adminAuthority.getName());
+        }
+        if(user.getAuthorities().contains(moderatorAuthority)){
+            userDTO1.setMainRole(moderatorAuthority.getName());
+        }
+        if(user.getAuthorities().contains(employeeAuthority)){
+            userDTO1.setMainRole(employeeAuthority.getName());
+        }
+    }
+    return userDTO1;
   }
 
   /**
@@ -318,18 +339,18 @@ public class UserService {
 
   /**
    * Gets a list of all the authorities.
-   * 
+   *
    * @return a list of all the authorities.
    */
   @Transactional(readOnly = true)
   public List<String> getAuthorities() {
-    return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
+      return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
   }
 
   private void clearUserCaches(User user) {
-    Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
-    if (user.getEmail() != null) {
-      Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
-    }
+      Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
+      if (user.getEmail() != null) {
+          Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
+      }
   }
 }

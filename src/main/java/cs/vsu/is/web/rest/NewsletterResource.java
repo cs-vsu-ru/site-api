@@ -12,7 +12,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -27,6 +26,7 @@ public class NewsletterResource {
 
     @PostMapping("/newsletter")
     public ResponseEntity<Newsletter> createNewsletter(@RequestBody Newsletter newsletter) throws URISyntaxException {
+        newsletter.setNewsletterDate(newsletter.getNewsletterDate().minusHours(3));
         newsletterRepository.save(newsletter);
         for(Emails item: newsletter.getEmails()) {
             item.setNewsletter(newsletter);
@@ -43,6 +43,9 @@ public class NewsletterResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody Newsletter newsletter) {
         newsletter.setId(id);
+        if(newsletter.getNewsletterDate() != null) {
+            newsletter.setNewsletterDate(newsletter.getNewsletterDate().minusHours(3));
+        }
         Newsletter result = newsletterRepository.save(newsletter);
         return ResponseEntity
             .ok()
@@ -59,5 +62,11 @@ public class NewsletterResource {
     public ResponseEntity<List<Newsletter>> getAllNewsletter() {
         List<Newsletter> newsletters = newsletterRepository.findAll();
         return ResponseEntity.ok(newsletters);
+    }
+
+    @DeleteMapping("/newsletter/{id}")
+    public void deleteNewsletter(
+        @PathVariable(value = "id", required = false) final Long id) {
+        newsletterRepository.deleteById(id);
     }
 }

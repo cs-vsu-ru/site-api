@@ -44,7 +44,7 @@ public class Articles implements Serializable {
   @Column(name = "image_url")
   private String imageURL;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JsonIgnoreProperties(value = { "user", "articles", "events", "lessons", "pages", "scientificLeaderships",
       "teachings", "roles" }, allowSetters = true)
   private Employee employee;

@@ -163,4 +163,5 @@ Desktop.ini
 ######################
 /coverage/
 /.nyc_output/
-/files/
+files/*
+!files/pumpkin.jpg

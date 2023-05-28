@@ -1,0 +1,73 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+    volumes:
+      - files_volume:/api/files
+      - maven_repo_volume:/root/.m2
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - SPRING_PROFILES_ACTIVE=dev,api-docs
+      - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=false
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/siteapi?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
+      - SPRING_LIQUIBASE_URL=jdbc:mysql://db:3306/siteapi?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
+      - JHIPSTER_CACHE_REDIS_SERVER=redis://redis:6379
+      - JHIPSTER_CACHE_REDIS_CLUSTER=false
+      - JHIPSTER_SLEEP=30
+    networks: [ parser_api_network, db_network, redis_network, nginx_network ]
+    depends_on: [ db, redis ]
+    command: java -jar api.jar
+    restart: unless-stopped
+  parser_db:
+    extends:
+      file: parser/docker-compose.base.yml
+      service: db
+  parser_api:
+    extends:
+      file: parser/docker-compose.base.yml
+      service: api
+    build:
+      context: parser
+    networks: [ parser_api_network, nginx_network ]
+    depends_on: [ api, parser_db ]
+  db:
+    image: mysql:8.0.30
+    volumes:
+      - db_volume:/var/lib/mysql/
+      - ./src/main/docker/config/mysql:/etc/mysql/conf.d:ro
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=db
+    networks: [ db_network ]
+    restart: unless-stopped
+  redis:
+    image: redis:6.2.7
+    networks: [ redis_network ]
+    restart: unless-stopped
+  nginx:
+    build:
+      dockerfile: src/main/docker/nginx.dockerfile
+    volumes:
+      - files_volume:/etc/nginx/html/api/files
+    env_file: [ .env ]
+    environment:
+      - NGINX_ENVSUBST_TEMPLATE_SUFFIX=.conf
+    ports: [ 80:80, 443:443 ]
+    networks: [ nginx_network ]
+    depends_on: [ parser_api ]
+    restart: unless-stopped
+
+volumes:
+  files_volume:
+  maven_repo_volume:
+  parser_db_volume:
+  db_volume:
+
+networks:
+  parser_db_network:
+  parser_api_network:
+  db_network:
+  redis_network:
+  nginx_network:

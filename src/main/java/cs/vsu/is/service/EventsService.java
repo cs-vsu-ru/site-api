@@ -93,7 +93,7 @@ public class EventsService {
   @Transactional(readOnly = true)
   public List<EventDTO> findAll() {
     log.debug("Request to get all Events");
-    return eventsRepository.findAll().stream().map(eventsMapper::toDto)
+    return eventsRepository.findAllOrderByTimestampDesc().stream().map(eventsMapper::toDto)
         .collect(Collectors.toCollection(LinkedList::new));
   }
 

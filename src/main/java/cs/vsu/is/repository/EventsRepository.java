@@ -13,4 +13,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Repository
 public interface EventsRepository extends JpaRepository<Events, Long> {
+
+    @Query("SELECT n FROM Events n ORDER BY n.timestamp DESC")
+    List<Events> findAllOrderByTimestampDesc();
 }

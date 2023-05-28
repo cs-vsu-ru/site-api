@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15.3
+    volumes:
+      - parser_db_volume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=pg
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db
+      - POSTGRES_HOST=127.0.0.1
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    networks: [ parser_db_network ]
+    restart: unless-stopped
+  api:
+    build:
+      context: .
+    networks: [ parser_db_network ]
+    command: bash -c "
+      python manage.py migrate
+      && python manage.py collectstatic --noinput
+      && gunicorn api.wsgi -c gunicorn/config.py
+      "
+    restart: unless-stopped
+
+volumes:
+  parser_db_volume:
+
+networks:
+  parser_db_network:
