@@ -12,18 +12,21 @@
                                  baseTableName="teaching"
                                  constraintName="fk_teaching__employee_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="employee"/>
+                                 referencedTableName="employee"
+																 onDelete="CASCADE"/>
 
         <addForeignKeyConstraint baseColumnNames="subject_id"
                                  baseTableName="teaching"
                                  constraintName="fk_teaching__subject_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="subject"/>
+                                 referencedTableName="subject"
+																 onDelete="CASCADE"/>
 
         <addForeignKeyConstraint baseColumnNames="specialities_id"
                                  baseTableName="teaching"
                                  constraintName="fk_teaching__specialities_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="specialities"/>
+                                 referencedTableName="specialities"
+																 onDelete="CASCADE"/>
     </changeSet>
 </databaseChangeLog>

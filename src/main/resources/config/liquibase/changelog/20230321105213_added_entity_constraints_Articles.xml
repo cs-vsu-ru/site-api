@@ -12,7 +12,8 @@
                                  baseTableName="articles"
                                  constraintName="fk_articles__employee_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="employee"/>
+                                 referencedTableName="employee"
+																 onDelete="SET NULL"/>
 
         <addForeignKeyConstraint baseColumnNames="access_modes_id"
                                  baseTableName="articles"

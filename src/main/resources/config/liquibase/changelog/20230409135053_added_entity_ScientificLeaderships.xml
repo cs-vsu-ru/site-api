@@ -51,7 +51,6 @@
                   usePreparedStatements="true">
             <column name="id" type="numeric"/>
             <column name="year" type="numeric"/>
-            <column name="student_id" type="numeric"/>
             <column name="employee_id" type="numeric"/>
             <column name="scientific_work_type_id" type="numeric"/>
             <column name="sci_work_name" type="string"/>

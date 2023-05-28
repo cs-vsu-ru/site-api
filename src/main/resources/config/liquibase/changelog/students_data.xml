@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                      http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+
+		<changeSet id="26052023-delCol-rel_students__scientific_leadership" author="andrey">
+		 <dropColumn 
+            columnName="student_pers_num"  
+            tableName="rel_students__scientific_leadership">  
+    </dropColumn>  
+		<dropColumn 
+            columnName="student_id"  
+            tableName="scientific_leaderships">  
+    </dropColumn>  
+		</changeSet>   
+    <changeSet id="26052023-data-students" author="andrey">
+        <loadData
+                  file="config/liquibase/data/students.csv"
+                  separator=";"
+                  tableName="students"
+                  usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="name" type="string"/>
+            <column name="student_pers_num" type="string"/>
+        </loadData>
+		</changeSet> 
+		<changeSet id="26052023-data-rel_students__scientific_leadership" author="andrey">
+        <loadData
+                  file="config/liquibase/data/rel_students__scientific_leadership.csv"
+                  separator=";"
+                  tableName="rel_students__scientific_leadership"
+                  usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="scientific_leadership_id" type="numeric"/>
+            <column name="students_id" type="numeric"/>
+        </loadData>
+		</changeSet>
+</databaseChangeLog>

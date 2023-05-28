@@ -12,6 +12,7 @@
                                  baseTableName="employee"
                                  constraintName="fk_employee__user_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="jhi_user"/>
+                                 referencedTableName="jhi_user"
+																 onDelete="CASCADE"/>
     </changeSet>
 </databaseChangeLog>

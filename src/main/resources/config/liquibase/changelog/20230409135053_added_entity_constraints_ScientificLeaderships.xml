@@ -18,12 +18,14 @@
                                  baseTableName="scientific_leaderships"
                                  constraintName="fk_scientific_leaderships__employee_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="employee"/>
+                                 referencedTableName="employee"
+																 onDelete="SET NULL"/>
 
         <addForeignKeyConstraint baseColumnNames="scientific_work_type_id"
                                  baseTableName="scientific_leaderships"
                                  constraintName="fk_scientific_leaderships__scientific_work_type_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="scientific_work_type"/>
+                                 referencedTableName="scientific_work_type"
+																 onDelete="SET NULL"/>
     </changeSet>
 </databaseChangeLog>

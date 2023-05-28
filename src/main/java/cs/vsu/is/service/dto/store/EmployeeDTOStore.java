@@ -23,17 +23,15 @@ import lombok.Setter;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class EmployeeDTOStore {
 
-  private Long id;
-  private String patronymic;
-  @NotNull
+	private Long id;
+	@NotNull
+	private String patronymic;
+	@NotNull
   private String post;
-  @NotNull
   private String academicTitle;
-  @NotNull
+
   private String academicDegree;
-  @NotNull
   private String experience;
-  @NotNull
   private String professionalExperience;
   private LocalDate dateOfBirth;
   @NotNull

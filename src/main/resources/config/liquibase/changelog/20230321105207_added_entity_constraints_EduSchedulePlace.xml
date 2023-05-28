@@ -12,7 +12,8 @@
                                  baseTableName="rel_edu_schedule_place__lesson"
                                  constraintName="fk_rel_edu_schedule_place__lesson__edu_schedule_place_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="edu_schedule_place"/>
+                                 referencedTableName="edu_schedule_place"
+																 />
 
         <addForeignKeyConstraint baseColumnNames="lesson_id"
                                  baseTableName="rel_edu_schedule_place__lesson"

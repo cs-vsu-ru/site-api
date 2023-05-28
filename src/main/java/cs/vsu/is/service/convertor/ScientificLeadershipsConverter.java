@@ -7,7 +7,7 @@ import cs.vsu.is.domain.ScientificLeaderships;
 import cs.vsu.is.service.dto.ScientificLeadershipsDTO;
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
+// @AllArgsConstructor
 @Component
 public class ScientificLeadershipsConverter {
   private final ModelMapper modelMapper;

@@ -178,17 +178,17 @@ public class ScientificLeadershipsResource {
             .build();
     }
 
-    @PostMapping("/scientific-leaderships/table")
-    public ResponseEntity<List<ScientificLeadershipsDTO>> createSciLeadsByTable(
-        @RequestParam("file") MultipartFile file
-    ) {
-        try {
-            Workbook workbook = new XSSFWorkbook(file.getInputStream());
-            List<ScientificLeadershipsDTO> responseArgs = scientificLeadershipsService.createSciLeadsFromTable(workbook.getSheetAt(0));
-            return ResponseEntity.ok().body(responseArgs);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return ResponseEntity.badRequest().body(null);
-        }
-    }
+    // @PostMapping("/scientific-leaderships/table")
+    // public ResponseEntity<List<ScientificLeadershipsDTO>> createSciLeadsByTable(
+    //     @RequestParam("file") MultipartFile file
+    // ) {
+    //     try {
+    //         Workbook workbook = new XSSFWorkbook(file.getInputStream());
+    //         List<ScientificLeadershipsDTO> responseArgs = scientificLeadershipsService.createSciLeadsFromTable(workbook.getSheetAt(0));
+    //         return ResponseEntity.ok().body(responseArgs);
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         return ResponseEntity.badRequest().body(null);
+    //     }
+    // }
 }

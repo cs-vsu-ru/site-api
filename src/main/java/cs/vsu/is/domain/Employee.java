@@ -56,19 +56,19 @@ public class Employee implements Serializable {
   @JoinColumn(unique = true)
   private User user;
 
-  @OneToMany(mappedBy = "employee")
+  @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
   @JsonIgnoreProperties(value = { "employee", "accessModes" }, allowSetters = true)
   private Set<Articles> articles = new HashSet<>();
 
-  @OneToMany(mappedBy = "employee")
+  @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
   @JsonIgnoreProperties(value = { "employee", "accessModes" }, allowSetters = true)
   private Set<Events> events = new HashSet<>();
 
-  @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
   @JsonIgnoreProperties(value = { "subject", "eduSchedulePlace", "schedule", "employee" }, allowSetters = true)
   private Set<Lesson> lessons = new HashSet<>();
 
-  @OneToMany(mappedBy = "employee")
+  @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
   @JsonIgnoreProperties(value = { "employee", "accessModes" }, allowSetters = true)
   private Set<Pages> pages = new HashSet<>();
 

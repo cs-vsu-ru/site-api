@@ -18,5 +18,5 @@ public interface ScientificLeadershipsRepository extends JpaRepository<Scientifi
     List<ScientificLeaderships> findAllByEmployee(Employee employee);
     List<ScientificLeaderships> findAllByEmployeeId(Long employee_id);
     List<ScientificLeaderships> findAllByEmployeeAndScientificWorkType(Employee employee, ScientificWorkType scientificWorkType);
-    List<ScientificLeaderships> findAllByEmployeeAndScientificWorkTypeAndStudentAndYear(Employee employee, ScientificWorkType scientificWorkType, Students student, Integer year);
+    // List<ScientificLeaderships> findAllByEmployeeAndScientificWorkTypeAndStudentAndYear(Employee employee, ScientificWorkType scientificWorkType, Students student, Integer year);
 }
