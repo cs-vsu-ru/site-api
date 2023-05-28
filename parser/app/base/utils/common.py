@@ -16,7 +16,7 @@ def status_by_method(method: str) -> int:
     match method.lower():
         case 'post':
             return 201
-        case 'delete':
+        case 'delete' | 'patch' | 'put':
             return 204
         case _:
             return 200
@@ -48,3 +48,7 @@ def response_201(f):
             201: schema_serializer('Created', id=IntegerField(read_only=True)),
         }
     )(_f_decorator)
+
+
+def inline_exception(name: str):
+    return type(name, (Exception,), {})

@@ -2,6 +2,7 @@ from django.db import models
 
 from app.base.models.base import BaseModel
 from app.employees.models import Employee
+from app.lessons.managers.lesson import LessonManager
 
 
 class Lesson(BaseModel):
@@ -12,3 +13,5 @@ class Lesson(BaseModel):
     name = models.TextField()
     groups = models.TextField()
     placement = models.TextField()
+
+    objects = LessonManager()

@@ -1,10 +1,15 @@
+from typing import Any
+
 from drf_spectacular.utils import OpenApiResponse
 from rest_framework import serializers
+from rest_framework.fields import NOT_READ_ONLY_WRITE_ONLY
 from rest_framework.validators import UniqueValidator
+
+import app.base.exceptions
 
 
 class BaseSerializer(serializers.Serializer):
-    WARNINGS: dict = {}
+    WARNINGS: dict[Any, 'app.base.exceptions.APIWarning'] = {}
     _DESCRIPTION = None
 
     @classmethod
@@ -31,7 +36,7 @@ class BaseModelSerializer(serializers.ModelSerializer, BaseSerializer):
     Meta: type
 
     def is_valid(self, raise_exception=True):
-        return super().is_valid(raise_exception)
+        return super().is_valid(raise_exception=raise_exception)
 
     def get_extra_kwargs(self):
         extra_kwargs = super().get_extra_kwargs()
@@ -54,6 +59,9 @@ class BaseModelSerializer(serializers.ModelSerializer, BaseSerializer):
             fields += write_only_fields
         if read_only_fields := getattr(self.Meta, 'read_only_fields', []):
             fields += read_only_fields
+        assert not set(write_only_fields) & set(
+            read_only_fields
+        ), NOT_READ_ONLY_WRITE_ONLY
         setattr(self.Meta, 'fields', fields)
         return super().get_field_names(declared_fields, info)
 
@@ -68,3 +76,14 @@ class BaseModelSerializer(serializers.ModelSerializer, BaseSerializer):
             )
         )
         return field_class, field_kwargs
+
+    def get_fields(self):
+        fields = super().get_fields()
+        write_only_fields = set(getattr(self.Meta, 'write_only_fields', set()))
+        read_only_fields = set(getattr(self.Meta, 'read_only_fields', set()))
+        for field_name, field in fields.items():
+            if field_name in write_only_fields:
+                field.write_only = True
+            elif field_name in read_only_fields:
+                field.read_only = True
+        return fields

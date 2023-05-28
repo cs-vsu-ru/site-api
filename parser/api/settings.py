@@ -48,7 +48,7 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'app.base.renderers.ORJSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
+        'app.base.renderers.BrowsableAPIRenderer',
     ],
     'DEFAULT_PARSER_CLASSES': [
         'app.base.parsers.ORJSONParser',
@@ -95,6 +95,7 @@ TEMPLATES = [
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 INTERNAL_IPS = ['127.0.0.1']
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # static
 
@@ -107,7 +108,7 @@ STATIC_ROOT = BASE_DIR + 'static'
 SPECTACULAR_SETTINGS = {
     'TITLE': f'{SITE_NAME} API',
     'VERSION': '1.0',
-    'DISABLE_ERRORS_AND_WARNINGS': not DEBUG,
+    'DISABLE_ERRORS_AND_WARNINGS': True,
 }
 
 # db
@@ -148,7 +149,7 @@ LOG_FORMATTERS = {
 LOG_PRETTY = 0
 LOG_MAX_LENGTH = 110
 LOG_CONF = {'api': ['api_console']}
-LOG_LEVEL = {'api': 'DEBUG'}
+LOG_LEVEL = {'api': 'INFO'}
 
 _loggers = {
     k: {

@@ -1,4 +1,4 @@
-from drf_spectacular.utils import extend_schema
+from app.base.utils.schema import extend_schema
 from rest_framework import serializers
 from rest_framework.response import Response
 

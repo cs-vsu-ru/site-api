@@ -8,7 +8,6 @@ from rest_framework.exceptions import AuthenticationFailed, Throttled
 from app.base.exceptions.base import CastSupportsError
 from app.base.exceptions.utils import extract_detail
 from app.base.logs import warning
-from app.base.serializers.base import BaseSerializer
 
 __all__ = ['APIWarning']
 
@@ -17,7 +16,7 @@ def _cast_rest_api_exception(exception: RestAPIException):
     return APIWarning(
         extract_detail(exception),
         getattr(exception, 'status_code'),
-        '_'.join(map(str, exception.get_codes())),
+        getattr(exception, 'default_code', '_'.join(map(str, exception.get_codes()))),
     )
 
 
@@ -43,6 +42,8 @@ class APIWarning(CastSupportsError):
         return json
 
     def get_schema(self, serializer_name: str = None) -> OpenApiResponse:
+        from app.base.serializers.base import BaseSerializer
+
         if serializer_name is None:
             if self.code:
                 serializer_name = self.code.capitalize()
