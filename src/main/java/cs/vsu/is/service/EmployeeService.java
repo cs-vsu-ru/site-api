@@ -51,6 +51,7 @@ public class EmployeeService {
 	private final AdminUserConverter adminUserConverter;
 
 	private final EmployeeConverter employeeMapper;
+	private final UserConverter userMapper;
 	private final EmployeeConverterStore employeeMapperStore;
 
 	private final EmployeeConverterUpdate employeeMapperUpdate;
@@ -71,7 +72,7 @@ public class EmployeeService {
 		// 	Files.copy(employeeDTO.getImageFile().getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 		// }
 		AdminUserDTO userDTO = employeeMapperStore.toAdminUserDTO(employeeDTO);
-		User user = userService.createUser(userDTO);
+		User user = userMapper.toEntity(userService.createUser(userDTO));
 		Employee employee = employeeMapperStore.toEmployeeEntity(employeeDTO);
 		employee.setUser(user);
 		employee = employeeRepository.save(employee);

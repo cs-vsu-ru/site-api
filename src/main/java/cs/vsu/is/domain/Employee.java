@@ -72,9 +72,9 @@ public class Employee implements Serializable {
   @JsonIgnoreProperties(value = { "employee", "accessModes" }, allowSetters = true)
   private Set<Pages> pages = new HashSet<>();
 
-    @OneToMany(mappedBy = "employee")
-    @JsonIgnoreProperties(value = {"student", "scientificWorkType", "employee"}, allowSetters = true)
-    private Set<ScientificLeaderships> scientificLeaderships = new HashSet<>();
+    // @OneToMany(mappedBy = "employee")
+    // @JsonIgnoreProperties(value = {"student", "scientificWorkType", "employee"}, allowSetters = true)
+    // private Set<ScientificLeaderships> scientificLeaderships = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "employee_specialities", joinColumns = @JoinColumn(name = "employee_id"), inverseJoinColumns = @JoinColumn(name = "specialities_id"))
