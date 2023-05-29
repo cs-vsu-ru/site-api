@@ -15,7 +15,7 @@ class GroupConverter:
                 text_on_course = self._convert_on_course(
                     cells_on_course, indexed_groups_on_course
                 )
-                texts.append(f"{text_on_course} {course} курс")
+                texts.append(f"{text_on_course} {course}к")
         return ', '.join(texts)
 
     def _convert_on_course(
@@ -33,9 +33,9 @@ class GroupConverter:
         non_numeric_groups.sort()
 
         all_groups = full_groups + partial_groups + non_numeric_groups
-        group_word = 'группа' if len(all_groups) == 1 else 'группы'
+        has_group_space = len(all_groups) > 1 or len(non_numeric_groups)
 
-        text = ', '.join(map(str, all_groups)) + f" {group_word}"
+        text = ','.join(map(str, all_groups)) + f"{' ' if has_group_space else ''}г"
         return text
 
     def _extract_group_number(self, group: str) -> str:

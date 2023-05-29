@@ -41,7 +41,7 @@ class GET_LessonsByEmployeeSerializer(BaseModelSerializer):
     ]
     WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
 
-    def to_representation(self, instance):
+    def to_representation(self, instance: Employee):
         instance.schedule = self._get_schedule()
         return super().to_representation(instance)
 
@@ -49,15 +49,13 @@ class GET_LessonsByEmployeeSerializer(BaseModelSerializer):
         employee = self.instance
         lessons = Lesson.objects.index_lessons(Lesson.objects.filter(employee=employee))
         schedule = []
-        for number in range(8):
-            time_name = self.TIMES[number]
-            schedule_on_number = {'time': time_name}
-            for weekday in range(6):
-                weekday_name = self.WEEKDAYS[weekday]
-                schedule_on_weekday = []
+        for number, time_name in enumerate(self.TIMES):
+            schedule_by_number = {'time': time_name}
+            for weekday, weekday_name in enumerate(self.WEEKDAYS):
+                lessons_by_weekday = []
                 for is_denominator in False, True:
                     lesson = lessons[(employee, weekday, number, is_denominator)]
-                    schedule_on_weekday.append(lesson)
-                schedule_on_number[weekday_name] = schedule_on_weekday
-            schedule.append(schedule_on_number)
+                    lessons_by_weekday.append(lesson)
+                schedule_by_number[weekday_name] = lessons_by_weekday
+            schedule.append(schedule_by_number)
         return schedule

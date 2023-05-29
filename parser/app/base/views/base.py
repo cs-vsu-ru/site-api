@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Iterable
+
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import exceptions, status
 from rest_framework.generics import GenericAPIView
@@ -142,8 +144,11 @@ class BaseView(GenericAPIView):
     def get_data(self) -> dict:
         return self.request.data
 
+    def get_filtered_queryset(self) -> Iterable:
+        return self.filter_queryset(self.get_queryset())
+
     def list(self):
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset = self.get_filtered_queryset()
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)

@@ -1,10 +1,13 @@
-from typing import Any
+from __future__ import annotations
+
+from typing import TypeAlias
 
 from django.db.models import Manager
 
+import app.lessons.models
 from app.employees.models import Employee
 
-Lesson = Any
+Lesson: TypeAlias = 'app.lessons.models.Lesson'
 
 
 class LessonManager(Manager):

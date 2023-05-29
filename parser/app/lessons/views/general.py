@@ -1,12 +1,15 @@
+from rest_framework.response import Response
+
 from app.base.views.base import BaseView
-from app.lessons.models import Lesson
+from app.employees.models import Employee
 from app.lessons.serializers.general import GET_LessonsSerializer
 
 
 class LessonsView(BaseView):
-    many = True
     serializer_map = {'get': GET_LessonsSerializer}
-    queryset = Lesson.objects.all()
-    
+    queryset = Employee.objects.order_by('name')
+    pagination_class = None
+
     def get(self):
-        return self.list()
+        serializer = self.get_serializer({'employees': self.get_filtered_queryset()})
+        return Response(serializer.data)
