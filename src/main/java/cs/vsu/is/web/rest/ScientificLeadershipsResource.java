@@ -69,7 +69,7 @@ public class ScientificLeadershipsResource {
     }
 
     /**
-     * {@code PUT  /scientific-leaderships/:id} : Updates an existing scientificLeaderships.
+     * {@code patch  /scientific-leaderships/:id} : Updates an existing scientificLeaderships.
      *
      * @param id                       the id of the scientificLeadershipsDTO to save.
      * @param scientificLeadershipsDTO the scientificLeadershipsDTO to update.
@@ -78,7 +78,7 @@ public class ScientificLeadershipsResource {
      * or with status {@code 500 (Internal Server Error)} if the scientificLeadershipsDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/scientific-leaderships/{id}")
+    @PatchMapping("/scientific-leaderships/{id}")
     public ResponseEntity<ScientificLeadershipsDTO> updateScientificLeaderships(
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody ScientificLeadershipsDTO scientificLeadershipsDTO

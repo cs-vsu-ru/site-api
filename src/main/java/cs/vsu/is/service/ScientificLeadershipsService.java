@@ -63,9 +63,10 @@ public class ScientificLeadershipsService {
 	 */
 	public ScientificLeadershipsDTO update(ScientificLeadershipsDTO scientificLeadershipsDTO) {
 		log.debug("Request to update ScientificLeaderships : {}", scientificLeadershipsDTO);
-		ScientificLeaderships scientificLeaderships = scientificLeadershipsMapper.toEntity(scientificLeadershipsDTO);
-		scientificLeaderships = scientificLeadershipsRepository.save(scientificLeaderships);
-		return scientificLeadershipsMapper.toDto(scientificLeaderships);
+		ScientificLeaderships old = scientificLeadershipsRepository.findById(scientificLeadershipsDTO.getId()).get();
+		scientificLeadershipsMapper.substitute(scientificLeadershipsDTO, old);
+		old = scientificLeadershipsRepository.save(old);
+		return scientificLeadershipsMapper.toDto(old);
 	}
 
 	/**

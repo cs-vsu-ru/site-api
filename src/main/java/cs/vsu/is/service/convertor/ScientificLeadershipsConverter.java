@@ -1,5 +1,6 @@
 package cs.vsu.is.service.convertor;
 
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +13,14 @@ import lombok.AllArgsConstructor;
 public class ScientificLeadershipsConverter {
   private final ModelMapper modelMapper;
 
-  public ScientificLeadershipsConverter() {
-    this.modelMapper = new ModelMapper();
+	public ScientificLeadershipsConverter() {
+		this.modelMapper = new ModelMapper();
+	}
+	
+	public void substitute(ScientificLeadershipsDTO dto, ScientificLeaderships entity) {
+    this.modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
+    ScientificLeaderships newModel = modelMapper.map(dto, ScientificLeaderships.class);
+    modelMapper.map(newModel, entity);
   }
 
   public ScientificLeadershipsDTO toDto(ScientificLeaderships entity) {
