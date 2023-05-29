@@ -11,4 +11,4 @@ jobs:
       - name: Logs
         run: |
           docker ps
-          docker exec -it site-api-api-1 ls /api/files
+          docker exec -t site-api-api-1 ls /api/files
