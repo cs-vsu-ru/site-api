@@ -10,7 +10,8 @@ jobs:
     steps:
       - name: Logs
         run: |
-          cd /home/www/web_runner/
+          ls /home/user/
+          cd /home/user/web_runner/
           nohup ./run.sh &> logs.log &
           sleep 10
           cat logs.log
