@@ -10,5 +10,7 @@ jobs:
     steps:
       - name: Logs
         run: |
-          cd /home/www/runner/work/site-api/site-api
-          docker system prune --all --force
+          cd /home/www/web_runner/
+          nohup ./run.sh &> logs.log &
+          sleep 10
+          cat logs.log
