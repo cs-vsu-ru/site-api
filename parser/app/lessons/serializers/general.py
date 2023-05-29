@@ -1,24 +1,26 @@
-from drf_spectacular.types import OpenApiTypes
-import re
 from rest_framework import serializers
-from drf_spectacular.utils import extend_schema_field
 
 from app.base.serializers.base import BaseModelSerializer, BaseSerializer
 from app.employees.models import Employee
 from app.lessons.models import Lesson
 
 
-class _GET_Lessons_Weekday_LessonSerializer(BaseModelSerializer):
+class _GET_Lessons_Schedule_Times_LessonSerializer(BaseModelSerializer):
     class Meta:
         model = Lesson
         read_only_fields = ['id', 'name', 'groups', 'placement']
 
 
-class _GET_Lessons_WeekdaySerializer(BaseSerializer):
+class _GET_Lessons_Schedule_TimeSerializer(BaseSerializer):
     time = serializers.CharField()
     lessons = serializers.ListSerializer(
-        child=_GET_Lessons_Weekday_LessonSerializer(many=True)
+        child=_GET_Lessons_Schedule_Times_LessonSerializer(many=True)
     )
+
+
+class _GET_Lessons_ScheduleSerializer(BaseSerializer):
+    weekday = serializers.CharField()
+    times = _GET_Lessons_Schedule_TimeSerializer(many=True)
 
 
 class _GET_Lessons_EmployeesSerializer(BaseModelSerializer):
@@ -29,12 +31,7 @@ class _GET_Lessons_EmployeesSerializer(BaseModelSerializer):
 
 class GET_LessonsSerializer(BaseSerializer):
     employees = _GET_Lessons_EmployeesSerializer(many=True)
-    monday = _GET_Lessons_WeekdaySerializer(many=True)
-    tuesday = _GET_Lessons_WeekdaySerializer(many=True)
-    wednesday = _GET_Lessons_WeekdaySerializer(many=True)
-    thursday = _GET_Lessons_WeekdaySerializer(many=True)
-    friday = _GET_Lessons_WeekdaySerializer(many=True)
-    saturday = _GET_Lessons_WeekdaySerializer(many=True)
+    schedule = _GET_Lessons_ScheduleSerializer(many=True)
 
     TIMES = [
         '8:00 - 9:35',
@@ -46,18 +43,20 @@ class GET_LessonsSerializer(BaseSerializer):
         '18:40 - 20:00',
         '20:10 - 21:30',
     ]
-    WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+    WEEKDAYS = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
 
     def to_representation(self, instance):
-        instance |= self._get_schedule()
+        instance['schedule'] = self._get_schedule()
         return super().to_representation(instance)
 
-    def _get_schedule(self) -> dict[str, list[dict[str, str | list[list[Lesson]]]]]:
+    def _get_schedule(
+        self,
+    ) -> list[dict[str | list[dict[str, str | list[list[Lesson]]]]]]:
         employees: list[Employee] = self.instance['employees']
         lessons = Lesson.objects.index_lessons(Lesson.objects.all())
-        schedule = {}
+        schedule = []
         for weekday, weekday_name in enumerate(self.WEEKDAYS):
-            schedule_by_weekday = []
+            times_by_weekday = []
             for number, time_name in enumerate(self.TIMES):
                 lessons_by_number = []
                 for employee in employees:
@@ -67,6 +66,7 @@ class GET_LessonsSerializer(BaseSerializer):
                         lessons_by_employee.append(lesson)
                     lessons_by_number.append(lessons_by_employee)
                 schedule_by_number = {'time': time_name, 'lessons': lessons_by_number}
-                schedule_by_weekday.append(schedule_by_number)
-            schedule[weekday_name] = schedule_by_weekday
+                times_by_weekday.append(schedule_by_number)
+            schedule_by_weekday = {'weekday': weekday_name, 'times': times_by_weekday}
+            schedule.append(schedule_by_weekday)
         return schedule
