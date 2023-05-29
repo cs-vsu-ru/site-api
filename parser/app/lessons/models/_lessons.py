@@ -10,8 +10,8 @@ class Lesson(BaseModel):
     weekday = models.SmallIntegerField(db_index=True)
     number = models.SmallIntegerField(db_index=True)
     is_denominator = models.BooleanField()
-    name = models.TextField()
-    groups = models.TextField()
-    placement = models.TextField()
+    name = models.TextField(blank=True)
+    groups = models.TextField(blank=True)
+    placement = models.TextField(blank=True)
 
     objects = LessonManager()
