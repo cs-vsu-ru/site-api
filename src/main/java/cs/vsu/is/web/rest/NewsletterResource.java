@@ -49,6 +49,10 @@ public class NewsletterResource {
             newsletter.setNewsletterDate(newsletter.getNewsletterDate().minusHours(3));
         }
         Newsletter result = newsletterRepository.save(newsletter);
+        for(Emails email:newsletter.getEmails()) {
+            email.setNewsletter(result);
+            emailsRepository.save(email);
+        }
         return ResponseEntity
             .ok()
             .body(convert(result));
