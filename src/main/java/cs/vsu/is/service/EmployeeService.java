@@ -28,9 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -73,6 +71,16 @@ public class EmployeeService {
 		// 	Files.copy(employeeDTO.getImageFile().getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 		// }
 		AdminUserDTO userDTO = employeeMapperStore.toAdminUserDTO(employeeDTO);
+        Set<String> authorities = new HashSet<>();
+        authorities.add("ROLE_USER");
+        authorities.add("ROLE_EMPLOYEE");
+        if(employeeDTO.getMainRole().equals("ROLE_MODERATOR")) {
+            authorities.add("ROLE_MODERATOR");
+        }
+        if(employeeDTO.getMainRole().equals("ROLE_ADMIN")) {
+            authorities.add("ROLE_ADMIN");
+        }
+        userDTO.setAuthorities(authorities);
 		User user = userMapper.toEntity(userService.createUser(userDTO));
 		Employee employee = employeeMapperStore.toEmployeeEntity(employeeDTO);
 		employee.setUser(user);
@@ -200,7 +208,7 @@ public class EmployeeService {
 	@Transactional(readOnly = true)
 	public Optional<AdminEmployeeDTO> findAdminOne(Long id) {
 		log.debug("Request to get Employee : {}", id);
-		return employeeRepository.findById(id).map(employeeMapper::toAdminDto);
+        return employeeRepository.findById(id).map(employeeMapper::toAdminDto);
 	}
 
 	/**

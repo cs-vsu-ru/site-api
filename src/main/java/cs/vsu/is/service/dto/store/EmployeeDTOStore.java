@@ -23,28 +23,28 @@ import lombok.Setter;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class EmployeeDTOStore {
 
-	private Long id;
-	@NotNull
-	private String patronymic;
-  private String post;
-  private String academicTitle;
+    private Long id;
+    @NotNull
+    private String patronymic;
+    private String post;
+    private String academicTitle;
 
-  private String academicDegree;
-  private String experience;
-  private String professionalExperience;
-  private LocalDate dateOfBirth;
-  @NotNull
-  private String login;
-  @NotNull
-  private String firstName;
-  @NotNull
-  private String lastName;
-  @NotNull
-  private String email;
-  private String imageUrl;
-  private String createdBy;
-  private String createdDate;
-  private String mainRole;
+    private String academicDegree;
+    private String experience;
+    private String professionalExperience;
+    private LocalDate dateOfBirth;
+    @NotNull
+    private String login;
+    @NotNull
+    private String firstName;
+    @NotNull
+    private String lastName;
+    @NotNull
+    private String email;
+    private String imageUrl;
+    private String createdBy;
+    private String createdDate;
+    private String mainRole;
     private String plan;
     // private Set<LessonDTO> lessons = new HashSet<>();
     // private Set<TeachingDTO> teachings = new HashSet<>();

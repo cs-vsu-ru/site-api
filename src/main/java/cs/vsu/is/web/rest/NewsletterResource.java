@@ -29,7 +29,7 @@ public class NewsletterResource {
     public ResponseEntity<NewsletterDTO> createNewsletter(@RequestBody Newsletter newsletter) throws URISyntaxException {
         newsletter.setNewsletterDate(newsletter.getNewsletterDate().minusHours(3));
         newsletter.setStatus("open");
-        newsletterRepository.save(newsletter);
+        newsletter =  newsletterRepository.save(newsletter);
         for(Emails item: newsletter.getEmails()) {
             item.setNewsletter(newsletter);
         }

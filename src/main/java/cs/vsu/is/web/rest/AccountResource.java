@@ -114,12 +114,6 @@ public class AccountResource {
           .map(AdminUserDTO::new)
           .orElseThrow(() -> new AccountResourceException("User could not be found"));
       Optional<EmployeeDTO> employeeDTO = employeeService.findOne(user.getId());
-      for (String authority : user.getAuthorities()) {
-          if (authority.equals("ROLE_ADMIN")) {
-              employeeDTO.get().setMainRole("ROLE_ADMIN");
-              break;
-          }
-      }
       EmployeeDTO employeeDTO1;
       if (employeeDTO.isPresent()) {
           employeeDTO1 = employeeDTO.get();
@@ -127,8 +121,14 @@ public class AccountResource {
           return ResponseEntity.ok(null);
       }
       try {
-          if (employeeDTO1.getMainRole() == null) {
-              employeeDTO1.setMainRole(user.getAuthorities().iterator().next());
+          if(user.getAuthorities().contains("ROLE_ADMIN")) {
+              employeeDTO1.setMainRole("ROLE_ADMIN");
+          } else if (user.getAuthorities().contains("ROLE_MODERATOR")) {
+              employeeDTO1.setMainRole("ROLE_MODERATOR");
+          } else if (user.getAuthorities().contains("ROLE_EMPLOYEE")){
+              employeeDTO1.setMainRole("ROLE_EMPLOYEE");
+          }else {
+              employeeDTO1.setMainRole("ROLE_USER");
           }
       } catch (Exception e) {
           e.printStackTrace();

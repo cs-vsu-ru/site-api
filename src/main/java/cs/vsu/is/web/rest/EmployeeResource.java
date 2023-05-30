@@ -1,6 +1,8 @@
 package cs.vsu.is.web.rest;
 
+import cs.vsu.is.domain.User;
 import cs.vsu.is.repository.EmployeeRepository;
+import cs.vsu.is.repository.UserRepository;
 import cs.vsu.is.service.EmployeeService;
 import cs.vsu.is.service.dto.AdminEmployeeDTO;
 import cs.vsu.is.service.dto.EmployeeDTO;
@@ -13,15 +15,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing {@link cs.vsu.is.domain.Employee}.
@@ -39,10 +39,12 @@ public class EmployeeResource {
   private final EmployeeService employeeService;
 
   private final EmployeeRepository employeeRepository;
+    private final UserRepository userRepository;
 
-  public EmployeeResource(EmployeeService employeeService, EmployeeRepository employeeRepository) {
+  public EmployeeResource(EmployeeService employeeService, EmployeeRepository employeeRepository, UserRepository userRepository) {
     this.employeeService = employeeService;
     this.employeeRepository = employeeRepository;
+      this.userRepository = userRepository;
   }
 
   /**
@@ -176,9 +178,30 @@ public class EmployeeResource {
 
   @GetMapping("/admin-employees/{id}")
   public ResponseEntity<AdminEmployeeDTO> getAdminEmployee(@PathVariable Long id) {
-    log.debug("REST request to get Employee : {}", id);
-    Optional<AdminEmployeeDTO> employeeDTO = employeeService.findAdminOne(id);
-    return ResponseEntity.ok(employeeDTO.get());
+      log.debug("REST request to get Employee : {}", id);
+      Optional<AdminEmployeeDTO> employeeDTO = employeeService.findAdminOne(id);
+      AdminEmployeeDTO employeeDTO1;
+      if (employeeDTO.isPresent()) {
+          employeeDTO1 = employeeDTO.get();
+      } else {
+          return ResponseEntity.ok(null);
+      }
+      User user = userRepository.findOneByLogin(employeeDTO1.getLogin()).get();
+      try {
+          if (user.getAuthorities().contains("ROLE_ADMIN")) {
+              employeeDTO1.setMainRole("ROLE_ADMIN");
+          } else if (user.getAuthorities().contains("ROLE_MODERATOR")) {
+              employeeDTO1.setMainRole("ROLE_MODERATOR");
+          } else if (user.getAuthorities().contains("ROLE_EMPLOYEE")) {
+              employeeDTO1.setMainRole("ROLE_EMPLOYEE");
+          } else {
+              employeeDTO1.setMainRole("ROLE_USER");
+          }
+      } catch (Exception e) {
+          e.printStackTrace();
+          employeeDTO1.setMainRole("ROLE_USER");
+      }
+      return ResponseEntity.ok(employeeDTO1);
   }
 
   /**
