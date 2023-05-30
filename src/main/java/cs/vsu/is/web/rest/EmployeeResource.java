@@ -1,5 +1,6 @@
 package cs.vsu.is.web.rest;
 
+import cs.vsu.is.domain.Authority;
 import cs.vsu.is.domain.User;
 import cs.vsu.is.repository.EmployeeRepository;
 import cs.vsu.is.repository.UserRepository;
@@ -188,11 +189,17 @@ public class EmployeeResource {
       }
       User user = userRepository.findOneByLogin(employeeDTO1.getLogin()).get();
       try {
-          if (user.getAuthorities().contains("ROLE_ADMIN")) {
+          Authority adminAuthority = new Authority();
+          adminAuthority.setName("ROLE_ADMIN");
+          Authority moderAuthority = new Authority();
+          adminAuthority.setName("ROLE_MODERATOR");
+          Authority emplAuthority = new Authority();
+          adminAuthority.setName("ROLE_EMPLOYEE");
+          if (user.getAuthorities().contains(adminAuthority)) {
               employeeDTO1.setMainRole("ROLE_ADMIN");
-          } else if (user.getAuthorities().contains("ROLE_MODERATOR")) {
+          } else if (user.getAuthorities().contains(moderAuthority)) {
               employeeDTO1.setMainRole("ROLE_MODERATOR");
-          } else if (user.getAuthorities().contains("ROLE_EMPLOYEE")) {
+          } else if (user.getAuthorities().contains(emplAuthority)) {
               employeeDTO1.setMainRole("ROLE_EMPLOYEE");
           } else {
               employeeDTO1.setMainRole("ROLE_USER");
