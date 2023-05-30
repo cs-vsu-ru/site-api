@@ -5,7 +5,7 @@ from app.lessons.entites.cell import CellEntity
 from app.lessons.models import Lesson
 from app.lessons.services.converters.cell import CellConverter
 from app.lessons.services.cells_fixer import CellsFixer
-from app.lessons.services.xlsx_parser import XlsxParser
+from app.lessons.services.xlsx.parser import XlsxParser
 
 
 class Parser:

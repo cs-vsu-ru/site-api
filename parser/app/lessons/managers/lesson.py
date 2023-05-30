@@ -8,6 +8,8 @@ import app.lessons.models
 from app.employees.models import Employee
 
 Lesson: TypeAlias = 'app.lessons.models.Lesson'
+Weekday: TypeAlias = int
+Number: TypeAlias = int
 
 
 class LessonManager(Manager):
@@ -57,7 +59,7 @@ class LessonManager(Manager):
 
     def index_lessons(
         self, lessons: list
-    ) -> dict[tuple[Employee, int, int, bool], Lesson]:
+    ) -> dict[tuple[Employee, Weekday, Number, bool], Lesson]:
         indexed_lessons = {}
         for lesson in lessons:
             indexed_lessons[
