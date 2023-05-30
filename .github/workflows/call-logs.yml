@@ -10,5 +10,4 @@ jobs:
     steps:
       - name: Logs
         run: |
-          cd /home/user/runner/work/site-api/site-api
-          docker-compose down -v
+          docker exec -t site-api-api-1 ls /api/files
