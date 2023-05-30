@@ -10,6 +10,7 @@ class EmployeeSynker:
         self.employee_manager = Employee.objects
 
     def synk(self) -> None:
+        self.employee_manager.all().delete()
         employees_data = self.requester.get(self.url).json()
         for employee_data in employees_data:
             name = self._parse_name(employee_data)
