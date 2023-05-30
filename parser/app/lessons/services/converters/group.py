@@ -6,16 +6,23 @@ from app.lessons.entites.cell import CellEntity
 
 class GroupConverter:
     def convert(
-        self, cells: list[CellEntity], indexed_groups: dict[int, dict[str, int]]
+        self, cells: list[CellEntity], indexed_groups: list[dict[int, dict[str, int]]]
     ) -> str:
         texts = []
-        for course, indexed_groups_on_course in indexed_groups.items():
-            cells_on_course = list(filter(lambda cell: cell.course == course, cells))
-            if cells_on_course:
-                text_on_course = self._convert_on_course(
-                    cells_on_course, indexed_groups_on_course
+        for sheet in 0, 1:
+            cells_on_sheet = list(
+                    filter(lambda cell: cell.sheet == sheet, cells)
                 )
-                texts.append(f"{text_on_course} {course}к")
+            for course, indexed_groups_on_course in indexed_groups[sheet].items():
+                cells_on_course = list(
+                    filter(lambda cell: cell.course == course, cells_on_sheet)
+                )
+                if cells_on_course:
+                    text_on_course = self._convert_on_course(
+                        cells_on_course, indexed_groups_on_course
+                    )
+                    master_course = 'маг' if sheet else ''
+                    texts.append(f"{text_on_course} {course}к {master_course}")
         return ', '.join(texts)
 
     def _convert_on_course(

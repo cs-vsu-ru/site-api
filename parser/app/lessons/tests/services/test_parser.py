@@ -6,8 +6,8 @@ from app.lessons.services.parser import Parser
 
 class XlsxParserTest(BaseTest):
     def test_parse(self):
-        EmployeeFactory(name='Ермаков М.В.')
+        EmployeeFactory(name='Махортов С.Д.')
         parser = Parser()
         lessons = parser.parse()
         Lesson.objects.bulk_create(lessons)
-        self.assert_true(Lesson.objects.count(), 27)
+        self.assert_equal(Lesson.objects.count(), 14)

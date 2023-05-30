@@ -11,7 +11,7 @@ class CellConverter:
     def convert_to_lessons(
         self,
         cells_map: dict[Employee, list[CellEntity]],
-        indexed_groups: dict[int, dict[str, int]],
+        indexed_groups: list[dict[int, dict[str, int]]],
     ) -> list[Lesson]:
         lessons: list[Lesson] = []
         for employee, cells in cells_map.items():

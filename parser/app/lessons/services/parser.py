@@ -17,42 +17,41 @@ class Parser:
 
     def parse(self, filename: str = 'schedule.xlsx') -> list[Lesson]:
         lessons = []
-        data = self.xlsx_parser.parse(filename)
-        course_map = self._map_courses(data[0])
-        group_map = self._map_groups(data[1])
-        indexed_groups = self._index_groups(course_map, group_map)
-        for row, row_list in enumerate(data):
+        data, course_map, group_map, indexed_groups = self._prepare_data(filename)
+        for row in range(len(data[0])):
             if row > 3 and (row - 3) % 17:
                 cells = []
-                for column, cell_text in enumerate(row_list):
-                    if column > 1:
-                        if cell_text:
-                            try:
-                                cell = self._create_cell(
-                                    cell_text, row, column, course_map, group_map
-                                )
-                            except ValueError:
-                                continue
-                            cells.append(cell)
+                for sheet in 0, 1:
+                    row_list = data[sheet][row]
+                    cells.extend(
+                        self._create_cells(
+                            row, row_list, course_map[sheet], group_map[sheet], sheet
+                        )
+                    )
                 cells_map = self.fixer.fix(cells)
                 row_lessons = self.cell_converter.convert_to_lessons(
                     cells_map, indexed_groups
                 )
-                weekday = self._get_weekday(row)
-                number = self._get_number(row)
-                is_denominator = self._get_is_denominator(row)
-                for row_lesson in row_lessons:
-                    row_lesson.weekday = weekday
-                    row_lesson.number = number
-                    row_lesson.is_denominator = is_denominator
+                self._complete_row_lessons(row_lessons, row)
                 lessons.extend(row_lessons)
         return lessons
 
+    def _prepare_data(self, filename: str) -> tuple:
+        data = []
+        course_map = []
+        group_map = []
+        indexed_groups = []
+        for sheet in 0, 1:
+            data.append(self.xlsx_parser.parse(filename, sheet))
+            course_map.append(self._map_courses(data[sheet][0]))
+            group_map.append(self._map_groups(data[sheet][1]))
+            indexed_groups.append(
+                self._index_groups(course_map[sheet], group_map[sheet])
+            )
+        return data, course_map, group_map, indexed_groups
+
     def _extract_course_number(self, course: str) -> int:
-        match = re.search(r'(\d+)\s+курс', course.strip())
-        if match:
-            return int(match.group(1))
-        raise ValueError
+        return int(course.strip().split()[0])
 
     def _map_courses(self, courses_row: list[str]) -> dict[int, int]:
         course_map = {}
@@ -94,8 +93,24 @@ class Parser:
         indexed_groups[current_course] = indexed_groups_on_course
         return indexed_groups
 
+    def _create_cells(
+        self, row: int, row_list, course_map, group_map, sheet
+    ) -> list[CellEntity]:
+        cells = []
+        for column, cell_text in enumerate(row_list):
+            if column > 1:
+                if cell_text:
+                    try:
+                        cell = self._create_cell(
+                            cell_text, row, column, course_map, group_map, sheet
+                        )
+                    except ValueError:
+                        continue
+                    cells.append(cell)
+        return cells
+
     def _create_cell(
-        self, cell_text: str, row, column, course_map, group_map
+        self, cell_text: str, row, column, course_map, group_map, sheet
     ) -> CellEntity:
         cell_data: dict = self._parse_cell_text(cell_text)
         group, subgroup = group_map[column]
@@ -105,6 +120,7 @@ class Parser:
         cell_data['course'] = course_map[column]
         cell_data['weekday'] = self._get_weekday(row)
         cell_data['number'] = self._get_number(row)
+        cell_data['sheet'] = sheet
         return CellEntity(**cell_data)
 
     def _get_weekday(self, row: int) -> int:
@@ -145,3 +161,12 @@ class Parser:
             'name': name,
             'placement': placement,
         }
+
+    def _complete_row_lessons(self, row_lessons: list[Lesson], row: int) -> None:
+        weekday = self._get_weekday(row)
+        number = self._get_number(row)
+        is_denominator = self._get_is_denominator(row)
+        for row_lesson in row_lessons:
+            row_lesson.weekday = weekday
+            row_lesson.number = number
+            row_lesson.is_denominator = is_denominator

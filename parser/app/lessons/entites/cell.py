@@ -5,6 +5,7 @@ class CellEntity(BaseEntity):
     employee_name: str
     name: str
     placement: str
+    sheet: int
     course: int
     group: str
     subgroup: int
