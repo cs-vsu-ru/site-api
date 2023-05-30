@@ -10,5 +10,9 @@ jobs:
     steps:
       - name: Logs
         run: |
-          docker exec -t site-api-api-1 ls /api/files/
-          docker exec -t site-api-nginx-1 ls /etc/nginx/html/api/files/
+          cd /home/user/runner/site-api/site-api/
+          docker-compose logs --tail 10000
+      - name: Check api/files
+        run: |
+          docker exec -t site-api-api-1 ls -al /api/files/
+          docker exec -t site-api-nginx-1 ls -al /etc/nginx/html/api/files/
