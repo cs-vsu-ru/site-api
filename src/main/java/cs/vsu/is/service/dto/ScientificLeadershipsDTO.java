@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.unboundid.util.NotNull;
 
 import lombok.Data;
 import lombok.Getter;
@@ -19,12 +20,16 @@ import lombok.ToString;
 @NoArgsConstructor
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class ScientificLeadershipsDTO {
-  private Long id;
-  private Integer year;
+	private Long id;
+	private Integer year;
+	@NotNull
 	private ScientificWorkTypeDTO scientificWorkType;
+	@NotNull
 	private String sciWorkName;
-	
-  private Set<StudentsDTO> students = new HashSet<>();
-  @JsonIgnoreProperties(value = { "specialities" })
-  private EmployeeDTO employee;
+	@NotNull
+	private Set<StudentsDTO> students = new HashSet<>();
+	@NotNull
+	@JsonIgnoreProperties(value = { "user", "mainRole", "imageUrl", "email", "specialities", "post", "plan",
+			"academicTitle", "academicDegree", "experience", "professionalExperience" })
+	private EmployeeDTO employee;
 }

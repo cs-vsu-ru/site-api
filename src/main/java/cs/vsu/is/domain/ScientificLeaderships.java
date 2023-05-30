@@ -42,7 +42,7 @@ public class ScientificLeaderships implements Serializable {
   private ScientificWorkType scientificWorkType;
 
   @ManyToOne
-	@JsonIgnoreProperties(value = { "user", "articles", "events", "lessons", "pages",
+	@JsonIgnoreProperties(value = { "articles", "events", "lessons", "pages",
 	"scientificLeaderships", "teachings", "roles", "specialities" }, allowSetters = true)
   private Employee employee;
 

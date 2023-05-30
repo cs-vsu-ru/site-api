@@ -50,12 +50,12 @@ public class ScientificLeadershipsResource {
      *
      * @param scientificLeadershipsDTO the scientificLeadershipsDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new scientificLeadershipsDTO, or with status {@code 400 (Bad Request)} if the scientificLeaderships has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * @throws Exception
      */
     @PostMapping("/scientific-leaderships")
     public ResponseEntity<ScientificLeadershipsDTO> createScientificLeaderships(
         @RequestBody ScientificLeadershipsDTO scientificLeadershipsDTO
-    ) throws URISyntaxException {
+    ) throws Exception {
         log.debug("REST request to save ScientificLeaderships : {}", scientificLeadershipsDTO);
         if (scientificLeadershipsDTO.getId() != null) {
             throw new BadRequestAlertException("A new scientificLeaderships cannot already have an ID", ENTITY_NAME, "idexists");
@@ -156,10 +156,17 @@ public class ScientificLeadershipsResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the scientificLeadershipsDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/scientific-leaderships/{id}")
-    public ResponseEntity<ScientificLeadershipsDTO> getScientificLeaderships(@PathVariable Long id) {
-        log.debug("REST request to get ScientificLeaderships : {}", id);
-        Optional<ScientificLeadershipsDTO> scientificLeadershipsDTO = scientificLeadershipsService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(scientificLeadershipsDTO);
+		public ResponseEntity<ScientificLeadershipsDTO> getScientificLeaderships(@PathVariable Long id) {
+			log.debug("REST request to get ScientificLeaderships : {}", id);
+			Optional<ScientificLeadershipsDTO> scientificLeadershipsDTO = scientificLeadershipsService.findOne(id);
+			return ResponseUtil.wrapOrNotFound(scientificLeadershipsDTO);
+		}
+
+		@GetMapping("/scientific-leaderships-personal-number/{personalNumber}")
+    public List<ScientificLeadershipsDTO> getScientificLeadershipsPersonalNumber(@PathVariable String personalNumber) {
+        log.debug("REST request to get ScientificLeaderships : {}", personalNumber);
+        List<ScientificLeadershipsDTO> scientificLeadershipsDTO = scientificLeadershipsService.findByPersonalNumber(personalNumber);
+        return scientificLeadershipsDTO;
     }
 
     /**

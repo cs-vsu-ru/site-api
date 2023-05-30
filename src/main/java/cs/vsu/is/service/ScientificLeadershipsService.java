@@ -8,20 +8,28 @@ import cs.vsu.is.repository.EmployeeRepository;
 import cs.vsu.is.repository.ScientificLeadershipsRepository;
 import cs.vsu.is.repository.ScientificWorkTypeRepository;
 import cs.vsu.is.repository.StudentsRepository;
+import cs.vsu.is.repository.UserRepository;
+import cs.vsu.is.service.dto.EmployeeDTO;
 import cs.vsu.is.service.dto.ScientificLeadershipsDTO;
+import cs.vsu.is.service.dto.StudentsDTO;
 import lombok.AllArgsConstructor;
+import cs.vsu.is.service.convertor.EmployeeConverter;
 import cs.vsu.is.service.convertor.ScientificLeadershipsConverter;
+import cs.vsu.is.service.convertor.StudentsConverter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,19 +46,29 @@ public class ScientificLeadershipsService {
 	private final ScientificLeadershipsRepository scientificLeadershipsRepository;
 
 	private final ScientificLeadershipsConverter scientificLeadershipsMapper;
-	// private final ScientificWorkTypeRepository scientificWorkTypeRepository;
-	// private final StudentsRepository studentsRepository;
-	// private final EmployeeRepository employeeRepository;
+	private final StudentsRepository studentsRepository;
+	private final StudentsConverter studentsConverter;
 
 	/**
 	 * Save a scientificLeaderships.
 	 *
 	 * @param scientificLeadershipsDTO the entity to save.
 	 * @return the persisted entity.
+	 * @throws Exception
 	 */
-	public ScientificLeadershipsDTO save(ScientificLeadershipsDTO scientificLeadershipsDTO) {
+	public ScientificLeadershipsDTO save(ScientificLeadershipsDTO scientificLeadershipsDTO) throws Exception {
 		log.debug("Request to save ScientificLeaderships : {}", scientificLeadershipsDTO.toString());
+		Set<Students> students = new HashSet<>();
+		for (StudentsDTO studentDTO : scientificLeadershipsDTO.getStudents()) {
+			Optional<Students> student = studentsRepository.findById(studentDTO.getId());
+			if (student.isPresent() ){
+				students.add(student.get());
+			} else {
+				students.add(studentsRepository.save(studentsConverter.toEntity(studentDTO)));
+			}
+		}
 		ScientificLeaderships scientificLeaderships = scientificLeadershipsMapper.toEntity(scientificLeadershipsDTO);
+		scientificLeaderships.setStudents(students);
 		scientificLeaderships = scientificLeadershipsRepository.save(scientificLeaderships);
 		return scientificLeadershipsMapper.toDto(scientificLeaderships);
 	}
@@ -116,7 +134,18 @@ public class ScientificLeadershipsService {
 	@Transactional(readOnly = true)
 	public Optional<ScientificLeadershipsDTO> findOne(Long id) {
 		log.debug("Request to get ScientificLeaderships : {}", id);
+
 		return scientificLeadershipsRepository.findById(id).map(scientificLeadershipsMapper::toDto);
+	}
+
+	@Transactional(readOnly = true)
+	public List<ScientificLeadershipsDTO> findByPersonalNumber(String personalNumber) {
+		log.debug("Request to get ScientificLeaderships : {}", personalNumber);
+		Students student = studentsRepository.findFirstByStudentPersonalNumber(personalNumber);
+		List<ScientificLeadershipsDTO> scientificLeaderships = student
+				.getScientificLeaderships().stream().map(scientificLeadershipsMapper::toDto)
+				.collect(Collectors.toCollection(LinkedList::new));
+		return scientificLeaderships;
 	}
 
 	/**

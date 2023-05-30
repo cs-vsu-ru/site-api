@@ -22,8 +22,7 @@ import javax.validation.constraints.*;
  */
 @Entity
 @Table(name = "employee")
-@Getter
-@Setter
+@Data
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Employee implements Serializable {
 
