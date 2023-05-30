@@ -77,8 +77,8 @@ public class NewsletterResource {
         NewsletterDTO newsletterDTO = new NewsletterDTO();
         newsletterDTO.setId(newsletter.getId());
         newsletterDTO.setSubject(newsletter.getSubject());
-        newsletterDTO.setStatus(newsletterDTO.getStatus());
-        newsletterDTO.setContent(newsletterDTO.getContent());
+        newsletterDTO.setStatus(newsletter.getStatus());
+        newsletterDTO.setContent(newsletter.getContent());
         newsletterDTO.setNewsletterDate(newsletter.getNewsletterDate().toString());
         newsletterDTO.setEmails(newsletter.getEmails());
         return newsletterDTO;
