@@ -2,8 +2,6 @@ package cs.vsu.is.service;
 
 import cs.vsu.is.domain.Employee;
 import cs.vsu.is.domain.User;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import cs.vsu.is.repository.EmployeeRepository;
 import cs.vsu.is.repository.UserRepository;
 import cs.vsu.is.service.convertor.AdminUserConverter;
@@ -14,28 +12,26 @@ import cs.vsu.is.service.convertor.update.EmployeeConverterUpdate;
 import cs.vsu.is.service.dto.AdminEmployeeDTO;
 import cs.vsu.is.service.dto.AdminUserDTO;
 import cs.vsu.is.service.dto.EmployeeDTO;
-import cs.vsu.is.service.dto.UserDTO;
 import cs.vsu.is.service.dto.store.EmployeeDTOStore;
 import cs.vsu.is.service.dto.update.EmployeeDTOUpdate;
 import lombok.AllArgsConstructor;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link Employee}.
@@ -80,6 +76,7 @@ public class EmployeeService {
 		User user = userMapper.toEntity(userService.createUser(userDTO));
 		Employee employee = employeeMapperStore.toEmployeeEntity(employeeDTO);
 		employee.setUser(user);
+
 		employee = employeeRepository.save(employee);
 
         createVoidLessons(employee.getId());
@@ -107,7 +104,12 @@ public class EmployeeService {
         EmployeeRequest request = new EmployeeRequest();
         request.setEmployeeId(id);
 
-        ResponseEntity<Void> response = restTemplate.postForEntity(url, request, Void.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Host", "parser_api:8000");
+
+        HttpEntity<EmployeeRequest> entity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<Void> response = restTemplate.postForEntity(url, entity, Void.class);
         if (response.getStatusCode() == HttpStatus.CREATED) {
             // Обработка успешного ответа (201)
             log.debug("Запрос выполнен успешно");

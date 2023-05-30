@@ -1,6 +1,8 @@
 package cs.vsu.is.domain;
 
 import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import javax.persistence.*;
 
 /**
@@ -23,6 +25,7 @@ public class Subject implements Serializable {
 
     @Column(name = "description")
     private String description;
+
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 

@@ -183,6 +183,9 @@ public class UserService {
           .collect(Collectors.toSet());
       user.setAuthorities(authorities);
     }
+    if (user.getImageUrl() == null || user.getImageUrl().isEmpty()) {
+        user.setImageUrl("http://www.cs.vsu.ru/is/api/files/000cbcf2-527e-4a1f-bd0c-98d170509a35pumpkin.jpg");
+    }
     userRepository.save(user);
     this.clearUserCaches(user);
     log.debug("Created Information for User: {}", user);
@@ -239,6 +242,9 @@ public class UserService {
               .map(Optional::get)
               .forEach(managedAuthorities::add);
           this.clearUserCaches(user);
+            if (user.getImageUrl() == null || user.getImageUrl().isEmpty()) {
+                user.setImageUrl("http://www.cs.vsu.ru/is/api/files/000cbcf2-527e-4a1f-bd0c-98d170509a35pumpkin.jpg");
+            }
           userRepository.save(user);
           log.debug("Changed Information for User: {}", user);
           return user;
@@ -278,6 +284,9 @@ public class UserService {
           }
           user.setLangKey(langKey);
           user.setImageUrl(imageUrl);
+            if (user.getImageUrl() == null || user.getImageUrl().isEmpty()) {
+                user.setImageUrl("http://www.cs.vsu.ru/is/api/files/000cbcf2-527e-4a1f-bd0c-98d170509a35pumpkin.jpg");
+            }
           this.clearUserCaches(user);
           log.debug("Changed Information for User: {}", user);
         });

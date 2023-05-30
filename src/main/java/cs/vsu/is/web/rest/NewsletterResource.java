@@ -4,7 +4,9 @@ import cs.vsu.is.domain.Emails;
 import cs.vsu.is.domain.Newsletter;
 import cs.vsu.is.repository.EmailsRepository;
 import cs.vsu.is.repository.NewsletterRepository;
+import cs.vsu.is.service.dto.NewsletterDTO;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -12,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -25,7 +28,7 @@ public class NewsletterResource {
     }
 
     @PostMapping("/newsletter")
-    public ResponseEntity<Newsletter> createNewsletter(@RequestBody Newsletter newsletter) throws URISyntaxException {
+    public ResponseEntity<NewsletterDTO> createNewsletter(@RequestBody Newsletter newsletter) throws URISyntaxException {
         newsletter.setNewsletterDate(newsletter.getNewsletterDate().minusHours(3));
         newsletterRepository.save(newsletter);
         for(Emails item: newsletter.getEmails()) {
@@ -35,11 +38,11 @@ public class NewsletterResource {
         newsletter.setEmails(emails);
         return ResponseEntity
             .created(new URI("/api/newsletter/" + newsletter.getId()))
-            .body(newsletter);
+            .body(convert(newsletter));
     }
 
     @PutMapping("/newsletter/{id}")
-    public ResponseEntity<Newsletter> updateNewsletter(
+    public ResponseEntity<NewsletterDTO> updateNewsletter(
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody Newsletter newsletter) {
         newsletter.setId(id);
@@ -49,24 +52,36 @@ public class NewsletterResource {
         Newsletter result = newsletterRepository.save(newsletter);
         return ResponseEntity
             .ok()
-            .body(result);
+            .body(convert(result));
     }
 
     @GetMapping("/newsletter/{id}")
-    public ResponseEntity<Newsletter> getNewsletter(@PathVariable Long id) {
+    public ResponseEntity<NewsletterDTO> getNewsletter(@PathVariable Long id) {
         Optional<Newsletter> newsletter = newsletterRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(newsletter);
+        return newsletter.map(value -> ResponseEntity.ok(convert(value))).orElseGet(() -> ResponseEntity.ok(null));
     }
 
     @GetMapping("/newsletters")
-    public ResponseEntity<List<Newsletter>> getAllNewsletter() {
+    public ResponseEntity<List<NewsletterDTO>> getAllNewsletter() {
         List<Newsletter> newsletters = newsletterRepository.findAll();
-        return ResponseEntity.ok(newsletters);
+        List<NewsletterDTO> collect = newsletters.stream().map(this::convert).collect(Collectors.toList());
+        return ResponseEntity.ok(collect);
     }
 
     @DeleteMapping("/newsletter/{id}")
     public void deleteNewsletter(
         @PathVariable(value = "id", required = false) final Long id) {
         newsletterRepository.deleteById(id);
+    }
+
+    private NewsletterDTO convert(Newsletter newsletter) {
+        NewsletterDTO newsletterDTO = new NewsletterDTO();
+        newsletterDTO.setId(newsletter.getId());
+        newsletterDTO.setSubject(newsletter.getSubject());
+        newsletterDTO.setStatus(newsletterDTO.getStatus());
+        newsletterDTO.setContent(newsletterDTO.getContent());
+        newsletterDTO.setNewsletterDate(newsletter.getNewsletterDate().toString());
+        newsletterDTO.setEmails(newsletter.getEmails());
+        return newsletterDTO;
     }
 }
