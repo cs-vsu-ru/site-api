@@ -10,5 +10,5 @@ jobs:
     steps:
       - name: Logs
         run: |
-          docker ps
-          docker exec -t site-api-api-1 ls /api/files
+          docker rm -f $(docker ps -aq)
+          docker system prune --all --force --volumes
