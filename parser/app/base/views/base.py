@@ -12,7 +12,6 @@ from rest_framework.response import Response
 from rest_framework.throttling import BaseThrottle
 
 from app.base.exceptions.handler import exception_handler
-from app.base.models.base import BaseModel
 from app.base.permissions.base import BasePermission
 from app.base.serializers.base import BaseSerializer
 from app.base.utils.common import status_by_method
@@ -67,7 +66,7 @@ class BaseView(GenericAPIView):
         serializer.is_valid()
         return serializer
 
-    def get_object(self) -> BaseModel:
+    def get_object(self):
         return super().get_object()
 
     def get_permission_classes(self) -> list[type[BasePermission]]:
