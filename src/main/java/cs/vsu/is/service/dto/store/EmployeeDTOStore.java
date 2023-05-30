@@ -26,7 +26,6 @@ public class EmployeeDTOStore {
 	private Long id;
 	@NotNull
 	private String patronymic;
-	@NotNull
   private String post;
   private String academicTitle;
 
