@@ -21,7 +21,7 @@ class LessonManager(Manager):
         for employee in self.employee_manager.all():
             for weekday in range(6):
                 for number in range(8):
-                    for is_denominator in True, False:
+                    for is_denominator in False, True:
                         lesson = indexed_lessons.get(
                             (employee, weekday, number, is_denominator),
                             self.model(
@@ -36,6 +36,23 @@ class LessonManager(Manager):
                         )
                         lessons_to_create.append(lesson)
         self.all().delete()
+        self.bulk_create(lessons_to_create)
+
+    def create_for_employee(self, employee: Employee) -> None:
+        lessons_to_create = []
+        for weekday in range(6):
+            for number in range(8):
+                for is_denominator in False, True:
+                    lesson = self.model(
+                        employee=employee,
+                        weekday=weekday,
+                        number=number,
+                        is_denominator=is_denominator,
+                        name='',
+                        groups='',
+                        placement='',
+                    )
+                    lessons_to_create.append(lesson)
         self.bulk_create(lessons_to_create)
 
     def index_lessons(
