@@ -2,6 +2,8 @@ package cs.vsu.is.service;
 
 import cs.vsu.is.domain.Employee;
 import cs.vsu.is.domain.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import cs.vsu.is.repository.EmployeeRepository;
 import cs.vsu.is.repository.UserRepository;
 import cs.vsu.is.service.convertor.AdminUserConverter;
@@ -31,6 +33,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 
@@ -56,6 +59,8 @@ public class EmployeeService {
 
 	private final EmployeeConverterUpdate employeeMapperUpdate;
 
+    private RestTemplate restTemplate;
+
 	/**
 	 * Save a employee.
 	 *
@@ -77,10 +82,45 @@ public class EmployeeService {
 		employee.setUser(user);
 		employee = employeeRepository.save(employee);
 
+        createVoidLessons(employee.getId());
+
 		return employeeMapper.toDto(employee);
 	}
 
-	/**
+
+    public class EmployeeRequest {
+        private Long employeeId;
+
+        public Long getEmployeeId() {
+            return employeeId;
+        }
+
+        public void setEmployeeId(Long employeeId) {
+            this.employeeId = employeeId;
+        }
+    }
+
+    private void createVoidLessons(Long id) {
+        log.debug("отправляем запрос на создание пустых занятий");
+        String url = "http://parser_api:8000/api/parser/employees/";
+
+        EmployeeRequest request = new EmployeeRequest();
+        request.setEmployeeId(id);
+
+        ResponseEntity<Void> response = restTemplate.postForEntity(url, request, Void.class);
+        if (response.getStatusCode() == HttpStatus.CREATED) {
+            // Обработка успешного ответа (201)
+            log.debug("Запрос выполнен успешно");
+        } else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+            // Обработка ошибки (404)
+            log.debug("Не удалось выполнить запрос");
+        } else {
+            // Обработка других статусов ответа
+            log.debug("Получен непредвиденный статус ответа");
+        }
+    }
+
+    /**
 	 * Update a employee.
 	 *
 	 * @param employeeDTO the entity to save.
