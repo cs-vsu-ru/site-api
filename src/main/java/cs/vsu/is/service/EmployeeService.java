@@ -93,7 +93,10 @@ public class EmployeeService {
             e.printStackTrace();
         }
 
-		return employeeMapper.toDto(employee);
+        Long id = employee.getId();
+        EmployeeDTO dto = employeeMapper.toDto(employee);
+        dto.setId(id);
+        return dto;
 	}
 
 

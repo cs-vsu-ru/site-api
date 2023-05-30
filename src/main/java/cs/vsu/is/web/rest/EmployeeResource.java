@@ -1,11 +1,13 @@
 package cs.vsu.is.web.rest;
 
 import cs.vsu.is.domain.Authority;
+import cs.vsu.is.domain.Employee;
 import cs.vsu.is.domain.User;
 import cs.vsu.is.repository.EmployeeRepository;
 import cs.vsu.is.repository.UserRepository;
 import cs.vsu.is.service.EmployeeService;
 import cs.vsu.is.service.dto.AdminEmployeeDTO;
+import cs.vsu.is.service.dto.AdminUserDTO;
 import cs.vsu.is.service.dto.EmployeeDTO;
 import cs.vsu.is.service.dto.store.EmployeeDTOStore;
 import cs.vsu.is.service.dto.update.EmployeeDTOUpdate;
@@ -172,14 +174,37 @@ public class EmployeeResource {
    */
   @GetMapping("/employees/{id}")
   public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable Long id) {
-    log.debug("REST request to get Employee : {}", id);
-    Optional<EmployeeDTO> employeeDTO = employeeService.findOne(id);
-    return ResponseEntity.ok(employeeDTO.get());
+      log.debug("REST request to get Employee : {}", id);
+      Optional<EmployeeDTO> employeeDTO = employeeService.findOne(id);
+      EmployeeDTO employeeDTO1;
+      if (employeeDTO.isPresent()) {
+          employeeDTO1 = employeeDTO.get();
+      } else {
+          return ResponseEntity.ok(null);
+      }
+
+      AdminUserDTO user = employeeDTO1.getUser();
+      try {
+          if (user.getAuthorities().contains("Authority{name='ROLE_ADMIN'}") || user.getAuthorities().contains("ROLE_ADMIN")) {
+              employeeDTO1.setMainRole("ROLE_ADMIN");
+          } else if (user.getAuthorities().contains("Authority{name='ROLE_MODERATOR'}") || user.getAuthorities().contains("ROLE_MODERATOR")) {
+              employeeDTO1.setMainRole("ROLE_MODERATOR");
+          } else if (user.getAuthorities().contains("Authority{name='ROLE_EMPLOYEE'}") || user.getAuthorities().contains("ROLE_EMPLOYEE")) {
+              employeeDTO1.setMainRole("ROLE_EMPLOYEE");
+          } else {
+              employeeDTO1.setMainRole("ROLE_USER");
+          }
+      } catch (Exception e) {
+          e.printStackTrace();
+          employeeDTO1.setMainRole("ROLE_USER");
+      }
+      return ResponseEntity.ok(employeeDTO1);
   }
 
   @GetMapping("/admin-employees/{id}")
   public ResponseEntity<AdminEmployeeDTO> getAdminEmployee(@PathVariable Long id) {
       log.debug("REST request to get Employee : {}", id);
+      Optional<Employee> byId = employeeRepository.findById(id);
       Optional<AdminEmployeeDTO> employeeDTO = employeeService.findAdminOne(id);
       AdminEmployeeDTO employeeDTO1;
       if (employeeDTO.isPresent()) {
@@ -192,9 +217,9 @@ public class EmployeeResource {
           Authority adminAuthority = new Authority();
           adminAuthority.setName("ROLE_ADMIN");
           Authority moderAuthority = new Authority();
-          adminAuthority.setName("ROLE_MODERATOR");
+          moderAuthority.setName("ROLE_MODERATOR");
           Authority emplAuthority = new Authority();
-          adminAuthority.setName("ROLE_EMPLOYEE");
+          emplAuthority.setName("ROLE_EMPLOYEE");
           if (user.getAuthorities().contains(adminAuthority)) {
               employeeDTO1.setMainRole("ROLE_ADMIN");
           } else if (user.getAuthorities().contains(moderAuthority)) {
