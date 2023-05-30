@@ -118,10 +118,21 @@ public class AccountResource {
         break;
       }
     }
-    if (employeeDTO.get().getMainRole() == null) {
-      employeeDTO.get().setMainRole(user.getAuthorities().iterator().next());
+      EmployeeDTO employeeDTO1 = new EmployeeDTO();
+    if (employeeDTO.isPresent()) {
+        employeeDTO1 = employeeDTO.get();
+        return ResponseEntity.ok(null);
     }
-    return ResponseEntity.ok(employeeDTO.get());
+    try {
+        if (employeeDTO1.getMainRole() == null) {
+            employeeDTO1.setMainRole(user.getAuthorities().iterator().next());
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        employeeDTO1.setMainRole("ROLE_USER");
+    }
+
+    return ResponseEntity.ok(employeeDTO1);
   }
 
   /**

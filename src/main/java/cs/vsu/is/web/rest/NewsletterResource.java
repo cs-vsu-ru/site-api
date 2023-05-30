@@ -28,13 +28,13 @@ public class NewsletterResource {
     @PostMapping("/newsletter")
     public ResponseEntity<NewsletterDTO> createNewsletter(@RequestBody Newsletter newsletter) throws URISyntaxException {
         newsletter.setNewsletterDate(newsletter.getNewsletterDate().minusHours(3));
+        newsletter.setStatus("open");
         newsletterRepository.save(newsletter);
         for(Emails item: newsletter.getEmails()) {
             item.setNewsletter(newsletter);
         }
         List<Emails> emails = emailsRepository.saveAll(newsletter.getEmails());
         newsletter.setEmails(emails);
-        newsletter.setStatus("open");
         return ResponseEntity
             .created(new URI("/api/newsletter/" + newsletter.getId()))
             .body(convert(newsletter));
