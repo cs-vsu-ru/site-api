@@ -31,7 +31,7 @@ public class EmployeeDTO {
     private String lastName;
     private String email;
     private String imageUrl;
-    // private AdminUserDTO user;
+     private AdminUserDTO user;
     // private Set<ArticleDTO> articles = new HashSet<>();
     // private Set<EventDTO> events = new HashSet<>();
     // private Set<LessonDTO> lessons = new HashSet<>();

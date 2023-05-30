@@ -3,6 +3,7 @@ package cs.vsu.is.web.rest;
 import cs.vsu.is.domain.Authority;
 import cs.vsu.is.domain.Employee;
 import cs.vsu.is.domain.User;
+import cs.vsu.is.repository.EmployeeRepository;
 import cs.vsu.is.repository.UserRepository;
 import cs.vsu.is.security.SecurityUtils;
 import cs.vsu.is.service.EmployeeService;
@@ -47,6 +48,7 @@ public class AccountResource {
   private final UserRepository userRepository;
   private final UserService userService;
   private final EmployeeService employeeService;
+    private final EmployeeRepository employeeRepository;
   private final MailService mailService;
 
   /**
@@ -107,33 +109,33 @@ public class AccountResource {
    */
   @GetMapping("/account")
   public ResponseEntity<EmployeeDTO> getAccount() {
-    AdminUserDTO user = userService
-        .getUserWithAuthorities()
-        .map(AdminUserDTO::new)
-        .orElseThrow(() -> new AccountResourceException("User could not be found"));
-    Optional<EmployeeDTO> employeeDTO = employeeService.findOne(user.getId());
-    for (String authority : user.getAuthorities()) {
-      if (authority.equals("ROLE_ADMIN")) {
-        employeeDTO.get().setMainRole("ROLE_ADMIN");
-        break;
+      AdminUserDTO user = userService
+          .getUserWithAuthorities()
+          .map(AdminUserDTO::new)
+          .orElseThrow(() -> new AccountResourceException("User could not be found"));
+      Optional<EmployeeDTO> employeeDTO = employeeService.findOne(user.getId());
+      for (String authority : user.getAuthorities()) {
+          if (authority.equals("ROLE_ADMIN")) {
+              employeeDTO.get().setMainRole("ROLE_ADMIN");
+              break;
+          }
       }
-    }
       EmployeeDTO employeeDTO1;
-    if (employeeDTO.isPresent()) {
-        employeeDTO1 = employeeDTO.get();
-    } else {
-        return ResponseEntity.ok(null);
-    }
-    try {
-        if (employeeDTO1.getMainRole() == null) {
-            employeeDTO1.setMainRole(user.getAuthorities().iterator().next());
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-        employeeDTO1.setMainRole("ROLE_USER");
-    }
-
-    return ResponseEntity.ok(employeeDTO1);
+      if (employeeDTO.isPresent()) {
+          employeeDTO1 = employeeDTO.get();
+      } else {
+          return ResponseEntity.ok(null);
+      }
+      try {
+          if (employeeDTO1.getMainRole() == null) {
+              employeeDTO1.setMainRole(user.getAuthorities().iterator().next());
+          }
+      } catch (Exception e) {
+          e.printStackTrace();
+          employeeDTO1.setMainRole("ROLE_USER");
+      }
+      employeeDTO1.setUser(user);
+      return ResponseEntity.ok(employeeDTO1);
   }
 
   /**
