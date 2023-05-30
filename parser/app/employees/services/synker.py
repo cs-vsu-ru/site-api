@@ -1,7 +1,11 @@
+from typing import TypeAlias
+
 import requests
 
 from app.employees.models import Employee
 from app.lessons.models import Lesson
+
+IsCreated: TypeAlias = bool
 
 
 class EmployeeSynker:
@@ -11,14 +15,17 @@ class EmployeeSynker:
         self.employee_manager = Employee.objects
         self.lessons_manager = Lesson.objects
 
-    def _update_or_create_employee(self, id: int, name: str) -> Employee:
+    def _update_or_create_employee(
+        self, id: int, name: str
+    ) -> tuple[IsCreated, Employee]:
         try:
             employee = self.employee_manager.get(id=id)
             employee.name = name
             employee.save()
+            return False, employee
         except self.employee_manager.model.DoesNotExist:
             employee = self.employee_manager.create(id=id, name=name)
-        return employee
+            return True, employee
 
     def synk(self) -> None:
         self.employee_manager.all().delete()
@@ -32,8 +39,9 @@ class EmployeeSynker:
         for employee_data in employees_data:
             if employee_data['id'] == id:
                 name = self._parse_name(employee_data)
-                employee = self._update_or_create_employee(id, name)
-                self.lessons_manager.create_for_employee(employee)
+                is_created, employee = self._update_or_create_employee(id, name)
+                if is_created:
+                    self.lessons_manager.create_for_employee(employee)
                 return
         raise KeyError
 
