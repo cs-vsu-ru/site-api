@@ -6,9 +6,7 @@ import cs.vsu.is.repository.EmailsRepository;
 import cs.vsu.is.repository.NewsletterRepository;
 import cs.vsu.is.service.dto.NewsletterDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
-import tech.jhipster.web.util.ResponseUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -36,6 +34,7 @@ public class NewsletterResource {
         }
         List<Emails> emails = emailsRepository.saveAll(newsletter.getEmails());
         newsletter.setEmails(emails);
+        newsletter.setStatus("open");
         return ResponseEntity
             .created(new URI("/api/newsletter/" + newsletter.getId()))
             .body(convert(newsletter));
