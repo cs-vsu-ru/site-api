@@ -835,6 +835,7 @@
                                 <configOptions>
                                     <delegatePattern>true</delegatePattern>
                                     <title>site-api</title>
+                                    <path>/is/api/swagger-ui/index.html</path> <!-- Путь к Swagger UI -->
                                 </configOptions>
                             </configuration>
                         </execution>
