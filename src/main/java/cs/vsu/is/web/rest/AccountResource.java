@@ -118,9 +118,10 @@ public class AccountResource {
         break;
       }
     }
-      EmployeeDTO employeeDTO1 = new EmployeeDTO();
+      EmployeeDTO employeeDTO1;
     if (employeeDTO.isPresent()) {
         employeeDTO1 = employeeDTO.get();
+    } else {
         return ResponseEntity.ok(null);
     }
     try {
