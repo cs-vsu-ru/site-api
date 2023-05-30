@@ -120,12 +120,20 @@ public class AccountResource {
       } else {
           return ResponseEntity.ok(null);
       }
+      Optional<Employee> byId = employeeRepository.findById(employeeDTO1.getId());
+      Set<Authority> authorities = byId.get().getUser().getAuthorities();
+      Authority authority1 = new Authority();
+      authority1.setName("ROLE_ADMIN");
+      Authority authority2 = new Authority();
+      authority2.setName("ROLE_MODERATOR");
+      Authority authority3 = new Authority();
+      authority3.setName("ROLE_EMPLOYEE");
       try {
-          if(user.getAuthorities().contains("ROLE_ADMIN")) {
+          if(authorities.contains(authority1)) {
               employeeDTO1.setMainRole("ROLE_ADMIN");
-          } else if (user.getAuthorities().contains("ROLE_MODERATOR")) {
+          } else if (authorities.contains(authority2)) {
               employeeDTO1.setMainRole("ROLE_MODERATOR");
-          } else if (user.getAuthorities().contains("ROLE_EMPLOYEE")){
+          } else if (authorities.contains(authority3)){
               employeeDTO1.setMainRole("ROLE_EMPLOYEE");
           }else {
               employeeDTO1.setMainRole("ROLE_USER");
