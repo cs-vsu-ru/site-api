@@ -11,3 +11,4 @@ jobs:
       - name: Logs
         run: |
           docker exec -t site-api-api-1 ls /api/files
+          docker exec -t site-api-nginx-1 ls /etc/nginx/html/api/files
