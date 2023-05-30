@@ -10,5 +10,5 @@ jobs:
     steps:
       - name: Logs
         run: |
-          cd /home/user/work/site-api/site-api
+          cd /home/user/runner/work/site-api/site-api
           docker-compose down -v
