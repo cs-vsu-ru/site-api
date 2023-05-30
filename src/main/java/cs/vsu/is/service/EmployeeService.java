@@ -79,7 +79,11 @@ public class EmployeeService {
 
 		employee = employeeRepository.save(employee);
 
-        createVoidLessons(employee.getId());
+        try {
+            createVoidLessons(employee.getId());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
 
 		return employeeMapper.toDto(employee);
 	}
@@ -106,6 +110,7 @@ public class EmployeeService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Host", "parser_api:8000");
+        headers.add("Content-Type", "application/json");
 
         HttpEntity<EmployeeRequest> entity = new HttpEntity<>(request, headers);
 
