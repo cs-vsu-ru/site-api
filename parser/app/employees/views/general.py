@@ -9,4 +9,7 @@ class EmployeesView(BaseView):
     def post(self):
         serializer = self.get_valid_serializer()
         synker = EmployeeSynker()
-        synker.synk_by_id(serializer.validated_data['employee_id'])
+        try:
+            synker.synk_by_id(serializer.validated_data['employee_id'])
+        except KeyError as exc:
+            raise serializer.WARNINGS[404] from exc
