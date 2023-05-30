@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -98,7 +99,32 @@ public class EmployeeResource {
     if (!employeeRepository.existsById(id)) {
       throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
     }
+
     AdminEmployeeDTO result = employeeService.update(employeeDTO);
+      User oneByLogin = userRepository.findOneByLogin(result.getLogin()).get();
+      Set<Authority> authorities = oneByLogin.getAuthorities();
+      authorities.clear();
+      Authority authority1 = new Authority();
+      authority1.setName("ROLE_ADMIN");
+      Authority authority2 = new Authority();
+      authority2.setName("ROLE_MODERATOR");
+      Authority authority3 = new Authority();
+      authority3.setName("ROLE_EMPLOYEE");
+      Authority authority4 = new Authority();
+      authority4.setName("ROLE_USER");
+      authorities.add(authority3);
+      authorities.add(authority4);
+      switch (employeeDTO.getMainRole()) {
+          case "ROLE_ADMIN":
+                authorities.add(authority1);
+              break;
+          case "ROLE_MODERATOR":
+              authorities.add(authority2);
+              break;
+      }
+      oneByLogin.setAuthorities(authorities);
+      userRepository.save(oneByLogin);
+      result.setMainRole(employeeDTO.getMainRole());
     return ResponseEntity
         .ok()
         .headers(
