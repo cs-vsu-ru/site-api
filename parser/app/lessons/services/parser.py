@@ -8,14 +8,6 @@ from app.lessons.services.cells_fixer import CellsFixer
 from app.lessons.services.xlsx_parser import XlsxParser
 
 
-def crop_array(array):
-    cropped_array = []
-    for row in array:
-        cropped_row = row  # Обрезаем каждую строку до 4 элементов
-        cropped_array.append(cropped_row)
-    return cropped_array
-
-
 class Parser:
     def __init__(self):
         self.xlsx_parser = XlsxParser()
@@ -26,7 +18,6 @@ class Parser:
     def parse(self, filename: str = 'schedule.xlsx') -> list[Lesson]:
         lessons = []
         data = self.xlsx_parser.parse(filename)
-        data = crop_array(data)  # FIXME: to simplify
         course_map = self._map_courses(data[0])
         group_map = self._map_groups(data[1])
         indexed_groups = self._index_groups(course_map, group_map)
