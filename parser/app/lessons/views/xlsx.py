@@ -1,22 +1,16 @@
-from django.http import FileResponse, HttpResponse
+from django.http import HttpResponse
 
 from app.base.views.base import BaseView
-from app.employees.models import Employee
-from app.lessons.services.xlsx.builders.employee_schedule import (
-    XlsxEmployeeScheduleBuilder,
+from app.lessons.services.xlsx.builders.employees_schedule import (
+    XlsxEmployeesScheduleBuilder,
 )
 
 
-class LessonsByEmployeeXlsxView(BaseView):
-    queryset = Employee.objects.all()
-    lookup_field = 'id'
-    lookup_url_kwarg = 'employee_id'
-
+class LessonsXlsxView(BaseView):
     CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
     def get(self):
-        employee: Employee = self.get_object()
-        builder = XlsxEmployeeScheduleBuilder(employee)
+        builder = XlsxEmployeesScheduleBuilder()
         filename = builder.build()
         return self._get_response(filename)
 

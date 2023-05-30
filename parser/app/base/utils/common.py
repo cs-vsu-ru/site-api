@@ -7,7 +7,13 @@ from rest_framework.response import Response
 
 from app.base.utils.schema import extend_schema, schema_serializer
 
-__all__ = ['status_by_method', 'add_query_params', 'response_204', 'response_201']
+__all__ = [
+    'status_by_method',
+    'add_query_params',
+    'response_204',
+    'response_201',
+    'transliterate',
+]
 
 _Choices = TypeVar('_Choices', bound=models.Choices)
 
@@ -52,3 +58,43 @@ def response_201(f):
 
 def inline_exception(name: str):
     return type(name, (Exception,), {})
+
+
+def transliterate(text):
+    mapping = {
+        'а': 'a',
+        'б': 'b',
+        'в': 'v',
+        'г': 'g',
+        'д': 'd',
+        'е': 'e',
+        'ё': 'yo',
+        'ж': 'zh',
+        'з': 'z',
+        'и': 'i',
+        'й': 'y',
+        'к': 'k',
+        'л': 'l',
+        'м': 'm',
+        'н': 'n',
+        'о': 'o',
+        'п': 'p',
+        'р': 'r',
+        'с': 's',
+        'т': 't',
+        'у': 'u',
+        'ф': 'f',
+        'х': 'h',
+        'ц': 'ts',
+        'ч': 'ch',
+        'ш': 'sh',
+        'щ': 'shch',
+        'ы': 'y',
+        'э': 'e',
+        'ю': 'yu',
+        'я': 'ya',
+    }
+    return ''.join(
+        mapping.get(c.lower(), c) if c.islower() else mapping.get(c.lower(), c).title()
+        for c in text.replace('ь', '').replace('ъ', '')
+    )

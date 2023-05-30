@@ -13,11 +13,11 @@ class LessonsParseView(BaseView):
 
     @response_204
     def post(self):
-        self._upload_file()
         employee_synker = EmployeeSynker()
-        employee_synker.synk()
         parser = Parser()
+        self._upload_file()
         lessons = parser.parse(self.FILENAME)
+        employee_synker.synk()
         Lesson.objects.create_for_all_employees(lessons)
 
     def _upload_file(self):
