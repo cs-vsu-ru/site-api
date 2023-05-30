@@ -39,7 +39,7 @@ public class Newsletter implements Serializable {
     @Column(name = "status")
     private String status;
 
-    @OneToMany(mappedBy = "newsletter" , fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "newsletter" , fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     @JsonIgnoreProperties(value = {"newsletter"}, allowSetters = true)
     private List<Emails> emails = new ArrayList<>();
 }
