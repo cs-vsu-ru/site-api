@@ -12,8 +12,11 @@ class LessonsView(BaseView):
     pagination_class = None
 
     def get(self):
-        if (data := cache.get('lessons')) is None:
-            serializer = self.get_serializer({'employees': self.get_filtered_queryset()})
+        data = cache.get('lessons')
+        if data is None:
+            serializer = self.get_serializer(
+                {'employees': self.get_filtered_queryset()}
+            )
             data = serializer.data
-            cache.set('lessons', data, 60)
+        cache.set('lessons', data, 60)
         return Response(data)
