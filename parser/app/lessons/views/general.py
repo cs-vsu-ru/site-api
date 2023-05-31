@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from rest_framework.response import Response
 
 from app.base.views.base import BaseView
@@ -11,5 +12,8 @@ class LessonsView(BaseView):
     pagination_class = None
 
     def get(self):
-        serializer = self.get_serializer({'employees': self.get_filtered_queryset()})
-        return Response(serializer.data)
+        if (data := cache.get('lessons')) is None:
+            serializer = self.get_serializer({'employees': self.get_filtered_queryset()})
+            data = serializer.data
+            cache.set('lessons', data, 60)
+        return Response(data)

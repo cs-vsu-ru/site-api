@@ -24,6 +24,10 @@ services:
     extends:
       file: parser/docker-compose.base.yml
       service: db
+  parser_redis:
+    extends:
+      file: parser/docker-compose.base.yml
+      service: redis
   parser_api:
     extends:
       file: parser/docker-compose.base.yml
@@ -31,7 +35,7 @@ services:
     build:
       context: parser
     networks: [ parser_api_network, nginx_network ]
-    depends_on: [ api, parser_db ]
+    depends_on: [ api, parser_db, parser_redis ]
   db:
     image: mysql:8.0.30
     volumes:
@@ -67,6 +71,7 @@ volumes:
 
 networks:
   parser_db_network:
+  parser_redis_network:
   parser_api_network:
   db_network:
   redis_network:

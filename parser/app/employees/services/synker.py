@@ -34,7 +34,7 @@ class EmployeeSynker:
             name = self._parse_name(employee_data)
             self._update_or_create_employee(employee_data['id'], name)
 
-    def synk_by_id(self, id: int) -> None:
+    def synk_by_id(self, id: int) -> Employee:
         employees_data = self.requester.get(self.url).json()
         for employee_data in employees_data:
             if employee_data['id'] == id:
@@ -42,7 +42,7 @@ class EmployeeSynker:
                 is_created, employee = self._update_or_create_employee(id, name)
                 if is_created:
                     self.lessons_manager.create_for_employee(employee)
-                return
+                return employee
         raise KeyError
 
     def _parse_name(self, employee_data) -> str:

@@ -66,9 +66,6 @@ class BaseView(GenericAPIView):
         serializer.is_valid()
         return serializer
 
-    def get_object(self):
-        return super().get_object()
-
     def get_permission_classes(self) -> list[type[BasePermission]]:
         return self.permission_classes + self.permissions_map.get(self.method, [])
 

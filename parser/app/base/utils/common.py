@@ -13,6 +13,7 @@ __all__ = [
     'response_204',
     'response_201',
     'transliterate',
+    'deferred_decorator',
 ]
 
 _Choices = TypeVar('_Choices', bound=models.Choices)
@@ -98,3 +99,12 @@ def transliterate(text):
         mapping.get(c.lower(), c) if c.islower() else mapping.get(c.lower(), c).title()
         for c in text.replace('ь', '').replace('ъ', '')
     )
+
+
+def deferred_decorator(decorator):
+    def _f_decorator(f):
+        deferred_decorators = getattr(f, 'deferred_decorators', [])
+        deferred_decorators.append(decorator)
+        setattr(f, 'deferred_decorators', deferred_decorators)
+        return f
+    return _f_decorator
