@@ -17,5 +17,5 @@ class LessonsView(BaseView):
                 {'employees': self.get_filtered_queryset()}
             )
             data = serializer.data
-            cache.set('lessons', data, 120)
+            cache.set('lessons', data, 1)
         return Response(data)
