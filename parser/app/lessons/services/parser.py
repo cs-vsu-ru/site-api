@@ -146,7 +146,10 @@ class Parser:
         return result % 8
 
     def _get_is_denominator(self, row: int) -> bool:
-        return bool(row % 2)
+        is_denominator = bool(row % 2)
+        if 21 <= row <= 36 or 55 <= row <= 70 or 89 <= row <= 102:
+            return not is_denominator
+        return is_denominator
 
     def _parse_cell_text(self, cell_text: str) -> dict[str, str]:
         cell_text = re.sub(r'(\s|\n_){2,}', ' ', cell_text)
