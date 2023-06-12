@@ -18,3 +18,4 @@ volumes:
 
 networks:
   parser_db_network:
+  parser_redis_network:
