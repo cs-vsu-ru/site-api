@@ -17,7 +17,7 @@ class EmployeeSynker:
         self.lessons_manager = Lesson.objects
 
     def get_filtered_employees_data(self) -> list[dict[str, Any]]:
-        employees_data = self.get_filtered_employees_data()
+        employees_data = self.requester.get(self.url).json()
         return [
             employee_data
             for employee_data in employees_data
