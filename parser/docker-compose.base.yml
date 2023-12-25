@@ -21,6 +21,7 @@ services:
       python manage.py migrate && gunicorn api.wsgi -c gunicorn/config.py
       "
     restart: unless-stopped
+    ports: [ 8000:8000 ]
 
 volumes:
   parser_db_volume:

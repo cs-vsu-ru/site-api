@@ -2,7 +2,8 @@ version: '3.9'
 
 services:
   api:
-    image: site
+    build:
+      context: .
     volumes:
       - files_volume:/api/files
     environment:
