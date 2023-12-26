@@ -100,14 +100,33 @@ public class EventsService {
   @Transactional(readOnly = true)
   public List<EventDTO> findAllFuture() {
     log.debug("Request to get all future Events");
-    return eventsRepository.findAll().stream().map(eventsMapper::toDto)
+    LocalDateTime nowTime = LocalDateTime.now();
+    return eventsRepository.findAll().stream().filter(e -> {
+            LocalDateTime time = LocalDateTime.parse(e.startData + " " + e.startTime,
+                DateTimeFormatter.ofPattern("y-M-d H:m");
+
+            return nowTime.isAfter(time);
+        })
+        .map(eventsMapper::toDto)
         .collect(Collectors.toCollection(LinkedList::new));
   }
 
   @Transactional(readOnly = true)
   public List<EventDTO> findAllPass() {
     log.debug("Request to get all pass Events");
-    return eventsRepository.findAll().stream().map(eventsMapper::toDto)
+    LocalDateTime nowTime = LocalDateTime.now();
+    return eventsRepository.findAll().stream().filter(e -> {
+            if (e.endData == null || e.endTime == null) {
+                LocalDateTime time = LocalDateTime.parse(e.startData + " " + e.startTime,
+                    DateTimeFormatter.ofPattern("y-M-d H:m");
+            } else {
+                LocalDateTime time = LocalDateTime.parse(e.endData + " " + e.endTime,
+                    DateTimeFormatter.ofPattern("y-M-d H:m");
+            }
+
+            return nowTime.isBefore(time);
+        })
+        .map(eventsMapper::toDto)
         .collect(Collectors.toCollection(LinkedList::new));
   }
 
