@@ -97,6 +97,20 @@ public class EventsService {
         .collect(Collectors.toCollection(LinkedList::new));
   }
 
+  @Transactional(readOnly = true)
+  public List<EventDTO> findAllFuture() {
+    log.debug("Request to get all future Events");
+    return eventsRepository.findAll().stream().map(eventsMapper::toDto)
+        .collect(Collectors.toCollection(LinkedList::new));
+  }
+
+  @Transactional(readOnly = true)
+  public List<EventDTO> findAllPass() {
+    log.debug("Request to get all pass Events");
+    return eventsRepository.findAll().stream().map(eventsMapper::toDto)
+        .collect(Collectors.toCollection(LinkedList::new));
+  }
+
   /**
    * Get one events by id.
    *

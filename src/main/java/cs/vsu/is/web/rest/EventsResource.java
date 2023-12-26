@@ -148,6 +148,18 @@ public class EventsResource {
   @GetMapping("/events")
   public List<EventDTO> getAllEvents() {
     log.debug("REST request to get all Events");
+    return eventsService.findAllFuture();
+  }
+
+  @GetMapping("/events/future")
+  public List<EventDTO> getAllFutureEvents() {
+    log.debug("REST request to get all Events");
+    return eventsService.findAllPass();
+  }
+
+  @GetMapping("/events/pass")
+  public List<EventDTO> getAllPassEvents() {
+    log.debug("REST request to get all Events");
     return eventsService.findAll();
   }
 
