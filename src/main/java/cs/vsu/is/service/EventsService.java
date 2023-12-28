@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.Comparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -106,7 +107,7 @@ public class EventsService {
                     DateTimeFormatter.ofPattern("y-M-d H:m"));
                 return nowTime.isBefore(time);
             })
-            .sort( new Comparator<EventDTO>() {
+            .sorted( new Comparator<EventDTO>() {
                 @Override
                 public int compare(EventDTO e1, EventDTO e2){
                     LocalDateTime time1 = LocalDateTime.parse(e1.getStartDate() + " " + e1.getStartTime(),
@@ -134,7 +135,7 @@ public class EventsService {
                 }
                 return nowTime.isAfter(time);
             })
-            .sort( new Comparator<EventDTO>() {
+            .sorted( new Comparator<EventDTO>() {
                 @Override
                 public int compare(EventDTO e1, EventDTO e2){
                     LocalDateTime time1 = LocalDateTime.now();
