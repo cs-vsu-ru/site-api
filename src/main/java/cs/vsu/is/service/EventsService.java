@@ -106,6 +106,16 @@ public class EventsService {
                     DateTimeFormatter.ofPattern("y-M-d H:m"));
                 return nowTime.isBefore(time);
             })
+            .sort( new Comparator<EventDTO>() {
+                @Override
+                public int compare(EventDTO e1, EventDTO e2){
+                    LocalDateTime time1 = LocalDateTime.parse(e1.getStartDate() + " " + e1.getStartTime(),
+                    DateTimeFormatter.ofPattern("y-M-d H:m"));
+                    LocalDateTime time2 = LocalDateTime.parse(e2.getStartDate() + " " + e2.getStartTime(),
+                    DateTimeFormatter.ofPattern("y-M-d H:m"));
+                    return time1.compareTo(time2);
+                }
+            })
             .collect(Collectors.toCollection(LinkedList::new));
   }
 
@@ -123,6 +133,29 @@ public class EventsService {
                         DateTimeFormatter.ofPattern("y-M-d H:m"));
                 }
                 return nowTime.isAfter(time);
+            })
+            .sort( new Comparator<EventDTO>() {
+                @Override
+                public int compare(EventDTO e1, EventDTO e2){
+                    LocalDateTime time1 = LocalDateTime.now();
+                    LocalDateTime time2 = LocalDateTime.now();
+                    if (e1.getEndDate() == null || e1.getEndTime() == null) {
+                        time1 = LocalDateTime.parse(e1.getStartDate() + " " + e1.getStartTime(),
+                        DateTimeFormatter.ofPattern("y-M-d H:m"));
+                    } else {
+                        time1 = LocalDateTime.parse(e1.getEndDate() + " " + e1.getEndTime(),
+                            DateTimeFormatter.ofPattern("y-M-d H:m"));
+                    }
+
+                    if (e2.getEndDate() == null || e2.getEndTime() == null) {
+                        time2 = LocalDateTime.parse(e2.getStartDate() + " " + e2.getStartTime(),
+                        DateTimeFormatter.ofPattern("y-M-d H:m"));
+                    } else {
+                        time2 = LocalDateTime.parse(e2.getEndDate() + " " + e2.getEndTime(),
+                            DateTimeFormatter.ofPattern("y-M-d H:m"));
+                    }
+                    return time2.compareTo(time1);
+                }
             })
             .collect(Collectors.toCollection(LinkedList::new));
   }
