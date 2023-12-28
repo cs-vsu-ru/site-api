@@ -9,6 +9,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -146,9 +148,17 @@ public class EventsResource {
    *         of events in body.
    */
   @GetMapping("/events")
-  public List<EventDTO> getAllEvents() {
+  public Map<String, List<EventDTO>> getAllEvents() {
     log.debug("REST request to get all Events");
-    return eventsService.findAll();
+
+    List<EventDTO> completedEvents = eventsService.findAllPass();
+    List<EventDTO> upcomingEvents = eventsService.findAllFuture();
+
+    Map<String, List<EventDTO>> response = new HashMap<>();
+    response.put("completedEvents", completedEvents);
+    response.put("upcomingEvents", upcomingEvents);
+
+    return response;
   }
 
   @GetMapping("/events/future")
