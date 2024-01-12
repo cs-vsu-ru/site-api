@@ -22,5 +22,5 @@ import javax.validation.constraints.Size;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Employee findByUserLastName(@Size(max = 50) String user_lastName);
-
+    List<Employee> findAllByPost(@Size(max = 50) String post);
 }

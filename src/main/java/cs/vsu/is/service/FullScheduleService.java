@@ -21,6 +21,16 @@ public class FullScheduleService {
     private final LessonRepository lessonRepository;
     private final EduSchedulePlaceRepository eduSchedulePlaceRepository;
 
+    private final List<String> teacherPosts = new ArrayList<>(
+        Arrays.asList(
+            "Заведующий кафедрой",
+            "Профессор",
+            "Доцент",
+            "Старший преподаватель",
+            "Преподаватель",
+            "Ассистент")
+    );
+
     private final HashMap<String, String> timeMap = new HashMap<String, String>() {{
         put("8:00", "8:00 - 9:30");
         put("9:45", "9:45 - 11:20");
@@ -42,7 +52,10 @@ public class FullScheduleService {
     }
 
     public List<EmployeeScheduleDTO> getFullSchedule() {
-        List<Employee> employees = employeeRepository.findAll();
+        List<Employee> employees = new ArrayList<>();
+        for (String post : teacherPosts) {
+            employees.addAll(employeeRepository.findAllByPost(post));
+        }
         List<EmployeeScheduleDTO> employeeScheduleDTOS = new LinkedList<>();
         for (Employee employee : employees) {
             Set<Lesson> employeeLessons = employee.getLessons();
