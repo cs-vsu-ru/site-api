@@ -48,6 +48,9 @@ public class WebConfigurer implements ServletContextInitializer {
         CorsConfiguration config = jHipsterProperties.getCors();
         if (!CollectionUtils.isEmpty(config.getAllowedOrigins()) || !CollectionUtils.isEmpty(config.getAllowedOriginPatterns())) {
             log.debug("Registering CORS filter");
+            config.addAllowedOrigin("http://localhost:8081");
+            config.addAllowedHeader("*");
+            config.addAllowedMethod("*");
             source.registerCorsConfiguration("/api/**", config);
             source.registerCorsConfiguration("/management/**", config);
             source.registerCorsConfiguration("/v3/api-docs", config);
