@@ -40,10 +40,12 @@ services:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - MYSQL_DATABASE=db
     networks: [ db_network ]
+    ports: [ 3306:3306 ]
     restart: unless-stopped
   redis:
     image: redis:6.2.7
     networks: [ redis_network ]
+    ports: [ 6379:6379 ]
     restart: unless-stopped
   nginx:
     build:
