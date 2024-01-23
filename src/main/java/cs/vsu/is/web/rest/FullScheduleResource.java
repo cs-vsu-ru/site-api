@@ -7,12 +7,14 @@ import cs.vsu.is.service.dto.fullschedule.FullLessonDTO;
 import cs.vsu.is.service.dto.fullschedule.FullScheduleDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 
@@ -31,6 +33,22 @@ public class FullScheduleResource {
     public ResponseEntity<EmployeeScheduleDTO> getFullScheduleForEmployee(@PathVariable Long employeeId) {
         log.debug("REST request to get Full Schedule For Employee");
         return ResponseEntity.ok(fullScheduleService.getFullScheduleForEmployee(employeeId));
+    }
+
+    @GetMapping("/full-schedule/{employeeId}/icscalendar")
+    public ResponseEntity<byte[]> getFullScheduleIcsForEmployee(@PathVariable Long employeeId) {
+        log.debug("REST request to get Full Schedule .ics For Employee: {}", employeeId);
+        String icsCalendar = fullScheduleService.getFullScheduleIcsForEmployee(employeeId);
+
+        byte[] icsBytes = icsCalendar.getBytes();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=calendar.ics");
+        headers.set(HttpHeaders.CONTENT_TYPE, "text/calendar");
+
+        return ResponseEntity.ok()
+            .headers(headers)
+            .body(icsBytes);
     }
 
     @GetMapping("/full-schedule")

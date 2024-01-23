@@ -12,7 +12,22 @@ import cs.vsu.is.service.dto.fullschedule.FullLessonDTO;
 import cs.vsu.is.service.dto.fullschedule.FullScheduleDTO;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,29 +84,29 @@ public class FullScheduleService {
                     );
                 List<FullLessonDTO> tuesday =
                     Arrays.asList(
-                    getLessonForDayOfWeekAndTime(employeeLessons, time, 1, employee, true),
+                        getLessonForDayOfWeekAndTime(employeeLessons, time, 1, employee, true),
                         getLessonForDayOfWeekAndTime(employeeLessons, time, 1, employee, false)
-                        );
+                    );
                 List<FullLessonDTO> wednesday =
                     Arrays.asList(
-                    getLessonForDayOfWeekAndTime(employeeLessons, time, 2, employee, true),
+                        getLessonForDayOfWeekAndTime(employeeLessons, time, 2, employee, true),
                         getLessonForDayOfWeekAndTime(employeeLessons, time, 2, employee, false)
-                        );
+                    );
                 List<FullLessonDTO> thursday =
                     Arrays.asList(
-                    getLessonForDayOfWeekAndTime(employeeLessons, time, 3, employee, true),
+                        getLessonForDayOfWeekAndTime(employeeLessons, time, 3, employee, true),
                         getLessonForDayOfWeekAndTime(employeeLessons, time, 3, employee, false)
-                        );
+                    );
                 List<FullLessonDTO> friday =
                     Arrays.asList(
-                    getLessonForDayOfWeekAndTime(employeeLessons, time, 4, employee, true),
+                        getLessonForDayOfWeekAndTime(employeeLessons, time, 4, employee, true),
                         getLessonForDayOfWeekAndTime(employeeLessons, time, 4, employee, false)
-                        );
+                    );
                 List<FullLessonDTO> saturday =
                     Arrays.asList(
-                    getLessonForDayOfWeekAndTime(employeeLessons, time, 5, employee, true),
+                        getLessonForDayOfWeekAndTime(employeeLessons, time, 5, employee, true),
                         getLessonForDayOfWeekAndTime(employeeLessons, time, 5, employee, false)
-                        );
+                    );
                 FullScheduleDTO fullScheduleDTO = new FullScheduleDTO();
                 fullScheduleDTO.setTime(timeMap.get(time));
                 fullScheduleDTO.setMonday(monday);
@@ -141,22 +156,22 @@ public class FullScheduleService {
                 Arrays.asList(
                     getLessonForDayOfWeekAndTime(employeeLessons, time, 2, employee, true),
                     getLessonForDayOfWeekAndTime(employeeLessons, time, 2, employee, false)
-                    );
+                );
             List<FullLessonDTO> thursday =
                 Arrays.asList(
                     getLessonForDayOfWeekAndTime(employeeLessons, time, 3, employee, true),
                     getLessonForDayOfWeekAndTime(employeeLessons, time, 3, employee, false)
-                    );
+                );
             List<FullLessonDTO> friday =
                 Arrays.asList(
                     getLessonForDayOfWeekAndTime(employeeLessons, time, 4, employee, true),
                     getLessonForDayOfWeekAndTime(employeeLessons, time, 4, employee, false)
-                    );
+                );
             List<FullLessonDTO> saturday =
                 Arrays.asList(
                     getLessonForDayOfWeekAndTime(employeeLessons, time, 5, employee, true),
                     getLessonForDayOfWeekAndTime(employeeLessons, time, 5, employee, false)
-                    );
+                );
             FullScheduleDTO fullScheduleDTO = new FullScheduleDTO();
             fullScheduleDTO.setTime(timeMap.get(time));
             fullScheduleDTO.setMonday(monday);
@@ -183,7 +198,7 @@ public class FullScheduleService {
     private FullLessonDTO getLessonForDayOfWeekAndTime(Set<Lesson> lessons, String startTime, int weekNumber, Employee employee, boolean isDenominator) {
         List<Lesson> collect = new ArrayList<>();
         if (lessons != null) {
-             collect = lessons
+            collect = lessons
                 .stream()
                 .filter(lesson -> (
                     lesson.getEduSchedulePlace().getDayOfWeak() == weekNumber
@@ -233,4 +248,96 @@ public class FullScheduleService {
         return fullLessonDTO;
     }
 
+    public String getFullScheduleIcsForEmployee(long employeeId) {
+        EmployeeScheduleDTO employeeSchedule = getFullScheduleForEmployee(employeeId);
+
+        if (employeeSchedule == null) return null;
+
+        StringBuilder icsSchedule = new StringBuilder();
+        icsSchedule.append("BEGIN:VCALENDAR\n")
+            .append("VERSION:2.0\n")
+            .append("CALSCALE:GREGORIAN\n");
+
+        for (FullScheduleDTO fullSchedule : employeeSchedule.getSchedule()) {
+            icsSchedule.append(buildIcsForDay(fullSchedule.getMonday(), fullSchedule.getTime(), DayOfWeek.MONDAY));
+            icsSchedule.append(buildIcsForDay(fullSchedule.getTuesday(), fullSchedule.getTime(), DayOfWeek.TUESDAY));
+            icsSchedule.append(buildIcsForDay(fullSchedule.getWednesday(), fullSchedule.getTime(), DayOfWeek.WEDNESDAY));
+            icsSchedule.append(buildIcsForDay(fullSchedule.getThursday(), fullSchedule.getTime(), DayOfWeek.THURSDAY));
+            icsSchedule.append(buildIcsForDay(fullSchedule.getFriday(), fullSchedule.getTime(), DayOfWeek.FRIDAY));
+            icsSchedule.append(buildIcsForDay(fullSchedule.getSaturday(), fullSchedule.getTime(), DayOfWeek.SATURDAY));
+        }
+
+        icsSchedule.append("END:VCALENDAR");
+
+        return icsSchedule.toString();
+    }
+
+    private String formatDateTimeToIcs(DayOfWeek dayOfWeek, int h, int m, boolean nextWeek) {
+        LocalDate currentDate = LocalDate.now();
+
+        LocalDate dayDate = nextWeek ?
+            currentDate.with(TemporalAdjusters.next(dayOfWeek)) :
+            currentDate.with(TemporalAdjusters.previousOrSame(dayOfWeek));
+        LocalDateTime dayAtTime = dayDate.atTime(h, m);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
+
+        return dayAtTime.format(formatter);
+    }
+
+    private String buildIcsForDay(List<FullLessonDTO> lessonsAtDay, String lessonTimeStr, DayOfWeek dayOfWeek) {
+        StringBuilder icsSchedule = new StringBuilder();
+
+        for (FullLessonDTO fullLesson : lessonsAtDay) {
+            if (fullLesson.getLesson() == null) {
+                continue;
+            }
+
+            LocalDate currentDate = LocalDate.now();
+
+            lessonTimeStr = lessonTimeStr.split(" - ")[0];
+            lessonTimeStr = lessonTimeStr.length() == 4 ? "0" + lessonTimeStr : lessonTimeStr;
+
+            LocalTime lessonTime = LocalTime.parse(lessonTimeStr, DateTimeFormatter.ofPattern("HH:mm"));
+            int startH = lessonTime.getHour();
+            int startM = lessonTime.getMinute();
+            lessonTime = lessonTime.plusHours(1).plusMinutes(35);
+            int finishH = lessonTime.getHour();
+            int finishM = lessonTime.getMinute();
+            int weekOfYear = currentDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+
+            boolean isDenominatorNow = weekOfYear % 2 == 0;
+
+            boolean isForNextWeek = isDenominatorNow != fullLesson.getIsDenominator();
+
+            icsSchedule.append("BEGIN:VEVENT\n");
+            icsSchedule.append("SUMMARY:").append(fullLesson.getLesson()).append("\n");
+            icsSchedule.append("DTSTART;TZID=Europe/Moscow:")
+                .append(formatDateTimeToIcs(dayOfWeek, startH, startM, isForNextWeek)).append("\n");
+            icsSchedule.append("DTEND;TZID=Europe/Moscow:")
+                .append(formatDateTimeToIcs(dayOfWeek, finishH, finishM, isForNextWeek)).append("\n");
+            icsSchedule.append("DESCRIPTION: ")
+                .append(fullLesson.getCourse()).append(", ").append(fullLesson.getGroup()).append("\n");
+            icsSchedule.append("LOCATION: ")
+                .append(fullLesson.getPlacement()).append("\n");
+            icsSchedule.append("RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=")
+                .append(getTwoLetterAbbreviation(dayOfWeek)).append("\n");
+            icsSchedule.append("END:VEVENT\n");
+        }
+
+        return icsSchedule.toString();
+    }
+
+    private static String getTwoLetterAbbreviation(DayOfWeek day) {
+        switch (day) {
+            case MONDAY:    return "MO";
+            case TUESDAY:   return "TU";
+            case WEDNESDAY: return "WE";
+            case THURSDAY:  return "TH";
+            case FRIDAY:    return "FR";
+            case SATURDAY:  return "SA";
+            case SUNDAY:    return "SU";
+            default:        throw new IllegalArgumentException("Invalid day of the week");
+        }
+    }
 }
